@@ -1,0 +1,28 @@
+{
+  "name": "global-impact-catalyst",
+  "version": "1.0.0",
+  "description": "Traceable impact measurement records, progress-to-target estimates, review notes, and WordPress demo plugin.",
+  "repository": "https://github.com/Content-Catalyst-LLC/global-impact-catalyst",
+  "shortcode": "[global_impact_catalyst_demo]",
+  "core_path": "python/global_impact_core.py",
+  "plugin_path": "wordpress/global-impact-catalyst-demo",
+  "schema_path": "schemas/global_impact_record.schema.json",
+  "methodology_path": "docs/methodology.md",
+  "traceability_path": [
+    "goal",
+    "indicator",
+    "definition",
+    "source",
+    "baseline",
+    "measurement",
+    "method",
+    "interpretation",
+    "review"
+  ],
+  "boundaries": [
+    "Not ESG assurance",
+    "Not SDG certification",
+    "Not automatic truth verification",
+    "Requires source, method, and human review"
+  ]
+}

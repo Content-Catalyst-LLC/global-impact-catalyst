@@ -1,0 +1,215 @@
+.gic-demo {
+  --gic-black: #000000;
+  --gic-red: #9b1111;
+  --gic-cream: #f7f3ea;
+  --gic-soft: #fbfaf6;
+  --gic-border: #d9d2c4;
+  --gic-text: #171717;
+  --gic-muted: #555555;
+  font-family: inherit;
+  color: var(--gic-text);
+  background: var(--gic-soft);
+  border-top: 6px solid var(--gic-black);
+}
+
+.gic-demo * { box-sizing: border-box; }
+
+.gic-demo__header {
+  padding: 28px 28px 12px;
+  border-bottom: 1px solid var(--gic-border);
+  background: #ffffff;
+}
+
+.gic-demo__eyebrow {
+  margin: 0 0 10px;
+  color: var(--gic-red);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.gic-demo h2,
+.gic-demo h3 {
+  margin: 0 0 10px;
+  color: var(--gic-black);
+  line-height: 1.08;
+}
+
+.gic-demo h2 { font-size: clamp(1.6rem, 3vw, 2.3rem); }
+.gic-demo h3 { font-size: 1.15rem; }
+
+.gic-demo p { color: var(--gic-muted); line-height: 1.62; }
+
+.gic-demo__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 0;
+}
+
+.gic-demo__form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 28px;
+  border-right: 1px solid var(--gic-border);
+}
+
+.gic-demo__field { display: grid; gap: 7px; }
+.gic-demo__field--wide { grid-column: 1 / -1; }
+
+.gic-demo label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gic-black);
+}
+
+.gic-demo input,
+.gic-demo textarea,
+.gic-demo select {
+  width: 100%;
+  border: 1px solid var(--gic-border);
+  background: #ffffff;
+  color: var(--gic-text);
+  padding: 11px 12px;
+  font: inherit;
+  border-radius: 0;
+}
+
+.gic-demo input:focus,
+.gic-demo textarea:focus,
+.gic-demo select:focus {
+  outline: 2px solid rgba(155, 17, 17, 0.2);
+  border-color: var(--gic-red);
+}
+
+.gic-demo__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.gic-demo button {
+  border: 1px solid var(--gic-black);
+  background: #ffffff;
+  color: var(--gic-black);
+  padding: 11px 14px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.gic-demo button:hover,
+.gic-demo button:focus {
+  background: var(--gic-black);
+  color: #ffffff;
+}
+
+.gic-demo__output {
+  padding: 28px;
+  background: var(--gic-cream);
+}
+
+.gic-demo__scorecard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.gic-demo__scorecard div {
+  background: #ffffff;
+  border: 1px solid var(--gic-border);
+  padding: 14px;
+}
+
+.gic-demo__scorecard span {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--gic-red);
+}
+
+.gic-demo__scorecard strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.1rem;
+  color: var(--gic-black);
+}
+
+.gic-demo__bar {
+  height: 14px;
+  background: #ffffff;
+  border: 1px solid var(--gic-border);
+  margin: 0 0 20px;
+  overflow: hidden;
+}
+
+.gic-demo__bar span {
+  display: block;
+  width: 0%;
+  height: 100%;
+  background: var(--gic-red);
+  transition: width 160ms ease;
+}
+
+.gic-demo__result {
+  background: #ffffff;
+  border: 1px solid var(--gic-border);
+  padding: 18px;
+}
+
+.gic-demo__result ul {
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+
+.gic-demo__result li { margin-bottom: 7px; }
+
+.gic-demo__json {
+  margin-top: 16px;
+  background: #ffffff;
+  border: 1px solid var(--gic-border);
+  padding: 14px;
+}
+
+.gic-demo__json summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--gic-black);
+}
+
+.gic-demo pre {
+  max-height: 260px;
+  overflow: auto;
+  margin: 12px 0 0;
+  padding: 14px;
+  background: #111111;
+  color: #f7f3ea;
+  white-space: pre-wrap;
+}
+
+.gic-demo__boundary {
+  margin: 0;
+  padding: 16px 28px;
+  background: #ffffff;
+  border-top: 1px solid var(--gic-border);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .gic-demo__grid { grid-template-columns: 1fr; }
+  .gic-demo__form { border-right: 0; border-bottom: 1px solid var(--gic-border); }
+}
+
+@media (max-width: 640px) {
+  .gic-demo__form { grid-template-columns: 1fr; padding: 20px; }
+  .gic-demo__header, .gic-demo__output, .gic-demo__boundary { padding-left: 20px; padding-right: 20px; }
+}

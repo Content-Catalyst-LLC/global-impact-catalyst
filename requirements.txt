@@ -1,3 +1,2 @@
-fastapi>=0.115
-uvicorn[standard]>=0.29
-pydantic>=2.8
+# Global Impact Catalyst intentionally uses only the Python standard library.
+# Add runtime dependencies only when they are necessary and documented.

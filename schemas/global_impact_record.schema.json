@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/global-impact-catalyst-record.schema.json",
+  "title": "Global Impact Catalyst Record",
+  "type": "object",
+  "required": [
+    "record_type",
+    "generated_at",
+    "initiative",
+    "goal",
+    "indicator",
+    "unit",
+    "baseline_value",
+    "current_value",
+    "target_value",
+    "source",
+    "method_notes",
+    "metrics",
+    "interpretation_notes",
+    "traceability_path",
+    "boundaries"
+  ],
+  "properties": {
+    "record_type": {
+      "const": "global_impact_catalyst_record"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "initiative": {
+      "type": "string"
+    },
+    "goal": {
+      "type": "string"
+    },
+    "sdg_theme": {
+      "type": "string"
+    },
+    "indicator": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "baseline_period": {
+      "type": "string"
+    },
+    "current_period": {
+      "type": "string"
+    },
+    "baseline_value": {
+      "type": "number"
+    },
+    "current_value": {
+      "type": "number"
+    },
+    "target_value": {
+      "type": "number"
+    },
+    "higher_is_better": {
+      "type": "boolean"
+    },
+    "source": {
+      "type": "string"
+    },
+    "method_notes": {
+      "type": "string"
+    },
+    "confidence": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "review_status": {
+      "enum": [
+        "draft",
+        "needs_review",
+        "reviewed",
+        "published"
+      ]
+    },
+    "beneficiaries": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "budget_usd": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "interpretation_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "traceability_path": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "boundaries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
