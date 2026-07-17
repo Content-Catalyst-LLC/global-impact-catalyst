@@ -1,0 +1,3 @@
+# Comparison Governance
+
+Comparisons are allowed only under a declared policy. Period matching may require exact dates, overlapping periods, matching labels, or an explicit decision to ignore time. Geography and population rules may block, warn, or ignore differences. Units must be identical or convertible through the governed unit registry. Missing and partial observations must be blocked, excluded, warned about, or included according to the saved policy. Rankings are scoped to the records that survive these guards and must never be presented as causal superiority, assurance, certification, or universal performance.

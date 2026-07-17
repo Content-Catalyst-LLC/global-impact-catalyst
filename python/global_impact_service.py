@@ -1,4 +1,4 @@
-"""Application service layer for Global Impact Catalyst v1.6.0."""
+"""Application service layer for Global Impact Catalyst v1.7.0."""
 from __future__ import annotations
 
 import copy
@@ -20,7 +20,7 @@ from python.global_impact_repository import (
     utc_now,
 )
 
-SERVICE_VERSION = "1.6.0"
+SERVICE_VERSION = "1.7.0"
 
 
 def compact_input_from_contract(contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -293,6 +293,46 @@ class ImpactApplicationService:
             path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(workflow, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         return workflow
+
+    def analyze_trend(self, initiative_id: str, indicator_id: str, **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.analyze_trend(initiative_id, indicator_id, **kwargs)
+
+    def register_benchmark(self, benchmark: Dict[str, Any], *, workspace_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_benchmark(benchmark, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def compare_to_benchmark(self, initiative_id: str, indicator_id: str, benchmark_id: str, **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.compare_to_benchmark(initiative_id, indicator_id, benchmark_id, **kwargs)
+
+    def create_comparison_set(self, comparison_set: Dict[str, Any], *, workspace_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_comparison_set(comparison_set, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def add_comparison_member(self, comparison_set_id: str, member: Dict[str, Any], *, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.add_comparison_member(comparison_set_id, member, actor=actor)
+
+    def run_comparison_set(self, comparison_set_id: str, **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.run_comparison_set(comparison_set_id, **kwargs)
+
+    def register_uncertainty_model(self, model: Dict[str, Any], *, workspace_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_uncertainty_model(model, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def register_scenario(self, scenario: Dict[str, Any], *, workspace_id: str, initiative_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_scenario(scenario, workspace_id=workspace_id, initiative_id=initiative_id, expected_revision=expected_revision, actor=actor)
+
+    def evaluate_scenario(self, scenario_id: str, **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.evaluate_scenario(scenario_id, **kwargs)
+
+    def run_sensitivity_analysis(self, scenario_id: str, parameter_ranges: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.run_sensitivity_analysis(scenario_id, parameter_ranges, **kwargs)
+
+    def compare_observations_to_target(self, initiative_id: str, indicator_id: str, target_model_id: str, **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.compare_observations_to_target(initiative_id, indicator_id, target_model_id, **kwargs)
+
+    def analysis_repository(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
+        analysis = self.repository.export_analysis_repository(workspace_id)
+        if destination:
+            path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(analysis, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return analysis
 
     def export_workspace(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
         bundle = self.repository.export_workspace_bundle(workspace_id)

@@ -1,8 +1,8 @@
 {
   "bundle_type": "global_impact_workspace_bundle",
-  "bundle_version": "1.6.0",
-  "database_schema_version": 7,
-  "exported_at": "2026-07-17T20:41:01.524183+00:00",
+  "bundle_version": "1.7.0",
+  "database_schema_version": 8,
+  "exported_at": "2026-07-17T22:11:10.956622+00:00",
   "workspace": {
     "entity_type": "workspace",
     "entity_id": "gic-workspace-bdc75d8b68333af2",
@@ -14,7 +14,7 @@
     "archived_at": null,
     "revision": 1,
     "created_at": "2026-07-17T18:00:00+00:00",
-    "updated_at": "2026-07-17T20:41:01.508781+00:00",
+    "updated_at": "2026-07-17T22:11:10.948825+00:00",
     "document": {
       "created_at": "2026-07-17T18:00:00+00:00",
       "entity_type": "workspace",
@@ -35,7 +35,7 @@
       "revision": 1,
       "content_hash": "7f46875fc7cf7b68c1195792f8841eec619ac320c519e46350388bdc43f17f13",
       "created_at": "2026-07-17T18:00:00+00:00",
-      "updated_at": "2026-07-17T20:41:01.508033+00:00",
+      "updated_at": "2026-07-17T22:11:10.948534+00:00",
       "contract": {
         "boundaries": [
           "This contract is not an ESG assurance opinion, SDG certification, regulatory filing, or audit finding.",
@@ -393,7 +393,7 @@
         "current_version": 1,
         "revision": 1,
         "created_at": "2026-07-17T18:00:00+00:00",
-        "updated_at": "2026-07-17T20:41:01.509432+00:00",
+        "updated_at": "2026-07-17T22:11:10.949169+00:00",
         "metadata": {
           "canonical_entity": {
             "created_at": "2026-07-17T18:00:00+00:00",
@@ -418,8 +418,8 @@
         "checksum_value": "59a74dd239f3e03db14e3f2af0dff882bbc093494964254318b9e389caf616f4",
         "mime_type": "application/vnd.global-impact-catalyst.source+json",
         "size_bytes": 305,
-        "captured_at": "2026-07-17T20:41:01.509432+00:00",
-        "captured_by": "example-owner",
+        "captured_at": "2026-07-17T22:11:10.949169+00:00",
+        "captured_by": "system",
         "metadata": {
           "record_id": "gic-record-3bb3e632355d26c9"
         }
@@ -441,7 +441,7 @@
         "method_id": "gic-method-dfc0b951aac86076",
         "method_version": "1.0",
         "occurred_at": "2026-07-17T18:00:00+00:00",
-        "actor": "example-owner",
+        "actor": "system",
         "metadata": {}
       },
       {
@@ -457,7 +457,7 @@
         "method_id": null,
         "method_version": "",
         "occurred_at": "2026-07-17T18:00:00+00:00",
-        "actor": "example-owner",
+        "actor": "system",
         "metadata": {}
       },
       {
@@ -473,7 +473,7 @@
         "method_id": "gic-method-dfc0b951aac86076",
         "method_version": "1.0",
         "occurred_at": "2026-07-17T18:00:00+00:00",
-        "actor": "example-owner",
+        "actor": "system",
         "metadata": {}
       },
       {
@@ -489,7 +489,7 @@
         "method_id": null,
         "method_version": "",
         "occurred_at": "2026-07-17T18:00:00+00:00",
-        "actor": "example-owner",
+        "actor": "system",
         "metadata": {}
       },
       {
@@ -505,7 +505,7 @@
         "method_id": null,
         "method_version": "",
         "occurred_at": "2026-07-17T18:00:00+00:00",
-        "actor": "example-owner",
+        "actor": "system",
         "metadata": {}
       },
       {
@@ -521,7 +521,7 @@
         "method_id": "gic-method-dfc0b951aac86076",
         "method_version": "1.0",
         "occurred_at": "2026-07-17T18:00:00+00:00",
-        "actor": "example-owner",
+        "actor": "system",
         "metadata": {}
       },
       {
@@ -537,7 +537,7 @@
         "method_id": "gic-method-dfc0b951aac86076",
         "method_version": "1.0",
         "occurred_at": "2026-07-17T18:00:00+00:00",
-        "actor": "example-owner",
+        "actor": "system",
         "metadata": {}
       },
       {
@@ -553,7 +553,7 @@
         "method_id": null,
         "method_version": "",
         "occurred_at": "2026-07-17T18:00:00+00:00",
-        "actor": "example-owner",
+        "actor": "system",
         "metadata": {}
       },
       {
@@ -569,7 +569,7 @@
         "method_id": null,
         "method_version": "",
         "occurred_at": "2026-07-17T18:00:00+00:00",
-        "actor": "example-owner",
+        "actor": "system",
         "metadata": {}
       }
     ],
@@ -579,7 +579,7 @@
     "registry_type": "global_impact_indicator_registry",
     "registry_version": "1.4.0",
     "workspace_id": "gic-workspace-bdc75d8b68333af2",
-    "generated_at": "2026-07-17T20:41:01.525327+00:00",
+    "generated_at": "2026-07-17T22:11:10.957350+00:00",
     "units": [
       {
         "unit_id": "gic-unit-hectare",
@@ -594,8 +594,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -614,8 +614,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -634,8 +634,8 @@
         "precision_digits": 0,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -654,8 +654,8 @@
         "precision_digits": 2,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -674,8 +674,8 @@
         "precision_digits": 2,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -694,8 +694,8 @@
         "precision_digits": 4,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -714,8 +714,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -734,8 +734,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -754,8 +754,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -774,8 +774,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -794,8 +794,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -814,8 +814,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -834,8 +834,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -854,8 +854,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -874,8 +874,8 @@
         "precision_digits": 2,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -894,8 +894,8 @@
         "precision_digits": 2,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -914,8 +914,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -934,8 +934,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.506176+00:00",
-        "updated_at": "2026-07-17T20:41:01.506176+00:00",
+        "created_at": "2026-07-17T22:11:10.947360+00:00",
+        "updated_at": "2026-07-17T22:11:10.947360+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -956,8 +956,8 @@
         "lifecycle_status": "active",
         "current_version": 1,
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.511097+00:00",
-        "updated_at": "2026-07-17T20:41:01.511461+00:00",
+        "created_at": "2026-07-17T22:11:10.950084+00:00",
+        "updated_at": "2026-07-17T22:11:10.950276+00:00",
         "disaggregation": [],
         "quality_profile": {
           "status": "not_assessed"
@@ -976,8 +976,8 @@
             "effective_from": null,
             "effective_through": null,
             "definition_hash": "7adf7bfeee6c2462ce3934e6919af4bee315b3b2860fbbe922ce208584b37d8d",
-            "created_at": "2026-07-17T20:41:01.511397+00:00",
-            "created_by": "example-owner",
+            "created_at": "2026-07-17T22:11:10.950247+00:00",
+            "created_by": "system",
             "definition": {
               "aggregation_method": "latest",
               "description": "Mean reduction in monthly household utility bills relative to the baseline period.",
@@ -1023,8 +1023,8 @@
         "lifecycle_status": "active",
         "current_version": 1,
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.511797+00:00",
-        "updated_at": "2026-07-17T20:41:01.512108+00:00",
+        "created_at": "2026-07-17T22:11:10.950437+00:00",
+        "updated_at": "2026-07-17T22:11:10.950619+00:00",
         "parameters": {
           "canonical_baseline_id": "gic-baseline-bccde48f17ee3898"
         },
@@ -1038,8 +1038,8 @@
             "version_number": 1,
             "version_label": "1.1.0",
             "model_hash": "56ad1c446534c3d426aeea8d5bc804a01e190d39913ab344c51429c07d84b9a3",
-            "created_at": "2026-07-17T20:41:01.512048+00:00",
-            "created_by": "example-owner",
+            "created_at": "2026-07-17T22:11:10.950576+00:00",
+            "created_by": "system",
             "model": {
               "baseline_model_id": "gic-baseline-model-9c6e0716c2085cf79608",
               "benchmark_value": 0.0,
@@ -1091,8 +1091,8 @@
         "lifecycle_status": "active",
         "current_version": 1,
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.512463+00:00",
-        "updated_at": "2026-07-17T20:41:01.512820+00:00",
+        "created_at": "2026-07-17T22:11:10.950824+00:00",
+        "updated_at": "2026-07-17T22:11:10.951048+00:00",
         "milestones": [],
         "metadata": {
           "canonical_target_id": "gic-target-61bc37e9887a3252",
@@ -1105,8 +1105,8 @@
             "version_number": 1,
             "version_label": "1.1.0",
             "model_hash": "10a0c1c17dcd65f9feeac504afec5079876ba00781a0ccfc61358756dc7b02aa",
-            "created_at": "2026-07-17T20:41:01.512749+00:00",
-            "created_by": "example-owner",
+            "created_at": "2026-07-17T22:11:10.951009+00:00",
+            "created_by": "system",
             "model": {
               "direction": "higher_is_better",
               "end_period": "2027",
@@ -1151,8 +1151,8 @@
         "lifecycle_status": "active",
         "current_version": 1,
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.513089+00:00",
-        "updated_at": "2026-07-17T20:41:01.513739+00:00",
+        "created_at": "2026-07-17T22:11:10.951197+00:00",
+        "updated_at": "2026-07-17T22:11:10.951583+00:00",
         "input_requirements": [],
         "quality_profile": {
           "data_quality": "not_assessed",
@@ -1171,8 +1171,8 @@
             "version_number": 1,
             "version_label": "1.0",
             "method_hash": "da0faf44f1022bab9c297cbf657134caa8bf7bf4929858f5f2e780ceb89405c1",
-            "created_at": "2026-07-17T20:41:01.513655+00:00",
-            "created_by": "example-owner",
+            "created_at": "2026-07-17T22:11:10.951528+00:00",
+            "created_by": "system",
             "method": {
               "description": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills. Results should be reviewed for seasonality and household-size differences.",
               "design_type": "before_after",
@@ -1215,8 +1215,8 @@
         "target_model_version_id": "gic-target_model_version-6ce7e0a7e4b5422fbfae",
         "method_definition_id": "gic-method-dfc0b951aac86076",
         "method_definition_version_id": "gic-method_definition_version-4341591fd3389a358d25",
-        "bound_at": "2026-07-17T20:41:01.514461+00:00",
-        "bound_by": "example-owner",
+        "bound_at": "2026-07-17T22:11:10.951973+00:00",
+        "bound_by": "system",
         "revision": 1,
         "metadata": {
           "materialized_from_contract": "gic-record-3bb3e632355d26c9"
@@ -1240,7 +1240,7 @@
     "repository_type": "global_impact_measurement_repository",
     "repository_version": "1.5.0",
     "workspace_id": "gic-workspace-bdc75d8b68333af2",
-    "generated_at": "2026-07-17T20:41:01.526556+00:00",
+    "generated_at": "2026-07-17T22:11:10.957773+00:00",
     "impact_results": [
       {
         "result_id": "gic-outcome-5dfda192c94fd5fb",
@@ -1253,7 +1253,7 @@
         "lifecycle_status": "needs_review",
         "revision": 1,
         "created_at": "2026-07-17T18:00:00+00:00",
-        "updated_at": "2026-07-17T20:41:01.514947+00:00",
+        "updated_at": "2026-07-17T22:11:10.952239+00:00",
         "metadata": {
           "canonical_entity_type": "outcome",
           "record_id": "gic-record-3bb3e632355d26c9"
@@ -1283,7 +1283,7 @@
         "notes": "",
         "revision": 1,
         "created_at": "2026-07-17T18:00:00+00:00",
-        "updated_at": "2026-07-17T20:41:01.515191+00:00",
+        "updated_at": "2026-07-17T22:11:10.952364+00:00",
         "dimensions": {},
         "denominator": {},
         "metadata": {
@@ -1306,8 +1306,8 @@
         "overlap_notes": "Canonical compact input does not record overlap assumptions.",
         "lifecycle_status": "needs_review",
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.515971+00:00",
-        "updated_at": "2026-07-17T20:41:01.515971+00:00",
+        "created_at": "2026-07-17T22:11:10.952869+00:00",
+        "updated_at": "2026-07-17T22:11:10.952869+00:00",
         "metadata": {
           "materialized_from_contract": true,
           "record_id": "gic-record-3bb3e632355d26c9"
@@ -1333,7 +1333,7 @@
         "revised_at": null,
         "revision": 1,
         "created_at": "2026-07-17T18:00:00+00:00",
-        "updated_at": "2026-07-17T20:41:01.516306+00:00",
+        "updated_at": "2026-07-17T22:11:10.953084+00:00",
         "dimensions": {
           "population_group": "Participating households"
         },
@@ -1364,7 +1364,7 @@
         "notes": "",
         "revision": 1,
         "created_at": "2026-07-17T18:00:00+00:00",
-        "updated_at": "2026-07-17T20:41:01.516610+00:00",
+        "updated_at": "2026-07-17T22:11:10.953296+00:00",
         "metadata": {
           "materialized_from_contract": true,
           "record_id": "gic-record-3bb3e632355d26c9"
@@ -1395,7 +1395,7 @@
     "workflow_type": "global_impact_review_workflow",
     "workflow_version": "1.6.0",
     "workspace_id": "gic-workspace-bdc75d8b68333af2",
-    "generated_at": "2026-07-17T20:41:01.527621+00:00",
+    "generated_at": "2026-07-17T22:11:10.958543+00:00",
     "roles": [
       {
         "role_id": "gic-role-39e14befc53a99182b21",
@@ -1405,8 +1405,8 @@
         "is_system": 1,
         "archived_at": null,
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.517749+00:00",
-        "updated_at": "2026-07-17T20:41:01.517749+00:00",
+        "created_at": "2026-07-17T22:11:10.954017+00:00",
+        "updated_at": "2026-07-17T22:11:10.954017+00:00",
         "permissions": [
           "comment",
           "assess_quality",
@@ -1425,8 +1425,8 @@
         "is_system": 1,
         "archived_at": null,
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.517579+00:00",
-        "updated_at": "2026-07-17T20:41:01.517579+00:00",
+        "created_at": "2026-07-17T22:11:10.953906+00:00",
+        "updated_at": "2026-07-17T22:11:10.953906+00:00",
         "permissions": [
           "review_evidence",
           "comment",
@@ -1445,8 +1445,8 @@
         "is_system": 1,
         "archived_at": null,
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.517677+00:00",
-        "updated_at": "2026-07-17T20:41:01.517677+00:00",
+        "created_at": "2026-07-17T22:11:10.953965+00:00",
+        "updated_at": "2026-07-17T22:11:10.953965+00:00",
         "permissions": [
           "review_methods",
           "comment",
@@ -1465,8 +1465,8 @@
         "is_system": 1,
         "archived_at": null,
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.517385+00:00",
-        "updated_at": "2026-07-17T20:41:01.517385+00:00",
+        "created_at": "2026-07-17T22:11:10.953779+00:00",
+        "updated_at": "2026-07-17T22:11:10.953779+00:00",
         "permissions": [
           "edit",
           "submit_review",
@@ -1485,8 +1485,8 @@
         "is_system": 1,
         "archived_at": null,
         "revision": 1,
-        "created_at": "2026-07-17T20:41:01.517814+00:00",
-        "updated_at": "2026-07-17T20:41:01.517814+00:00",
+        "created_at": "2026-07-17T22:11:10.954051+00:00",
+        "updated_at": "2026-07-17T22:11:10.954051+00:00",
         "permissions": [
           "publish",
           "withdraw",
@@ -1497,114 +1497,10 @@
         }
       }
     ],
-    "review_assignments": [
-      {
-        "assignment_id": "gic-review-assignment-9df1f7f7011b0ccc9b9b",
-        "workspace_id": "gic-workspace-bdc75d8b68333af2",
-        "initiative_id": "gic-initiative-09a657f60923ed45",
-        "subject_type": "contract",
-        "subject_id": "gic-record-3bb3e632355d26c9",
-        "reviewer_id": "reviewer@example.org",
-        "role_id": "gic-role-39e14befc53a99182b21",
-        "status": "approved",
-        "priority": "high",
-        "due_at": "2026-07-24T17:00:00+00:00",
-        "assigned_by": "example-owner",
-        "assigned_at": "2026-07-17T20:41:01.519645+00:00",
-        "started_at": null,
-        "completed_at": "2026-07-17T20:41:01.521031+00:00",
-        "revision": 2,
-        "created_at": "2026-07-17T20:41:01.519645+00:00",
-        "updated_at": "2026-07-17T20:41:01.521031+00:00",
-        "metadata": {}
-      }
-    ],
-    "review_comments": [
-      {
-        "comment_id": "gic-review-comment-f5f014db83ed296c30c8",
-        "assignment_id": "gic-review-assignment-9df1f7f7011b0ccc9b9b",
-        "workspace_id": "gic-workspace-bdc75d8b68333af2",
-        "initiative_id": "gic-initiative-09a657f60923ed45",
-        "subject_type": "contract",
-        "subject_id": "gic-record-3bb3e632355d26c9",
-        "author_id": "reviewer@example.org",
-        "parent_comment_id": null,
-        "visibility": "workspace",
-        "body": "Retain the seasonality limitation in the published brief.",
-        "resolution_status": "resolved",
-        "resolved_by": "example-owner",
-        "resolved_at": "2026-07-17T20:41:01.520345+00:00",
-        "revision": 2,
-        "created_at": "2026-07-17T20:41:01.520110+00:00",
-        "updated_at": "2026-07-17T20:41:01.520345+00:00",
-        "metadata": {}
-      }
-    ],
-    "quality_assessments": [
-      {
-        "assessment_id": "gic-quality-assessment-e7b4c0dab3724974ec17",
-        "assignment_id": "gic-review-assignment-9df1f7f7011b0ccc9b9b",
-        "workspace_id": "gic-workspace-bdc75d8b68333af2",
-        "initiative_id": "gic-initiative-09a657f60923ed45",
-        "subject_type": "contract",
-        "subject_id": "gic-record-3bb3e632355d26c9",
-        "rubric_id": "gic-core-quality",
-        "rubric_version": "1.0",
-        "assessor_id": "reviewer@example.org",
-        "status": "submitted",
-        "score": 85.0,
-        "maximum_score": 100.0,
-        "grade": "strong",
-        "limitations": "",
-        "revision": 1,
-        "created_at": "2026-07-17T20:41:01.520559+00:00",
-        "updated_at": "2026-07-17T20:41:01.520559+00:00",
-        "submitted_at": "2026-07-17T20:41:01.520559+00:00",
-        "dimensions": [
-          {
-            "finding": "Source version and locator are present.",
-            "key": "evidence",
-            "maximum_score": 100.0,
-            "score": 85.0,
-            "weight": 1.0
-          },
-          {
-            "finding": "Method is appropriate with stated limitations.",
-            "key": "method",
-            "maximum_score": 100.0,
-            "score": 80.0,
-            "weight": 1.0
-          },
-          {
-            "finding": "The claim traces to the canonical observation.",
-            "key": "traceability",
-            "maximum_score": 100.0,
-            "score": 90.0,
-            "weight": 1.0
-          }
-        ],
-        "findings": [],
-        "metadata": {}
-      }
-    ],
-    "approval_decisions": [
-      {
-        "decision_id": "gic-approval-decision-fed2c8c8def5fa45a1bb",
-        "assignment_id": "gic-review-assignment-9df1f7f7011b0ccc9b9b",
-        "workspace_id": "gic-workspace-bdc75d8b68333af2",
-        "initiative_id": "gic-initiative-09a657f60923ed45",
-        "subject_type": "contract",
-        "subject_id": "gic-record-3bb3e632355d26c9",
-        "reviewer_id": "reviewer@example.org",
-        "decision": "approve",
-        "rationale": "Approved for public-interest reporting with the limitation retained.",
-        "decided_at": "2026-07-17T20:41:01.521031+00:00",
-        "supersedes_decision_id": null,
-        "revision": 1,
-        "conditions": [],
-        "metadata": {}
-      }
-    ],
+    "review_assignments": [],
+    "review_comments": [],
+    "quality_assessments": [],
+    "approval_decisions": [],
     "revisions": [
       {
         "workflow_revision_id": "gic-workflow-revision-9abbd1a2fc23d0079ae8",
@@ -1614,11 +1510,11 @@
         "subject_id": "gic-record-3bb3e632355d26c9",
         "revision_number": 1,
         "change_type": "create",
-        "actor_id": "example-owner",
+        "actor_id": "system",
         "summary": "Canonical contract repository revision 1",
         "previous_content_hash": null,
         "content_hash": "7f46875fc7cf7b68c1195792f8841eec619ac320c519e46350388bdc43f17f13",
-        "created_at": "2026-07-17T20:41:01.518234+00:00",
+        "created_at": "2026-07-17T22:11:10.954253+00:00",
         "snapshot": {
           "boundaries": [
             "This contract is not an ESG assurance opinion, SDG certification, regulatory filing, or audit finding.",
@@ -1956,185 +1852,284 @@
       }
     ],
     "corrections": [],
-    "publications": [
-      {
-        "publication_id": "gic-publication-162e31752452206fc6f2",
-        "workspace_id": "gic-workspace-bdc75d8b68333af2",
-        "initiative_id": "gic-initiative-09a657f60923ed45",
-        "subject_type": "contract",
-        "subject_id": "gic-record-3bb3e632355d26c9",
-        "title": "Community Energy Retrofit Impact Brief",
-        "publication_status": "published",
-        "release_label": "2026 Q2",
-        "public_url": "",
-        "approved_decision_id": "gic-approval-decision-fed2c8c8def5fa45a1bb",
-        "quality_assessment_id": "gic-quality-assessment-e7b4c0dab3724974ec17",
-        "content_hash": "7f46875fc7cf7b68c1195792f8841eec619ac320c519e46350388bdc43f17f13",
-        "published_revision_id": "gic-workflow-revision-9abbd1a2fc23d0079ae8",
-        "published_at": "2026-07-17T20:41:01.522894+00:00",
-        "published_by": "publisher@example.org",
-        "withdrawn_at": null,
-        "withdrawn_by": null,
-        "withdrawal_reason": "",
-        "supersedes_publication_id": null,
-        "revision": 2,
-        "created_at": "2026-07-17T20:41:01.521577+00:00",
-        "updated_at": "2026-07-17T20:41:01.522894+00:00",
-        "metadata": {}
-      }
-    ],
-    "publication_events": [
-      {
-        "publication_event_id": "gic-publication-event-559b3e5fed3e392369cf",
-        "publication_id": "gic-publication-162e31752452206fc6f2",
-        "event_type": "created",
-        "actor_id": "publisher@example.org",
-        "reason": "",
-        "event_at": "2026-07-17T20:41:01.521672+00:00",
-        "details": {
-          "content_hash": "7f46875fc7cf7b68c1195792f8841eec619ac320c519e46350388bdc43f17f13"
-        }
-      },
-      {
-        "publication_event_id": "gic-publication-event-f7da68a401e47ab39c72",
-        "publication_id": "gic-publication-162e31752452206fc6f2",
-        "event_type": "published",
-        "actor_id": "publisher@example.org",
-        "reason": "",
-        "event_at": "2026-07-17T20:41:01.522990+00:00",
-        "details": {
-          "assessment_id": "gic-quality-assessment-e7b4c0dab3724974ec17",
-          "decision_id": "gic-approval-decision-fed2c8c8def5fa45a1bb"
-        }
-      }
-    ],
+    "publications": [],
+    "publication_events": [],
     "integrity": {
       "valid": true,
       "role_count": 5,
-      "assignment_count": 1,
-      "comment_count": 1,
+      "assignment_count": 0,
+      "comment_count": 0,
       "open_comment_count": 0,
-      "quality_assessment_count": 1,
-      "approval_decision_count": 1,
+      "quality_assessment_count": 0,
+      "approval_decision_count": 0,
       "revision_count": 1,
       "correction_count": 0,
       "open_correction_count": 0,
-      "publication_count": 1,
+      "publication_count": 0,
       "broken_decision_ids": [],
       "published_without_gate_ids": []
     },
     "boundary": "Workflow approval documents governance decisions; it is not external assurance, certification, or a guarantee that source claims are true."
   },
+  "analysis_repository": {
+    "repository_type": "global_impact_analysis_repository",
+    "repository_version": "1.7.0",
+    "workspace_id": "gic-workspace-bdc75d8b68333af2",
+    "generated_at": "2026-07-17T22:11:10.958705+00:00",
+    "benchmarks": [
+      {
+        "benchmark_id": "gic-benchmark-c4e83da3c63f2033f5f4",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "indicator_id": "gic-indicator-2e7a8f93231487ce",
+        "indicator_definition_id": null,
+        "name": "Reference benchmark",
+        "benchmark_type": "external",
+        "value": 20.0,
+        "unit_id": "gic-unit-usd",
+        "period_start": null,
+        "period_end": null,
+        "period_label": "2026 Q2",
+        "geography": "",
+        "population": "",
+        "source_id": null,
+        "method_definition_id": null,
+        "quality_status": "not_assessed",
+        "lifecycle_status": "draft",
+        "revision": 1,
+        "created_at": "2026-07-17T22:11:10.955396+00:00",
+        "updated_at": "2026-07-17T22:11:10.955403+00:00",
+        "metadata": {}
+      }
+    ],
+    "comparison_sets": [],
+    "scenarios": [
+      {
+        "scenario_id": "gic-scenario-79b2bbab5dc338848f16",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "indicator_id": "gic-indicator-2e7a8f93231487ce",
+        "indicator_definition_id": null,
+        "name": "Linear planning case",
+        "description": "",
+        "scenario_type": "projection",
+        "model_type": "linear",
+        "unit_id": "gic-unit-usd",
+        "start_period": "",
+        "end_period": "",
+        "periods": 3,
+        "base_value": 18.0,
+        "source_id": null,
+        "method_definition_id": null,
+        "target_model_id": null,
+        "lifecycle_status": "draft",
+        "revision": 1,
+        "created_at": "2026-07-17T22:11:10.955810+00:00",
+        "updated_at": "2026-07-17T22:11:10.955814+00:00",
+        "parameters": {
+          "period_change": 4.0
+        },
+        "assumptions": [],
+        "limitations": [],
+        "metadata": {}
+      }
+    ],
+    "uncertainty_models": [
+      {
+        "uncertainty_model_id": "gic-uncertainty-model-8161c85c5162324d87f4",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "name": "Planning range",
+        "uncertainty_type": "relative",
+        "confidence_level": 0.95,
+        "absolute_margin": null,
+        "relative_margin_percent": 10.0,
+        "lower_bound": null,
+        "upper_bound": null,
+        "distribution": "bounded",
+        "source_id": null,
+        "method_definition_id": null,
+        "lifecycle_status": "draft",
+        "revision": 1,
+        "created_at": "2026-07-17T22:11:10.955587+00:00",
+        "updated_at": "2026-07-17T22:11:10.955591+00:00",
+        "assumptions": [],
+        "limitations": [],
+        "metadata": {}
+      }
+    ],
+    "analysis_runs": [
+      {
+        "analysis_run_id": "gic-analysis-run-2e1c0a0c45617474cbfc",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "analysis_type": "scenario_evaluation",
+        "subject_id": "gic-scenario-79b2bbab5dc338848f16",
+        "input_hash": "37c44b90d39469dcbca4171bd747a650b787032d10cf94d456e4125318375fde",
+        "result_hash": "8f17ce5790b4c4fe7a5c902473688373227786a6121dd879ab08577cce94c7b3",
+        "created_by": "system",
+        "created_at": "2026-07-17T22:11:10.956065+00:00",
+        "result": {
+          "analysis_type": "scenario_evaluation",
+          "analysis_version": "1.7.0",
+          "assumptions": [],
+          "base_observation_id": null,
+          "base_value": 18.0,
+          "boundary": "Scenario output is a conditional planning calculation, not a forecast or causal estimate.",
+          "indicator_id": "gic-indicator-2e7a8f93231487ce",
+          "initiative_id": "gic-initiative-09a657f60923ed45",
+          "integrity": {
+            "point_count": 4,
+            "valid": true,
+            "warnings": []
+          },
+          "limitations": [],
+          "model_type": "linear",
+          "parameters": {
+            "period_change": 4.0
+          },
+          "points": [
+            {
+              "period_index": 0,
+              "uncertainty": {
+                "confidence_level": 0.95,
+                "distribution": "bounded",
+                "lower": 16.2,
+                "margin": 1.8,
+                "uncertainty_model_id": "gic-uncertainty-model-8161c85c5162324d87f4",
+                "uncertainty_type": "relative",
+                "upper": 19.8,
+                "value": 18.0
+              },
+              "unit_id": "gic-unit-usd",
+              "value": 18.0
+            },
+            {
+              "period_index": 1,
+              "uncertainty": {
+                "confidence_level": 0.95,
+                "distribution": "bounded",
+                "lower": 19.8,
+                "margin": 2.2,
+                "uncertainty_model_id": "gic-uncertainty-model-8161c85c5162324d87f4",
+                "uncertainty_type": "relative",
+                "upper": 24.2,
+                "value": 22.0
+              },
+              "unit_id": "gic-unit-usd",
+              "value": 22.0
+            },
+            {
+              "period_index": 2,
+              "uncertainty": {
+                "confidence_level": 0.95,
+                "distribution": "bounded",
+                "lower": 23.4,
+                "margin": 2.6,
+                "uncertainty_model_id": "gic-uncertainty-model-8161c85c5162324d87f4",
+                "uncertainty_type": "relative",
+                "upper": 28.6,
+                "value": 26.0
+              },
+              "unit_id": "gic-unit-usd",
+              "value": 26.0
+            },
+            {
+              "period_index": 3,
+              "uncertainty": {
+                "confidence_level": 0.95,
+                "distribution": "bounded",
+                "lower": 27.0,
+                "margin": 3.0,
+                "uncertainty_model_id": "gic-uncertainty-model-8161c85c5162324d87f4",
+                "uncertainty_type": "relative",
+                "upper": 33.0,
+                "value": 30.0
+              },
+              "unit_id": "gic-unit-usd",
+              "value": 30.0
+            }
+          ],
+          "scenario_id": "gic-scenario-79b2bbab5dc338848f16",
+          "uncertainty_model_id": "gic-uncertainty-model-8161c85c5162324d87f4",
+          "unit_id": "gic-unit-usd",
+          "workspace_id": "gic-workspace-bdc75d8b68333af2"
+        },
+        "metadata": {}
+      }
+    ],
+    "sensitivity_runs": [],
+    "integrity": {
+      "valid": true,
+      "benchmark_count": 1,
+      "comparison_set_count": 0,
+      "comparison_member_count": 0,
+      "scenario_count": 1,
+      "uncertainty_model_count": 1,
+      "analysis_run_count": 1,
+      "sensitivity_run_count": 0,
+      "orphan_comparison_member_ids": [],
+      "orphan_sensitivity_run_ids": []
+    },
+    "boundary": "Analysis records improve transparency but do not create assurance, certification, causality, or verified forecasts."
+  },
   "audit": [
     {
-      "audit_id": 31,
-      "occurred_at": "2026-07-17T20:41:01.523036+00:00",
-      "actor": "publisher@example.org",
-      "action": "publish",
-      "entity_type": "publication",
-      "entity_id": "gic-publication-162e31752452206fc6f2",
-      "workspace_id": "gic-workspace-bdc75d8b68333af2",
-      "initiative_id": "gic-initiative-09a657f60923ed45",
-      "revision": 2,
-      "details": {
-        "workflow_revision_id": "gic-workflow-revision-9abbd1a2fc23d0079ae8"
-      }
-    },
-    {
-      "audit_id": 30,
-      "occurred_at": "2026-07-17T20:41:01.521722+00:00",
-      "actor": "publisher@example.org",
-      "action": "create_publication",
-      "entity_type": "publication",
-      "entity_id": "gic-publication-162e31752452206fc6f2",
-      "workspace_id": "gic-workspace-bdc75d8b68333af2",
-      "initiative_id": "gic-initiative-09a657f60923ed45",
-      "revision": 1,
-      "details": {
-        "subject_id": "gic-record-3bb3e632355d26c9",
-        "subject_type": "contract"
-      }
-    },
-    {
-      "audit_id": 29,
-      "occurred_at": "2026-07-17T20:41:01.521167+00:00",
-      "actor": "reviewer@example.org",
-      "action": "record_approval_decision",
-      "entity_type": "approval_decision",
-      "entity_id": "gic-approval-decision-fed2c8c8def5fa45a1bb",
-      "workspace_id": "gic-workspace-bdc75d8b68333af2",
-      "initiative_id": "gic-initiative-09a657f60923ed45",
-      "revision": 1,
-      "details": {
-        "assignment_id": "gic-review-assignment-9df1f7f7011b0ccc9b9b",
-        "decision": "approve"
-      }
-    },
-    {
       "audit_id": 28,
-      "occurred_at": "2026-07-17T20:41:01.520671+00:00",
-      "actor": "reviewer@example.org",
-      "action": "submit_quality_assessment",
-      "entity_type": "quality_assessment",
-      "entity_id": "gic-quality-assessment-e7b4c0dab3724974ec17",
+      "occurred_at": "2026-07-17T22:11:10.956170+00:00",
+      "actor": "system",
+      "action": "record_analysis_run",
+      "entity_type": "analysis_run",
+      "entity_id": "gic-analysis-run-2e1c0a0c45617474cbfc",
       "workspace_id": "gic-workspace-bdc75d8b68333af2",
       "initiative_id": "gic-initiative-09a657f60923ed45",
-      "revision": 1,
+      "revision": null,
       "details": {
-        "grade": "strong",
-        "score": 85.0,
-        "subject_id": "gic-record-3bb3e632355d26c9",
-        "subject_type": "contract"
+        "analysis_type": "scenario_evaluation",
+        "result_hash": "8f17ce5790b4c4fe7a5c902473688373227786a6121dd879ab08577cce94c7b3",
+        "subject_id": "gic-scenario-79b2bbab5dc338848f16"
       }
     },
     {
       "audit_id": 27,
-      "occurred_at": "2026-07-17T20:41:01.520400+00:00",
-      "actor": "example-owner",
-      "action": "resolve_review_comment",
-      "entity_type": "review_comment",
-      "entity_id": "gic-review-comment-f5f014db83ed296c30c8",
+      "occurred_at": "2026-07-17T22:11:10.955894+00:00",
+      "actor": "system",
+      "action": "register_scenario",
+      "entity_type": "analysis_scenario",
+      "entity_id": "gic-scenario-79b2bbab5dc338848f16",
       "workspace_id": "gic-workspace-bdc75d8b68333af2",
       "initiative_id": "gic-initiative-09a657f60923ed45",
-      "revision": 2,
-      "details": {
-        "resolution_status": "resolved"
-      }
+      "revision": 1,
+      "details": {}
     },
     {
       "audit_id": 26,
-      "occurred_at": "2026-07-17T20:41:01.520214+00:00",
+      "occurred_at": "2026-07-17T22:11:10.955684+00:00",
       "actor": "system",
-      "action": "add_review_comment",
-      "entity_type": "review_comment",
-      "entity_id": "gic-review-comment-f5f014db83ed296c30c8",
+      "action": "register_uncertainty_model",
+      "entity_type": "analysis_uncertainty_model",
+      "entity_id": "gic-uncertainty-model-8161c85c5162324d87f4",
       "workspace_id": "gic-workspace-bdc75d8b68333af2",
-      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "initiative_id": null,
       "revision": 1,
-      "details": {
-        "assignment_id": "gic-review-assignment-9df1f7f7011b0ccc9b9b"
-      }
+      "details": {}
     },
     {
       "audit_id": 25,
-      "occurred_at": "2026-07-17T20:41:01.519774+00:00",
-      "actor": "example-owner",
-      "action": "create_review_assignment",
-      "entity_type": "review_assignment",
-      "entity_id": "gic-review-assignment-9df1f7f7011b0ccc9b9b",
+      "occurred_at": "2026-07-17T22:11:10.955494+00:00",
+      "actor": "system",
+      "action": "register_benchmark",
+      "entity_type": "analysis_benchmark",
+      "entity_id": "gic-benchmark-c4e83da3c63f2033f5f4",
       "workspace_id": "gic-workspace-bdc75d8b68333af2",
-      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "initiative_id": null,
       "revision": 1,
       "details": {
-        "reviewer_id": "reviewer@example.org",
-        "subject_id": "gic-record-3bb3e632355d26c9",
-        "subject_type": "contract"
+        "indicator_id": "gic-indicator-2e7a8f93231487ce"
       }
     },
     {
       "audit_id": 24,
-      "occurred_at": "2026-07-17T20:41:01.519038+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.954887+00:00",
+      "actor": "system",
       "action": "create",
       "entity_type": "contract",
       "entity_id": "gic-record-3bb3e632355d26c9",
@@ -2148,8 +2143,8 @@
     },
     {
       "audit_id": 23,
-      "occurred_at": "2026-07-17T20:41:01.518490+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.954412+00:00",
+      "actor": "system",
       "action": "record_workflow_revision",
       "entity_type": "workflow_revision",
       "entity_id": "gic-workflow-revision-9abbd1a2fc23d0079ae8",
@@ -2164,8 +2159,8 @@
     },
     {
       "audit_id": 22,
-      "occurred_at": "2026-07-17T20:41:01.517837+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.954062+00:00",
+      "actor": "system",
       "action": "create_workflow_role",
       "entity_type": "workflow_role",
       "entity_id": "gic-role-63d359484d229519d7f8",
@@ -2176,8 +2171,8 @@
     },
     {
       "audit_id": 21,
-      "occurred_at": "2026-07-17T20:41:01.517772+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.954029+00:00",
+      "actor": "system",
       "action": "create_workflow_role",
       "entity_type": "workflow_role",
       "entity_id": "gic-role-39e14befc53a99182b21",
@@ -2188,8 +2183,8 @@
     },
     {
       "audit_id": 20,
-      "occurred_at": "2026-07-17T20:41:01.517704+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.953979+00:00",
+      "actor": "system",
       "action": "create_workflow_role",
       "entity_type": "workflow_role",
       "entity_id": "gic-role-8472c44676e4c92c3ac0",
@@ -2200,8 +2195,8 @@
     },
     {
       "audit_id": 19,
-      "occurred_at": "2026-07-17T20:41:01.517612+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.953925+00:00",
+      "actor": "system",
       "action": "create_workflow_role",
       "entity_type": "workflow_role",
       "entity_id": "gic-role-6955e55a91af6bf53505",
@@ -2212,8 +2207,8 @@
     },
     {
       "audit_id": 18,
-      "occurred_at": "2026-07-17T20:41:01.517481+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.953859+00:00",
+      "actor": "system",
       "action": "create_workflow_role",
       "entity_type": "workflow_role",
       "entity_id": "gic-role-1d6536354ae71f2d459d",
@@ -2224,8 +2219,8 @@
     },
     {
       "audit_id": 17,
-      "occurred_at": "2026-07-17T20:41:01.517068+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.953605+00:00",
+      "actor": "system",
       "action": "record_financial_record",
       "entity_type": "financial_record",
       "entity_id": "gic-budget-record-1e5347eb6026c816",
@@ -2239,8 +2234,8 @@
     },
     {
       "audit_id": 16,
-      "occurred_at": "2026-07-17T20:41:01.516536+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.953247+00:00",
+      "actor": "system",
       "action": "record_beneficiary_observation",
       "entity_type": "beneficiary_observation",
       "entity_id": "gic-beneficiary-observation-da81d3c84de7da4b324e",
@@ -2254,8 +2249,8 @@
     },
     {
       "audit_id": 15,
-      "occurred_at": "2026-07-17T20:41:01.516187+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.952983+00:00",
+      "actor": "system",
       "action": "register_beneficiary_definition",
       "entity_type": "beneficiary_definition",
       "entity_id": "gic-population-group-93f2cf0dceae00d2",
@@ -2266,8 +2261,8 @@
     },
     {
       "audit_id": 14,
-      "occurred_at": "2026-07-17T20:41:01.515837+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.952759+00:00",
+      "actor": "system",
       "action": "record_observation",
       "entity_type": "observation_record",
       "entity_id": "gic-observation-cca59978f04bb0dd",
@@ -2281,8 +2276,8 @@
     },
     {
       "audit_id": 13,
-      "occurred_at": "2026-07-17T20:41:01.515088+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.952315+00:00",
+      "actor": "system",
       "action": "create_impact_result",
       "entity_type": "impact_result",
       "entity_id": "gic-outcome-5dfda192c94fd5fb",
@@ -2293,8 +2288,8 @@
     },
     {
       "audit_id": 12,
-      "occurred_at": "2026-07-17T20:41:01.514741+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.952144+00:00",
+      "actor": "system",
       "action": "bind_indicator_registry",
       "entity_type": "indicator",
       "entity_id": "gic-indicator-2e7a8f93231487ce",
@@ -2307,8 +2302,8 @@
     },
     {
       "audit_id": 11,
-      "occurred_at": "2026-07-17T20:41:01.513855+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.951632+00:00",
+      "actor": "system",
       "action": "create_method_definition",
       "entity_type": "method_definition",
       "entity_id": "gic-method-dfc0b951aac86076",
@@ -2322,8 +2317,8 @@
     },
     {
       "audit_id": 10,
-      "occurred_at": "2026-07-17T20:41:01.512908+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.951097+00:00",
+      "actor": "system",
       "action": "create_target_model",
       "entity_type": "target_model",
       "entity_id": "gic-target-model-9c6e0716c2085cf79608",
@@ -2337,8 +2332,8 @@
     },
     {
       "audit_id": 9,
-      "occurred_at": "2026-07-17T20:41:01.512178+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.950665+00:00",
+      "actor": "system",
       "action": "create_baseline_model",
       "entity_type": "baseline_model",
       "entity_id": "gic-baseline-model-9c6e0716c2085cf79608",
@@ -2352,8 +2347,8 @@
     },
     {
       "audit_id": 8,
-      "occurred_at": "2026-07-17T20:41:01.511538+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.950319+00:00",
+      "actor": "system",
       "action": "create_indicator_definition",
       "entity_type": "indicator_definition",
       "entity_id": "gic-indicator-definition-9746d98980e468bc1b83",
@@ -2367,8 +2362,8 @@
     },
     {
       "audit_id": 7,
-      "occurred_at": "2026-07-17T20:41:01.509400+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.949152+00:00",
+      "actor": "system",
       "action": "create",
       "entity_type": "source",
       "entity_id": "gic-source-f2284ef9ae098b56",
@@ -2379,8 +2374,8 @@
     },
     {
       "audit_id": 6,
-      "occurred_at": "2026-07-17T20:41:01.509341+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.949112+00:00",
+      "actor": "system",
       "action": "create",
       "entity_type": "observation",
       "entity_id": "gic-observation-cca59978f04bb0dd",
@@ -2391,8 +2386,8 @@
     },
     {
       "audit_id": 5,
-      "occurred_at": "2026-07-17T20:41:01.509274+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.949078+00:00",
+      "actor": "system",
       "action": "create",
       "entity_type": "target",
       "entity_id": "gic-target-61bc37e9887a3252",
@@ -2403,8 +2398,8 @@
     },
     {
       "audit_id": 4,
-      "occurred_at": "2026-07-17T20:41:01.509203+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.949041+00:00",
+      "actor": "system",
       "action": "create",
       "entity_type": "indicator",
       "entity_id": "gic-indicator-2e7a8f93231487ce",
@@ -2415,8 +2410,8 @@
     },
     {
       "audit_id": 3,
-      "occurred_at": "2026-07-17T20:41:01.509134+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.949003+00:00",
+      "actor": "system",
       "action": "create",
       "entity_type": "goal",
       "entity_id": "gic-goal-ece2bacb67a2be38",
@@ -2427,8 +2422,8 @@
     },
     {
       "audit_id": 2,
-      "occurred_at": "2026-07-17T20:41:01.509059+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.948963+00:00",
+      "actor": "system",
       "action": "create",
       "entity_type": "initiative",
       "entity_id": "gic-initiative-09a657f60923ed45",
@@ -2439,8 +2434,8 @@
     },
     {
       "audit_id": 1,
-      "occurred_at": "2026-07-17T20:41:01.508868+00:00",
-      "actor": "example-owner",
+      "occurred_at": "2026-07-17T22:11:10.948865+00:00",
+      "actor": "system",
       "action": "create",
       "entity_type": "workspace",
       "entity_id": "gic-workspace-bdc75d8b68333af2",

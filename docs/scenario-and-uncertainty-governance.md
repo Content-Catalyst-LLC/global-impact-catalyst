@@ -1,0 +1,3 @@
+# Scenario and Uncertainty Governance
+
+A scenario is a transparent conditional calculation defined by an indicator, base value or governed base observation, unit, number of periods, model type, parameters, assumptions, limitations, optional target binding, and lifecycle state. Supported models are constant, linear, compound, and step. Floors and ceilings are explicit parameters. Uncertainty records support absolute margins, relative margins, explicit bounds, or root-sum-square combined margins. Confidence and distribution labels describe the declared model and do not imply statistical validation. Sensitivity results rank mathematical responsiveness inside the scenario only. Every persisted run carries input and result hashes.

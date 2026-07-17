@@ -74,4 +74,9 @@ preg_match_all('/\sfor="([^"]+)"/', $review, $review_labels);
 foreach ($review_labels[1] as $target) {
     if (!in_array($target, $review_ids[1], true)) { fwrite(STDERR, "Review label target is missing: {$target}\n"); exit(1); }
 }
-echo "WordPress v1.6.0 workspace, evidence ledger, indicator registry, measurement portfolio, review workflow, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";
+
+$analysis = gic_analysis_studio_shortcode();
+foreach (array('data-gic-analysis-studio','data-gic-analysis-load','data-gic-analysis-trend','data-gic-analysis-benchmark','data-gic-analysis-uncertainty','data-gic-analysis-scenario','data-gic-analysis-results') as $needle) {
+    if (strpos($analysis, $needle) === false) { fwrite(STDERR, "Analysis Studio control missing: {$needle}\n"); exit(1); }
+}
+echo "WordPress v1.7.0 workspace, evidence ledger, indicator registry, measurement portfolio, review workflow, analysis studio, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";

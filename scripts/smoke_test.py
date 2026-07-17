@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.6.0."""
+"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.7.0."""
 from __future__ import annotations
 
 import json
@@ -40,6 +40,7 @@ def main() -> int:
             "global-impact-catalyst-demo.js", "global-impact-catalyst-workspace.js",
             "global-impact-catalyst-evidence.js", "global-impact-catalyst-registry.js",
             "global-impact-catalyst-measurement.js", "global-impact-catalyst-review.js",
+            "global-impact-catalyst-analysis.js",
         ):
             run("node", "--check", f"wordpress/global-impact-catalyst-demo/assets/{asset}")
     else:
@@ -55,7 +56,7 @@ def main() -> int:
     from python.global_impact_service import ImpactApplicationService
 
     payload = json.loads((ROOT / "data/sample_global_impact_input.json").read_text(encoding="utf-8"))
-    with tempfile.TemporaryDirectory(prefix="gic-v160-") as temp:
+    with tempfile.TemporaryDirectory(prefix="gic-v170-") as temp:
         directory = Path(temp)
         database = directory / "impact.sqlite3"
         restored_database = directory / "restored.sqlite3"
@@ -73,7 +74,7 @@ def main() -> int:
             initiative_id = created["repository"]["initiative_id"]
             indicator_id = contract["facts"]["indicator"]["id"]
             summary = repository.repository_summary()
-            assert summary["database_schema_version"] == 7
+            assert summary["database_schema_version"] == 8
             assert summary["contracts"] == 1
             assert summary["sources"] == 1
             assert summary["units"] >= 18
@@ -215,9 +216,29 @@ def main() -> int:
             assert workflow["integrity"]["publication_count"] == 1
             validate(workflow, "global_impact_review_workflow.schema.json")
 
+
+            trend = service.analyze_trend(initiative_id, indicator_id, missing_policy="warn", persist=True, actor="release-smoke")
+            assert trend["statistics"]["absolute_change"] == 4.0
+            benchmark = service.register_benchmark({"name":"Q3 peer median","indicator_id":indicator_id,"value":20,"unit_id":"USD","period_label":"2026 Q3","geography":"Chicago"}, workspace_id=workspace_id, actor="release-smoke")
+            comparison = service.compare_to_benchmark(initiative_id, indicator_id, benchmark["benchmark_id"], period_policy="same_label", observation_geography="Chicago", direction="higher_is_better", persist=True, actor="release-smoke")
+            assert comparison["integrity"]["valid"] and comparison["comparison"]["difference"] == 2.0
+            uncertainty = service.register_uncertainty_model({"name":"Ten percent planning range","uncertainty_type":"relative","relative_margin_percent":10}, workspace_id=workspace_id, actor="release-smoke")
+            assert repository.apply_uncertainty(uncertainty["uncertainty_model_id"],100)["lower"] == 90
+            scenario = service.register_scenario({"name":"Linear planning case","indicator_id":indicator_id,"model_type":"linear","periods":3,"unit_id":"USD","parameters":{"period_change":4},"assumptions":["Observed Q3 value is the base"]}, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            scenario_result = service.evaluate_scenario(scenario["scenario_id"], uncertainty_model_id=uncertainty["uncertainty_model_id"], actor="release-smoke")
+            assert [point["value"] for point in scenario_result["points"]] == [22.0,26.0,30.0,34.0]
+            sensitivity = service.run_sensitivity_analysis(scenario["scenario_id"], {"period_change":[2,6]}, actor="release-smoke")
+            assert sensitivity["integrity"]["parameter_count"] == 1
+            binding = repository.connection.execute("SELECT target_model_id FROM indicator_registry_bindings WHERE initiative_id=? AND indicator_id=?",(initiative_id,indicator_id)).fetchone()
+            target_path = service.compare_observations_to_target(initiative_id, indicator_id, binding["target_model_id"], persist=True, actor="release-smoke")
+            assert target_path["integrity"]["valid"]
+            analysis_repository = service.analysis_repository(workspace_id)
+            assert analysis_repository["repository_version"] == "1.7.0" and analysis_repository["integrity"]["valid"]
+            validate(analysis_repository, "global_impact_analysis_repository.schema.json")
+
             bundle = repository.export_workspace_bundle(workspace_id)
-            assert bundle["bundle_version"] == "1.6.0"
-            assert bundle["database_schema_version"] == 7
+            assert bundle["bundle_version"] == "1.7.0"
+            assert bundle["database_schema_version"] == 8
             validate(bundle, "global_impact_workspace_bundle.schema.json")
             repository.backup_database(backup)
 
@@ -232,8 +253,10 @@ def main() -> int:
             restored_workflow = restored.export_review_workflow(workspace_id)
             assert restored_workflow["integrity"] == workflow["integrity"]
             assert restored_workflow["publications"][0]["publication_status"] == "published"
+            restored_analysis = restored.export_analysis_repository(workspace_id)
+            assert restored_analysis["integrity"] == analysis_repository["integrity"]
 
-    print("Global Impact Catalyst v1.6.0 portable release smoke tests passed.")
+    print("Global Impact Catalyst v1.7.0 portable release smoke tests passed.")
     return 0
 
 

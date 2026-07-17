@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.7.0/global_impact_analysis_repository.schema.json",
+  "title": "Global Impact Catalyst Analysis Repository",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "repository_type",
+    "repository_version",
+    "workspace_id",
+    "generated_at",
+    "benchmarks",
+    "comparison_sets",
+    "scenarios",
+    "uncertainty_models",
+    "analysis_runs",
+    "sensitivity_runs",
+    "integrity",
+    "boundary"
+  ],
+  "properties": {
+    "repository_type": {
+      "const": "global_impact_analysis_repository"
+    },
+    "repository_version": {
+      "const": "1.7.0"
+    },
+    "workspace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "benchmarks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/benchmark"
+      }
+    },
+    "comparison_sets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/comparisonSet"
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scenario"
+      }
+    },
+    "uncertainty_models": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/uncertainty"
+      }
+    },
+    "analysis_runs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/run"
+      }
+    },
+    "sensitivity_runs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sensitivity"
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "valid",
+        "benchmark_count",
+        "comparison_set_count",
+        "scenario_count",
+        "uncertainty_model_count",
+        "analysis_run_count",
+        "sensitivity_run_count",
+        "orphan_comparison_member_ids",
+        "orphan_sensitivity_run_ids"
+      ],
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "benchmark_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "comparison_set_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "comparison_member_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scenario_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uncertainty_model_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "analysis_run_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sensitivity_run_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "orphan_comparison_member_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "orphan_sensitivity_run_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "record": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "benchmark": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/record"
+        }
+      ],
+      "required": [
+        "benchmark_id",
+        "workspace_id",
+        "indicator_id",
+        "name",
+        "value",
+        "unit_id",
+        "revision"
+      ]
+    },
+    "comparisonSet": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/record"
+        }
+      ],
+      "required": [
+        "comparison_set_id",
+        "workspace_id",
+        "name",
+        "members",
+        "revision"
+      ]
+    },
+    "scenario": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/record"
+        }
+      ],
+      "required": [
+        "scenario_id",
+        "workspace_id",
+        "initiative_id",
+        "indicator_id",
+        "name",
+        "model_type",
+        "periods",
+        "unit_id",
+        "revision"
+      ]
+    },
+    "uncertainty": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/record"
+        }
+      ],
+      "required": [
+        "uncertainty_model_id",
+        "workspace_id",
+        "name",
+        "uncertainty_type",
+        "revision"
+      ]
+    },
+    "run": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/record"
+        }
+      ],
+      "required": [
+        "analysis_run_id",
+        "workspace_id",
+        "analysis_type",
+        "subject_id",
+        "input_hash",
+        "result_hash",
+        "result"
+      ]
+    },
+    "sensitivity": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/record"
+        }
+      ],
+      "required": [
+        "sensitivity_run_id",
+        "scenario_id",
+        "workspace_id",
+        "initiative_id",
+        "parameter_name",
+        "rank_order"
+      ]
+    }
+  },
+  "x-global-impact-catalyst-version": "1.7.0"
+}

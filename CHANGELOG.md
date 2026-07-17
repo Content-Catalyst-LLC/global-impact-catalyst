@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.0 — Trends, Comparisons, Scenarios, and Uncertainty
+
+- Added SQLite migration 8 and the v1.7.0 analysis repository.
+- Added governed trends, benchmarks, comparison sets, scenarios, uncertainty intervals, target gaps, sensitivity analysis, and persisted run hashes.
+- Added analysis schemas, examples, CLI commands, WordPress Analysis Studio, documentation, tests, and release gates.
+- Preserved canonical contract v1.1.0 and review workflow v1.6.0.
+
+
 ## 1.6.0 — Review, Quality, and Revision Workflow
 
 - Added governed reviewer roles, assignments, comments, quality assessments, approval decisions, corrections, publication controls, withdrawal, and immutable revision history.

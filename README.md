@@ -4,7 +4,7 @@ Global Impact Catalyst is open public-interest infrastructure for defining, vali
 
 The system is not an ESG assurance platform, certification tool, audit substitute, causal-proof engine, regulatory filing system, or automatic truth system.
 
-## v1.6.0 governance workflow — Review, Quality, and Revision Workflow
+## v1.7.0 governance workflow — Review, Quality, and Revision Workflow
 
 v1.6.0 adds governed review and publication operations around the existing contract, evidence, registry, and measurement layers:
 
@@ -176,3 +176,7 @@ Global Impact Catalyst improves structure, persistence, integrity signals, repro
 ## License
 
 See `LICENSE`.
+
+## v1.7.0 analytical repository
+
+The analysis layer adds governed time-series trends, benchmarks, comparison sets, scenario models, target-trajectory gaps, uncertainty intervals, sensitivity analysis, and persisted analytical runs. Use `python scripts/gic_repository.py --help` for the new commands or embed `[global_impact_catalyst_analysis_studio]` for the authenticated WordPress surface. Existing calculations remain governed by canonical contract v1.1.0.

@@ -1,6 +1,6 @@
 # Global Impact Catalyst WordPress Plugin
 
-Version 1.6.0 provides six shortcodes:
+Version 1.7.0 provides six shortcodes:
 
 ```text
 [global_impact_catalyst_demo]
@@ -18,3 +18,7 @@ The review workflow adds governed roles, scoped assignments, threaded comments, 
 Activation or plugin-version upgrade creates prefixed contract, audit, evidence, registry, observation, beneficiary, financial, result, relationship, portfolio, review, correction, publication, and publication-event tables. REST routes use the `global-impact-catalyst/v1` namespace, WordPress REST nonces, capability checks, sanitization, and repository integrity rules.
 
 The package and plugin are v1.6.0. The embedded canonical contract engine remains v1.1.0, evidence formats remain v1.3.0, the indicator registry remains v1.4.0, and the measurement layer remains v1.5.0 to preserve compatibility.
+
+## Analysis Studio
+
+Use `[global_impact_catalyst_analysis_studio]` for authenticated benchmarks, trends, comparison sets, scenarios, uncertainty, and sensitivity records.

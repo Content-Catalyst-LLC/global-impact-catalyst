@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line workspace, evidence, indicator-registry, and program-measurement and review-workflow operations for v1.6.0."""
+"""Command-line workspace, evidence, indicator-registry, and program-measurement, review-workflow, and analysis operations for v1.7.0."""
 from __future__ import annotations
 import argparse,json,sys
 from pathlib import Path
@@ -14,7 +14,7 @@ def read_json(path:str): return json.loads(Path(path).read_text(encoding='utf-8'
 def emit(value): print(json.dumps(value,indent=2,ensure_ascii=False,default=lambda o:o.__dict__))
 
 def main()->int:
-    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, indicator-registry, and program-measurement and review-workflow CLI')
+    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, indicator-registry, and program-measurement, review-workflow, and analysis CLI')
     parser.add_argument('--database',default='outputs/global-impact-catalyst.sqlite3')
     sub=parser.add_subparsers(dest='command',required=True)
     sub.add_parser('init')
@@ -71,6 +71,19 @@ def main()->int:
     publication=sub.add_parser('create-publication'); publication.add_argument('--workspace-id',required=True); publication.add_argument('--initiative-id',required=True); publication.add_argument('--input',required=True)
     publish=sub.add_parser('publish'); publish.add_argument('--publication-id',required=True); publish.add_argument('--quality-threshold',type=float,default=60.0)
     withdraw=sub.add_parser('withdraw-publication'); withdraw.add_argument('--publication-id',required=True); withdraw.add_argument('--reason',required=True)
+    trend=sub.add_parser('trend'); trend.add_argument('--initiative-id',required=True); trend.add_argument('--indicator-id',required=True); trend.add_argument('--target-unit-id'); trend.add_argument('--include-partial',action='store_true'); trend.add_argument('--missing-policy',choices=['block','exclude','warn'],default='exclude'); trend.add_argument('--persist',action='store_true')
+    add_benchmark=sub.add_parser('add-benchmark'); add_benchmark.add_argument('--input',required=True); add_benchmark.add_argument('--workspace-id',required=True); add_benchmark.add_argument('--expected-revision',type=int)
+    compare_benchmark=sub.add_parser('compare-benchmark'); compare_benchmark.add_argument('--initiative-id',required=True); compare_benchmark.add_argument('--indicator-id',required=True); compare_benchmark.add_argument('--benchmark-id',required=True); compare_benchmark.add_argument('--observation-id'); compare_benchmark.add_argument('--period-policy',choices=['exact','overlap','same_label','ignore'],default='overlap'); compare_benchmark.add_argument('--geography-policy',choices=['exact','warn','ignore'],default='warn'); compare_benchmark.add_argument('--population-policy',choices=['exact','warn','ignore'],default='warn'); compare_benchmark.add_argument('--direction',choices=['higher_is_better','lower_is_better','neutral'],default='neutral'); compare_benchmark.add_argument('--persist',action='store_true')
+    add_comparison_set=sub.add_parser('add-comparison-set'); add_comparison_set.add_argument('--input',required=True); add_comparison_set.add_argument('--workspace-id',required=True); add_comparison_set.add_argument('--expected-revision',type=int)
+    add_comparison_member=sub.add_parser('add-comparison-member'); add_comparison_member.add_argument('--comparison-set-id',required=True); add_comparison_member.add_argument('--input',required=True)
+    run_comparison_set=sub.add_parser('run-comparison-set'); run_comparison_set.add_argument('--comparison-set-id',required=True); run_comparison_set.add_argument('--persist',action='store_true')
+    add_uncertainty=sub.add_parser('add-uncertainty'); add_uncertainty.add_argument('--input',required=True); add_uncertainty.add_argument('--workspace-id',required=True); add_uncertainty.add_argument('--expected-revision',type=int)
+    apply_uncertainty=sub.add_parser('apply-uncertainty'); apply_uncertainty.add_argument('--uncertainty-model-id',required=True); apply_uncertainty.add_argument('--value',required=True,type=float)
+    add_scenario=sub.add_parser('add-scenario'); add_scenario.add_argument('--input',required=True); add_scenario.add_argument('--workspace-id',required=True); add_scenario.add_argument('--initiative-id',required=True); add_scenario.add_argument('--expected-revision',type=int)
+    evaluate_scenario=sub.add_parser('evaluate-scenario'); evaluate_scenario.add_argument('--scenario-id',required=True); evaluate_scenario.add_argument('--uncertainty-model-id'); evaluate_scenario.add_argument('--overrides'); evaluate_scenario.add_argument('--no-persist',action='store_true')
+    sensitivity=sub.add_parser('sensitivity'); sensitivity.add_argument('--scenario-id',required=True); sensitivity.add_argument('--ranges',required=True)
+    target_trajectory=sub.add_parser('target-trajectory'); target_trajectory.add_argument('--initiative-id',required=True); target_trajectory.add_argument('--indicator-id',required=True); target_trajectory.add_argument('--target-model-id',required=True); target_trajectory.add_argument('--persist',action='store_true')
+    analysis_repository=sub.add_parser('analysis-repository'); analysis_repository.add_argument('--workspace-id',required=True); analysis_repository.add_argument('--output')
     sub.add_parser('summary')
     args=parser.parse_args()
     with SQLiteImpactRepository(args.database) as repository:
@@ -133,6 +146,19 @@ def main()->int:
         elif args.command=='create-publication': emit(service.create_publication(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,actor='cli'))
         elif args.command=='publish': emit(service.publish(args.publication_id,actor='cli',quality_threshold=args.quality_threshold))
         elif args.command=='withdraw-publication': emit(service.withdraw_publication(args.publication_id,reason=args.reason,actor='cli'))
+        elif args.command=='trend': emit(service.analyze_trend(args.initiative_id,args.indicator_id,target_unit_id=args.target_unit_id,include_partial=args.include_partial,missing_policy=args.missing_policy,actor='cli',persist=args.persist))
+        elif args.command=='add-benchmark': emit(service.register_benchmark(read_json(args.input),workspace_id=args.workspace_id,expected_revision=args.expected_revision,actor='cli'))
+        elif args.command=='compare-benchmark': emit(service.compare_to_benchmark(args.initiative_id,args.indicator_id,args.benchmark_id,observation_id=args.observation_id,period_policy=args.period_policy,geography_policy=args.geography_policy,population_policy=args.population_policy,direction=args.direction,actor='cli',persist=args.persist))
+        elif args.command=='add-comparison-set': emit(service.create_comparison_set(read_json(args.input),workspace_id=args.workspace_id,expected_revision=args.expected_revision,actor='cli'))
+        elif args.command=='add-comparison-member': emit(service.add_comparison_member(args.comparison_set_id,read_json(args.input),actor='cli'))
+        elif args.command=='run-comparison-set': emit(service.run_comparison_set(args.comparison_set_id,actor='cli',persist=args.persist))
+        elif args.command=='add-uncertainty': emit(service.register_uncertainty_model(read_json(args.input),workspace_id=args.workspace_id,expected_revision=args.expected_revision,actor='cli'))
+        elif args.command=='apply-uncertainty': emit(repository.apply_uncertainty(args.uncertainty_model_id,args.value))
+        elif args.command=='add-scenario': emit(service.register_scenario(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,expected_revision=args.expected_revision,actor='cli'))
+        elif args.command=='evaluate-scenario': emit(service.evaluate_scenario(args.scenario_id,parameter_overrides=read_json(args.overrides) if args.overrides else None,uncertainty_model_id=args.uncertainty_model_id,actor='cli',persist=not args.no_persist))
+        elif args.command=='sensitivity': emit(service.run_sensitivity_analysis(args.scenario_id,read_json(args.ranges),actor='cli'))
+        elif args.command=='target-trajectory': emit(service.compare_observations_to_target(args.initiative_id,args.indicator_id,args.target_model_id,actor='cli',persist=args.persist))
+        elif args.command=='analysis-repository': emit(service.analysis_repository(args.workspace_id,args.output))
         elif args.command=='summary': emit(repository.repository_summary())
     return 0
 if __name__=='__main__': raise SystemExit(main())

@@ -11,16 +11,19 @@ MEASUREMENT_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact
 MEASUREMENT_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-measurement.css').read_text()
 REVIEW_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-review.js').read_text()
 REVIEW_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-review.css').read_text()
+ANALYSIS_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-analysis.js').read_text()
+ANALYSIS_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-analysis.css').read_text()
 
 def test_plugin_version_shortcodes_and_instance_ids():
-    assert '* Version: 1.6.0' in PHP
-    assert "define('GIC_DEMO_VERSION', '1.6.0')" in PHP
+    assert '* Version: 1.7.0' in PHP
+    assert "define('GIC_DEMO_VERSION', '1.7.0')" in PHP
     assert "add_shortcode('global_impact_catalyst_demo'" in PHP
     assert "add_shortcode('global_impact_catalyst_workspace'" in PHP
     assert "add_shortcode('global_impact_catalyst_evidence_ledger'" in PHP
     assert "add_shortcode('global_impact_catalyst_indicator_registry'" in PHP
     assert "add_shortcode('global_impact_catalyst_measurement_portfolio'" in PHP
     assert "add_shortcode('global_impact_catalyst_review_workflow'" in PHP
+    assert "add_shortcode('global_impact_catalyst_analysis_studio'" in PHP
     assert 'static $instance = 0' in PHP and '$id_prefix' in PHP
 
 def test_plugin_exposes_contract_and_claim_fields():
@@ -109,3 +112,19 @@ def test_review_workflow_client_and_styles_support_governed_review():
     for operation in ['review-workflow?workspace_id=','review-assignments','quality-assessments','data-gic-review-count']:
         assert operation in REVIEW_JS or operation in PHP
     assert '.gic-review__grid' in REVIEW_CSS and '@media' in REVIEW_CSS
+
+
+def test_analysis_tables_routes_and_shortcode_are_present():
+    for table in ['analysis_benchmarks','analysis_comparison_sets','analysis_comparison_members','analysis_scenarios','analysis_uncertainty_models','analysis_runs','analysis_sensitivity_runs']:
+        assert f"gic_repository_table('{table}')" in PHP
+    for behavior in ['gic_analysis_repository','gic_analysis_benchmark_rest','gic_analysis_uncertainty_rest','gic_analysis_scenario_rest','gic_analysis_trend_rest','gic_analysis_comparison_set_rest','gic_analysis_sensitivity_rest']:
+        assert f'function {behavior}' in PHP
+    for route in ['/analysis-repository','/analysis-benchmarks','/analysis-uncertainty-models','/analysis-scenarios','/analysis-trends','/analysis-comparison-sets','/analysis-sensitivity']:
+        assert route in PHP
+    for control in ['data-gic-analysis-studio','data-gic-analysis-load','data-gic-analysis-trend','data-gic-analysis-benchmark','data-gic-analysis-uncertainty','data-gic-analysis-scenario','data-gic-analysis-results']:
+        assert control in PHP
+
+def test_analysis_client_and_styles_support_analytical_operations():
+    for operation in ['analysis-repository?workspace_id=','analysis-trends','analysis-benchmarks','analysis-uncertainty-models','analysis-scenarios']:
+        assert operation in ANALYSIS_JS or operation in PHP
+    assert '.gic-analysis__grid' in ANALYSIS_CSS and '@media' in ANALYSIS_CSS

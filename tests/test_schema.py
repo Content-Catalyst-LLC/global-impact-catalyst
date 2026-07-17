@@ -16,11 +16,14 @@ def test_canonical_schemas_remain_v110_and_repository_schemas_are_versioned():
     assert schema['x-global-impact-catalyst-version']=='1.4.0'
     assert '/1.4.0/' in schema['$id']
     schema=load('global_impact_workspace_bundle.schema.json')
-    assert schema['x-global-impact-catalyst-version']=='1.6.0'
-    assert '/1.6.0/' in schema['$id']
+    assert schema['x-global-impact-catalyst-version']=='1.7.0'
+    assert '/1.7.0/' in schema['$id']
     schema=load('global_impact_review_workflow.schema.json')
     assert schema['x-global-impact-catalyst-version']=='1.6.0'
     assert '/1.6.0/' in schema['$id']
+    analysis=load('global_impact_analysis_repository.schema.json')
+    assert analysis['x-global-impact-catalyst-version']=='1.7.0'
+    assert '/1.7.0/' in analysis['$id']
     for name in ['global_impact_measurement_repository.schema.json','global_impact_outcome_portfolio_aggregation.schema.json','global_impact_beneficiary_summary.schema.json']:
         schema=load(name)
         assert schema['x-global-impact-catalyst-version']=='1.5.0'
@@ -61,3 +64,4 @@ def test_contract_schema_rejects_unknown_fields():
     fixture=json.loads(next((ROOT/'contracts/fixtures').glob('*.json')).read_text())['expected']
     fixture['unexpected']=True
     assert list(validator('global_impact_contract.schema.json').iter_errors(fixture))
+
