@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.3.0/global_impact_workspace_bundle.schema.json",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.4.0/global_impact_workspace_bundle.schema.json",
   "title": "Global Impact Catalyst Workspace Bundle",
   "type": "object",
   "additionalProperties": false,
@@ -13,6 +13,7 @@
     "contracts",
     "portfolios",
     "evidence_repository",
+    "indicator_registry",
     "audit"
   ],
   "properties": {
@@ -20,11 +21,11 @@
       "const": "global_impact_workspace_bundle"
     },
     "bundle_version": {
-      "const": "1.3.0"
+      "const": "1.4.0"
     },
     "database_schema_version": {
       "type": "integer",
-      "minimum": 4
+      "minimum": 5
     },
     "exported_at": {
       "type": "string",
@@ -135,7 +136,31 @@
       "items": {
         "type": "object"
       }
+    },
+    "indicator_registry": {
+      "type": "object",
+      "required": [
+        "registry_type",
+        "registry_version",
+        "workspace_id",
+        "units",
+        "indicator_definitions",
+        "baseline_models",
+        "target_models",
+        "method_definitions",
+        "bindings",
+        "integrity"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "registry_type": {
+          "const": "global_impact_indicator_registry"
+        },
+        "registry_version": {
+          "const": "1.4.0"
+        }
+      }
     }
   },
-  "x-global-impact-catalyst-version": "1.3.0"
+  "x-global-impact-catalyst-version": "1.4.0"
 }

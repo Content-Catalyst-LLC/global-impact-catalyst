@@ -1,4 +1,4 @@
-"""Application service layer for Global Impact Catalyst v1.3.0."""
+"""Application service layer for Global Impact Catalyst v1.4.0."""
 from __future__ import annotations
 
 import copy
@@ -20,7 +20,7 @@ from python.global_impact_repository import (
     utc_now,
 )
 
-SERVICE_VERSION = "1.3.0"
+SERVICE_VERSION = "1.4.0"
 
 
 def compact_input_from_contract(contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -199,6 +199,29 @@ class ImpactApplicationService:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(chain, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         return chain
+
+    def register_unit(self, unit: Dict[str, Any], *, workspace_id: Optional[str] = None, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_unit(unit, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def register_indicator_definition(self, definition: Dict[str, Any], *, workspace_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_indicator_definition(definition, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def register_baseline_model(self, model: Dict[str, Any], *, workspace_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_baseline_model(model, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def register_target_model(self, model: Dict[str, Any], *, workspace_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_target_model(model, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def register_method_definition(self, method: Dict[str, Any], *, workspace_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_method_definition(method, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def indicator_registry(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
+        registry = self.repository.export_indicator_registry(workspace_id)
+        if destination:
+            path = Path(destination)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(registry, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return registry
 
     def export_workspace(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
         bundle = self.repository.export_workspace_bundle(workspace_id)

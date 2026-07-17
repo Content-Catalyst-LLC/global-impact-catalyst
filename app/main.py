@@ -1,4 +1,4 @@
-"""Application-facing services for Global Impact Catalyst v1.3.0."""
+"""Application-facing services for Global Impact Catalyst v1.4.0."""
 from __future__ import annotations
 from pathlib import Path
 from typing import Optional
@@ -24,9 +24,11 @@ def healthcheck() -> dict:
     return {
         "status": "ok",
         "module": "global-impact-catalyst",
-        "version": "1.3.0",
+        "version": "1.4.0",
         "contract_version": "1.1.0",
-        "database_schema_version": 4,
+        "database_schema_version": 5,
         "persistence": "sqlite",
         "evidence_repository": "sources-provenance-evidence",
+        "indicator_registry": "units-baselines-targets-methods",
+        "indicator_registry_version": "1.4.0",
     }

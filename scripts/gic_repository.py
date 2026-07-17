@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line workspace, repository, and evidence operations for v1.3.0."""
+"""Command-line workspace, evidence, and indicator-registry operations for v1.4.0."""
 from __future__ import annotations
 import argparse,json,sys
 from pathlib import Path
@@ -14,7 +14,7 @@ def read_json(path:str): return json.loads(Path(path).read_text(encoding='utf-8'
 def emit(value): print(json.dumps(value,indent=2,ensure_ascii=False,default=lambda o:o.__dict__))
 
 def main()->int:
-    parser=argparse.ArgumentParser(description='Global Impact Catalyst persistent repository and evidence CLI')
+    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, and indicator-registry CLI')
     parser.add_argument('--database',default='outputs/global-impact-catalyst.sqlite3')
     sub=parser.add_subparsers(dest='command',required=True)
     sub.add_parser('init')
@@ -35,6 +35,16 @@ def main()->int:
     dataset=sub.add_parser('register-dataset'); dataset.add_argument('--source-id',required=True); dataset.add_argument('--input',required=True)
     link=sub.add_parser('link-evidence'); link.add_argument('--claim-id',required=True); link.add_argument('--evidence-id',required=True); link.add_argument('--relationship',default='supports'); link.add_argument('--strength',default='direct'); link.add_argument('--notes',default='')
     chain=sub.add_parser('evidence-chain'); chain.add_argument('--initiative-id',required=True); chain.add_argument('--output')
+    units=sub.add_parser('units'); units.add_argument('--workspace-id'); units.add_argument('--dimension'); units.add_argument('--search',default='')
+    add_unit=sub.add_parser('add-unit'); add_unit.add_argument('--input',required=True); add_unit.add_argument('--workspace-id'); add_unit.add_argument('--expected-revision',type=int)
+    indicators=sub.add_parser('indicators'); indicators.add_argument('--workspace-id',required=True); indicators.add_argument('--search',default='')
+    add_indicator=sub.add_parser('add-indicator'); add_indicator.add_argument('--input',required=True); add_indicator.add_argument('--workspace-id',required=True); add_indicator.add_argument('--expected-revision',type=int)
+    add_baseline=sub.add_parser('add-baseline'); add_baseline.add_argument('--input',required=True); add_baseline.add_argument('--workspace-id',required=True)
+    compute_baseline=sub.add_parser('compute-baseline'); compute_baseline.add_argument('--baseline-model-id',required=True); compute_baseline.add_argument('--observations',required=True,help='JSON file containing values or observation objects')
+    add_target=sub.add_parser('add-target'); add_target.add_argument('--input',required=True); add_target.add_argument('--workspace-id',required=True)
+    evaluate_target=sub.add_parser('evaluate-target'); evaluate_target.add_argument('--target-model-id',required=True); evaluate_target.add_argument('--baseline-value',type=float); evaluate_target.add_argument('--progress-fraction',type=float); evaluate_target.add_argument('--period-label')
+    add_method=sub.add_parser('add-method'); add_method.add_argument('--input',required=True); add_method.add_argument('--workspace-id',required=True)
+    registry=sub.add_parser('indicator-registry'); registry.add_argument('--workspace-id',required=True); registry.add_argument('--output')
     sub.add_parser('summary')
     args=parser.parse_args()
     with SQLiteImpactRepository(args.database) as repository:
@@ -58,6 +68,16 @@ def main()->int:
         elif args.command=='register-dataset': emit(service.register_dataset(args.source_id,read_json(args.input),actor='cli'))
         elif args.command=='link-evidence': emit(service.link_claim_evidence(args.claim_id,args.evidence_id,relationship=args.relationship,strength=args.strength,notes=args.notes,linked_by='cli'))
         elif args.command=='evidence-chain': emit(service.evidence_chain(args.initiative_id,args.output))
+        elif args.command=='units': emit(repository.list_units(workspace_id=args.workspace_id,dimension=args.dimension,search=args.search))
+        elif args.command=='add-unit': emit(service.register_unit(read_json(args.input),workspace_id=args.workspace_id,expected_revision=args.expected_revision,actor='cli'))
+        elif args.command=='indicators': emit(repository.list_indicator_definitions(workspace_id=args.workspace_id,search=args.search))
+        elif args.command=='add-indicator': emit(service.register_indicator_definition(read_json(args.input),workspace_id=args.workspace_id,expected_revision=args.expected_revision,actor='cli'))
+        elif args.command=='add-baseline': emit(service.register_baseline_model(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='compute-baseline': emit(repository.compute_baseline(args.baseline_model_id,read_json(args.observations)))
+        elif args.command=='add-target': emit(service.register_target_model(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='evaluate-target': emit(repository.evaluate_target(args.target_model_id,baseline_value=args.baseline_value,progress_fraction=args.progress_fraction,period_label=args.period_label))
+        elif args.command=='add-method': emit(service.register_method_definition(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='indicator-registry': emit(service.indicator_registry(args.workspace_id,args.output))
         elif args.command=='summary': emit(repository.repository_summary())
     return 0
 if __name__=='__main__': raise SystemExit(main())

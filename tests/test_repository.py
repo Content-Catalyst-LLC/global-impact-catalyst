@@ -16,7 +16,7 @@ FIXED='2026-07-17T18:00:00+00:00'
 def sample_payload(): return json.loads((ROOT/'data/sample_global_impact_input.json').read_text())
 def sample_contract(): return build_impact_contract(input_from_dict(sample_payload()),generated_at=FIXED)
 
-@pytest.mark.parametrize('target',[1,2,3,4])
+@pytest.mark.parametrize('target',[1,2,3,4,5])
 def test_migrations_are_repeatable_from_every_supported_database_version(tmp_path,target):
     path=tmp_path/f'migration-{target}.sqlite3'
     repo=SQLiteImpactRepository(path,auto_migrate=False)

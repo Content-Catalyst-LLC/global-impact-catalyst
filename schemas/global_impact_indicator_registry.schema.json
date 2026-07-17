@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.4.0/global_impact_indicator_registry.schema.json",
+  "title": "Global Impact Catalyst Indicator Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registry_type", "registry_version", "workspace_id", "generated_at", "units",
+    "indicator_definitions", "baseline_models", "target_models", "method_definitions",
+    "bindings", "integrity"
+  ],
+  "properties": {
+    "registry_type": {"const": "global_impact_indicator_registry"},
+    "registry_version": {"const": "1.4.0"},
+    "workspace_id": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["unit_id", "code", "name", "dimension", "canonical_unit_id", "scale_to_canonical", "offset_to_canonical", "precision_digits", "revision", "metadata"],
+        "properties": {
+          "unit_id": {"type": "string", "minLength": 1},
+          "workspace_id": {"type": ["string", "null"]},
+          "code": {"type": "string", "minLength": 1},
+          "name": {"type": "string", "minLength": 1},
+          "dimension": {"type": "string", "minLength": 1},
+          "canonical_unit_id": {"type": "string", "minLength": 1},
+          "scale_to_canonical": {"type": "number"},
+          "offset_to_canonical": {"type": "number"},
+          "precision_digits": {"type": "integer", "minimum": 0, "maximum": 12},
+          "revision": {"type": "integer", "minimum": 1},
+          "metadata": {"type": "object"}
+        }
+      }
+    },
+    "indicator_definitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["indicator_definition_id", "workspace_id", "name", "direction", "unit_id", "aggregation_method", "formula_language", "disaggregation", "quality_profile", "current_version", "revision", "metadata", "versions"],
+        "properties": {
+          "indicator_definition_id": {"type": "string", "minLength": 1},
+          "workspace_id": {"type": "string", "minLength": 1},
+          "name": {"type": "string", "minLength": 1},
+          "direction": {"enum": ["higher_is_better", "lower_is_better", "neutral"]},
+          "unit_id": {"type": "string", "minLength": 1},
+          "aggregation_method": {"enum": ["latest", "sum", "mean", "median", "weighted_mean", "rate", "minimum", "maximum"]},
+          "formula_expression": {"type": "string"},
+          "formula_language": {"const": "gic-expression-1.0"},
+          "disaggregation": {"type": "array", "items": {"type": ["string", "object"]}},
+          "quality_profile": {"type": "object"},
+          "current_version": {"type": "integer", "minimum": 1},
+          "revision": {"type": "integer", "minimum": 1},
+          "metadata": {"type": "object"},
+          "versions": {
+            "type": "array", "minItems": 1,
+            "items": {
+              "type": "object", "additionalProperties": true,
+              "required": ["indicator_definition_version_id", "indicator_definition_id", "version_number", "version_label", "definition_hash", "definition"],
+              "properties": {
+                "version_number": {"type": "integer", "minimum": 1},
+                "definition_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                "definition": {"type": "object"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "baseline_models": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": true,
+        "required": ["baseline_model_id", "workspace_id", "name", "method_type", "unit_id", "minimum_observations", "confidence", "parameters", "current_version", "revision", "metadata", "versions"],
+        "properties": {
+          "method_type": {"enum": ["point_first", "point_latest", "period_average", "rolling_average", "benchmark", "modelled"]},
+          "unit_id": {"type": "string", "minLength": 1},
+          "minimum_observations": {"type": "integer", "minimum": 1},
+          "confidence": {"enum": ["low", "medium", "high", "not_assessed"]},
+          "parameters": {"type": "object"},
+          "versions": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["baseline_model_version_id", "baseline_model_id", "version_number", "model_hash", "model"], "additionalProperties": true}}
+        }
+      }
+    },
+    "target_models": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": true,
+        "required": ["target_model_id", "workspace_id", "name", "target_type", "unit_id", "direction", "trajectory_type", "milestones", "current_version", "revision", "metadata", "versions"],
+        "properties": {
+          "target_type": {"enum": ["absolute", "relative_change", "threshold", "range", "trajectory", "formula"]},
+          "direction": {"enum": ["higher_is_better", "lower_is_better", "neutral"]},
+          "trajectory_type": {"enum": ["linear", "step", "exponential", "custom"]},
+          "milestones": {"type": "array", "items": {"type": "object"}},
+          "versions": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["target_model_version_id", "target_model_id", "version_number", "model_hash", "model"], "additionalProperties": true}}
+        }
+      }
+    },
+    "method_definitions": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": true,
+        "required": ["method_definition_id", "workspace_id", "name", "method_kind", "design_type", "formula_language", "input_requirements", "quality_profile", "limitations", "current_version", "revision", "metadata", "versions"],
+        "properties": {
+          "method_kind": {"enum": ["measurement", "calculation", "sampling", "review", "baseline", "target"]},
+          "design_type": {"enum": ["monitoring", "before_after", "comparison_group", "quasi_experimental", "randomized", "qualitative", "mixed_methods", "administrative", "modelled"]},
+          "input_requirements": {"type": "array"},
+          "quality_profile": {"type": "object"},
+          "limitations": {"type": "array"},
+          "versions": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["method_definition_version_id", "method_definition_id", "version_number", "method_hash", "method"], "additionalProperties": true}}
+        }
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": true,
+        "required": ["binding_id", "workspace_id", "initiative_id", "indicator_id", "indicator_definition_id", "indicator_definition_version_id", "unit_id", "bound_at", "bound_by", "revision", "metadata"],
+        "properties": {
+          "bound_at": {"type": "string", "format": "date-time"},
+          "revision": {"type": "integer", "minimum": 1},
+          "metadata": {"type": "object"}
+        }
+      }
+    },
+    "integrity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["valid", "unit_count", "indicator_definition_count", "indicator_definition_version_count", "baseline_model_count", "target_model_count", "method_definition_count", "binding_count", "missing_unit_ids", "orphan_binding_ids"],
+      "properties": {
+        "valid": {"type": "boolean"},
+        "unit_count": {"type": "integer", "minimum": 0},
+        "indicator_definition_count": {"type": "integer", "minimum": 0},
+        "indicator_definition_version_count": {"type": "integer", "minimum": 0},
+        "baseline_model_count": {"type": "integer", "minimum": 0},
+        "target_model_count": {"type": "integer", "minimum": 0},
+        "method_definition_count": {"type": "integer", "minimum": 0},
+        "binding_count": {"type": "integer", "minimum": 0},
+        "missing_unit_ids": {"type": "array", "items": {"type": "string"}},
+        "orphan_binding_ids": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+  "x-global-impact-catalyst-version": "1.4.0"
+}

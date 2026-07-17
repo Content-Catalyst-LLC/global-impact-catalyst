@@ -1,4 +1,4 @@
-# Repository Architecture — v1.1.0
+# Repository Architecture — v1.4.0
 
 ```text
 compact input or legacy record
@@ -7,18 +7,27 @@ compact input or legacy record
                          ↓
               exact golden fixtures
                          ↓
-       canonical contract + validation schemas
+       canonical v1.1.0 contract + validation schemas
                          ↓
- JSON / Markdown / WordPress presentation / migration
+                 application service
+                         ↓
+             SQLite / CLI / WordPress
+        ├── persistence and portfolios
+        ├── evidence and provenance
+        └── indicator registry and immutable versions
+                         ↓
+ evidence export / registry export / workspace bundle / backup
 ```
 
-The two implementations share documented algorithms and complete expected outputs rather than importing one runtime into the other. Deterministic IDs and issue IDs make exact parity observable.
+The Python and browser contract implementations share documented algorithms and complete expected outputs rather than importing one runtime into the other. Deterministic IDs and issue IDs make exact parity observable.
 
 - `python/global_impact_core.py`: normalization, identity, metrics, validation, contract assembly, migration, Markdown, CLI
-- `schemas/`: compact authoring, canonical contract, compatibility, and validation-result schemas
+- `python/global_impact_repository.py`: migrations, persistence, evidence, bundles, backup, and repository lifecycle
+- `python/global_impact_registry.py`: units, conversions, safe formulas, indicator definitions, baseline and target models, methods, bindings, and registry restore
+- `schemas/`: compact authoring, canonical contract, evidence, registry, workspace, and validation schemas
 - `contracts/fixtures/`: exact runtime parity suite
 - `contracts/legacy/`: migration source fixture
 - `scripts/check_contracts.py`: repository and release invariants
 - `scripts/check_browser_parity.js`: exact JavaScript parity
-- `scripts/check_wordpress_instances.php`: rendered shortcode integrity
+- `scripts/check_wordpress_instances.php`: rendered shortcode and route integrity
 - `scripts/smoke_test.py`: portable end-to-end release check

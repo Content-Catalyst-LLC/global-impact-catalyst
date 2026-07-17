@@ -44,4 +44,13 @@ preg_match_all('/\sfor="([^"]+)"/', $evidence, $evidence_labels);
 foreach ($evidence_labels[1] as $target) {
     if (!in_array($target, $evidence_ids[1], true)) { fwrite(STDERR, "Evidence label target is missing: {$target}\n"); exit(1); }
 }
-echo "WordPress v1.3.0 workspace, evidence ledger, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";
+$registry = gic_indicator_registry_shortcode();
+foreach (array('data-gic-indicator-registry','data-gic-registry-workspace','data-gic-registry-load','data-gic-unit-form','data-gic-indicator-form','data-gic-baseline-form','data-gic-target-form','data-gic-method-form') as $needle) {
+    if (strpos($registry, $needle) === false) { fwrite(STDERR, "Indicator registry control missing: {$needle}\n"); exit(1); }
+}
+preg_match_all('/\sid="([^"]+)"/', $registry, $registry_ids);
+preg_match_all('/\sfor="([^"]+)"/', $registry, $registry_labels);
+foreach ($registry_labels[1] as $target) {
+    if (!in_array($target, $registry_ids[1], true)) { fwrite(STDERR, "Registry label target is missing: {$target}\n"); exit(1); }
+}
+echo "WordPress v1.4.0 workspace, evidence ledger, indicator registry, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";

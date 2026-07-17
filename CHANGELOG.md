@@ -2,6 +2,32 @@
 
 All notable changes to Global Impact Catalyst are documented in this file.
 
+## [1.4.0] - 2026-07-17
+
+### Added
+
+- Governed registry for standard and workspace-specific units with dimension, canonical conversion, precision, lifecycle, revision, and metadata.
+- Eighteen seeded units covering ratios, percentages, counts, currency, energy, mass, greenhouse gases, distance, area, volume, and time.
+- Dimension-aware unit conversion with explicit incompatibility errors.
+- Versioned indicator definitions with units, direction, formulas, disaggregation dimensions, quality profiles, lifecycle, and immutable content hashes.
+- Safe `gic-expression-1.0` arithmetic formula validation and evaluation without arbitrary code execution.
+- Point, average, rolling, benchmark, and modelled baseline records and computation.
+- Absolute, range, relative, linear, step, exponential, and custom target records and trajectory evaluation.
+- Reusable method definitions with input requirements, quality profiles, limitations, lifecycle, and immutable versions.
+- Stable bindings from initiative indicators to exact indicator, baseline, target, method, and unit versions.
+- Automatic registry materialization when canonical contracts are saved or imported.
+- v1.4.0 indicator-registry and workspace-bundle JSON Schemas and examples.
+- Registry export and idempotent lossless workspace restore.
+- Python service methods, repository CLI commands, authenticated WordPress registry tables, REST routes, responsive interface, and additive shortcode.
+- Fifth repeatable SQLite migration and expanded release, schema, formula, conversion, model, WordPress, and recovery tests.
+
+### Compatibility
+
+- The canonical contract, input schema, validation schema, Python engine, browser engine, and fifteen cross-runtime fixtures remain v1.1.0.
+- The evidence chain and evidence repository remain v1.3.0.
+- The package, application, database schema, indicator registry, workspace bundle, WordPress plugin, and registry interface are v1.4.0.
+- Existing v1.3.0 databases migrate in place. Existing demo, workspace, and evidence-ledger shortcodes remain available; `[global_impact_catalyst_indicator_registry]` is additive.
+
 ## [1.3.0] - 2026-07-17
 
 ### Added

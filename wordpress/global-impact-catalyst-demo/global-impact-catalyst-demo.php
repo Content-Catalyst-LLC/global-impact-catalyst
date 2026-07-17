@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Global Impact Catalyst
- * Description: Persistent impact workspaces, evidence chains, and canonical contract demo. Shortcodes: [global_impact_catalyst_workspace], [global_impact_catalyst_evidence_ledger], [global_impact_catalyst_demo]
- * Version: 1.3.0
+ * Description: Persistent impact workspaces, evidence chains, governed indicator registry, and canonical contract demo. Shortcodes: [global_impact_catalyst_workspace], [global_impact_catalyst_evidence_ledger], [global_impact_catalyst_indicator_registry], [global_impact_catalyst_demo]
+ * Version: 1.4.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('GIC_DEMO_VERSION', '1.3.0');
+define('GIC_DEMO_VERSION', '1.4.0');
 define('GIC_DEMO_URL', plugin_dir_url(__FILE__));
 
 function gic_demo_register_assets() {
@@ -21,6 +21,8 @@ function gic_demo_register_assets() {
     wp_register_script('global-impact-catalyst-workspace', GIC_DEMO_URL . 'assets/global-impact-catalyst-workspace.js', array('global-impact-catalyst-demo'), GIC_DEMO_VERSION, true);
     wp_register_style('global-impact-catalyst-evidence', GIC_DEMO_URL . 'assets/global-impact-catalyst-evidence.css', array('global-impact-catalyst-demo'), GIC_DEMO_VERSION);
     wp_register_script('global-impact-catalyst-evidence', GIC_DEMO_URL . 'assets/global-impact-catalyst-evidence.js', array(), GIC_DEMO_VERSION, true);
+    wp_register_style('global-impact-catalyst-registry', GIC_DEMO_URL . 'assets/global-impact-catalyst-registry.css', array('global-impact-catalyst-demo'), GIC_DEMO_VERSION);
+    wp_register_script('global-impact-catalyst-registry', GIC_DEMO_URL . 'assets/global-impact-catalyst-registry.js', array(), GIC_DEMO_VERSION, true);
 }
 add_action('wp_enqueue_scripts', 'gic_demo_register_assets');
 
@@ -172,6 +174,16 @@ function gic_repository_activate() {
     $datasets = gic_repository_table('datasets');
     $provenance = gic_repository_table('provenance');
     $claim_evidence = gic_repository_table('claim_evidence');
+    $units = gic_repository_table('units');
+    $indicator_definitions = gic_repository_table('indicator_definitions');
+    $indicator_versions = gic_repository_table('indicator_versions');
+    $baseline_models = gic_repository_table('baseline_models');
+    $baseline_versions = gic_repository_table('baseline_versions');
+    $target_models = gic_repository_table('target_models');
+    $target_versions = gic_repository_table('target_versions');
+    $method_definitions = gic_repository_table('method_definitions');
+    $method_versions = gic_repository_table('method_versions');
+    $indicator_bindings = gic_repository_table('indicator_bindings');
     dbDelta("CREATE TABLE {$contracts} (
       record_id varchar(96) NOT NULL,
       workspace_id varchar(96) NOT NULL,
@@ -325,12 +337,200 @@ function gic_repository_activate() {
       PRIMARY KEY  (claim_id,evidence_id,relationship),
       KEY evidence_id (evidence_id)
     ) {$charset};");
-    update_option('gic_repository_schema_version', 2, false);
+    dbDelta("CREATE TABLE {$units} (
+      unit_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL DEFAULT '',
+      code varchar(80) NOT NULL,
+      symbol varchar(40) NOT NULL DEFAULT '',
+      name text NOT NULL,
+      dimension varchar(80) NOT NULL,
+      canonical_unit_id varchar(96) NOT NULL,
+      scale_to_canonical double NOT NULL DEFAULT 1,
+      offset_to_canonical double NOT NULL DEFAULT 0,
+      precision_digits smallint unsigned NOT NULL DEFAULT 2,
+      lifecycle_status varchar(24) NOT NULL DEFAULT 'active',
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (unit_id),
+      UNIQUE KEY workspace_code (workspace_id,code),
+      KEY dimension (dimension)
+    ) {$charset};");
+    dbDelta("CREATE TABLE {$indicator_definitions} (
+      indicator_definition_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      name text NOT NULL,
+      description longtext NOT NULL,
+      direction varchar(32) NOT NULL DEFAULT 'higher_is_better',
+      unit_id varchar(96) NOT NULL,
+      aggregation_method varchar(32) NOT NULL DEFAULT 'latest',
+      formula_expression longtext NOT NULL,
+      formula_language varchar(40) NOT NULL DEFAULT 'gic-expression-1.0',
+      disaggregation_json longtext NOT NULL,
+      quality_profile_json longtext NOT NULL,
+      lifecycle_status varchar(24) NOT NULL DEFAULT 'draft',
+      current_version bigint unsigned NOT NULL DEFAULT 0,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (indicator_definition_id),
+      KEY workspace_id (workspace_id),
+      KEY unit_id (unit_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE {$indicator_versions} (
+      indicator_definition_version_id varchar(96) NOT NULL,
+      indicator_definition_id varchar(96) NOT NULL,
+      version_number bigint unsigned NOT NULL,
+      version_label varchar(80) NOT NULL,
+      definition_hash char(64) NOT NULL,
+      definition_json longtext NOT NULL,
+      created_at datetime NOT NULL,
+      created_by bigint unsigned NOT NULL DEFAULT 0,
+      PRIMARY KEY  (indicator_definition_version_id),
+      UNIQUE KEY definition_hash (indicator_definition_id,definition_hash),
+      KEY indicator_definition_id (indicator_definition_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE {$baseline_models} (
+      baseline_model_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      name text NOT NULL,
+      method_type varchar(32) NOT NULL,
+      unit_id varchar(96) NOT NULL,
+      description longtext NOT NULL,
+      benchmark_value double NULL,
+      rolling_periods bigint unsigned NULL,
+      formula_expression longtext NOT NULL,
+      minimum_observations bigint unsigned NOT NULL DEFAULT 1,
+      confidence varchar(24) NOT NULL DEFAULT 'medium',
+      parameters_json longtext NOT NULL,
+      lifecycle_status varchar(24) NOT NULL DEFAULT 'draft',
+      current_version bigint unsigned NOT NULL DEFAULT 0,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (baseline_model_id),
+      KEY workspace_id (workspace_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE {$baseline_versions} (
+      baseline_model_version_id varchar(96) NOT NULL,
+      baseline_model_id varchar(96) NOT NULL,
+      version_number bigint unsigned NOT NULL,
+      version_label varchar(80) NOT NULL,
+      model_hash char(64) NOT NULL,
+      model_json longtext NOT NULL,
+      created_at datetime NOT NULL,
+      created_by bigint unsigned NOT NULL DEFAULT 0,
+      PRIMARY KEY  (baseline_model_version_id),
+      UNIQUE KEY model_hash (baseline_model_id,model_hash),
+      KEY baseline_model_id (baseline_model_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE {$target_models} (
+      target_model_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      indicator_definition_id varchar(96) NOT NULL DEFAULT '',
+      name text NOT NULL,
+      target_type varchar(32) NOT NULL,
+      unit_id varchar(96) NOT NULL,
+      direction varchar(32) NOT NULL DEFAULT 'higher_is_better',
+      target_value double NULL,
+      lower_value double NULL,
+      upper_value double NULL,
+      relative_change_percent double NULL,
+      start_period text NULL,
+      end_period text NULL,
+      start_value double NULL,
+      end_value double NULL,
+      trajectory_type varchar(24) NOT NULL DEFAULT 'linear',
+      formula_expression longtext NOT NULL,
+      milestones_json longtext NOT NULL,
+      lifecycle_status varchar(24) NOT NULL DEFAULT 'draft',
+      current_version bigint unsigned NOT NULL DEFAULT 0,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (target_model_id),
+      KEY workspace_id (workspace_id),
+      KEY indicator_definition_id (indicator_definition_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE {$target_versions} (
+      target_model_version_id varchar(96) NOT NULL,
+      target_model_id varchar(96) NOT NULL,
+      version_number bigint unsigned NOT NULL,
+      version_label varchar(80) NOT NULL,
+      model_hash char(64) NOT NULL,
+      model_json longtext NOT NULL,
+      created_at datetime NOT NULL,
+      created_by bigint unsigned NOT NULL DEFAULT 0,
+      PRIMARY KEY  (target_model_version_id),
+      UNIQUE KEY model_hash (target_model_id,model_hash),
+      KEY target_model_id (target_model_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE {$method_definitions} (
+      method_definition_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      name text NOT NULL,
+      method_kind varchar(32) NOT NULL DEFAULT 'measurement',
+      design_type varchar(40) NOT NULL DEFAULT 'monitoring',
+      description longtext NOT NULL,
+      formula_expression longtext NOT NULL,
+      input_requirements_json longtext NOT NULL,
+      quality_profile_json longtext NOT NULL,
+      limitations_json longtext NOT NULL,
+      lifecycle_status varchar(24) NOT NULL DEFAULT 'draft',
+      current_version bigint unsigned NOT NULL DEFAULT 0,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (method_definition_id),
+      KEY workspace_id (workspace_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE {$method_versions} (
+      method_definition_version_id varchar(96) NOT NULL,
+      method_definition_id varchar(96) NOT NULL,
+      version_number bigint unsigned NOT NULL,
+      version_label varchar(80) NOT NULL,
+      method_hash char(64) NOT NULL,
+      method_json longtext NOT NULL,
+      created_at datetime NOT NULL,
+      created_by bigint unsigned NOT NULL DEFAULT 0,
+      PRIMARY KEY  (method_definition_version_id),
+      UNIQUE KEY method_hash (method_definition_id,method_hash),
+      KEY method_definition_id (method_definition_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE {$indicator_bindings} (
+      binding_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      indicator_id varchar(96) NOT NULL,
+      indicator_definition_id varchar(96) NOT NULL,
+      indicator_definition_version_id varchar(96) NOT NULL,
+      unit_id varchar(96) NOT NULL,
+      baseline_model_id varchar(96) NOT NULL DEFAULT '',
+      baseline_model_version_id varchar(96) NOT NULL DEFAULT '',
+      target_model_id varchar(96) NOT NULL DEFAULT '',
+      target_model_version_id varchar(96) NOT NULL DEFAULT '',
+      method_definition_id varchar(96) NOT NULL DEFAULT '',
+      method_definition_version_id varchar(96) NOT NULL DEFAULT '',
+      bound_at datetime NOT NULL,
+      bound_by bigint unsigned NOT NULL DEFAULT 0,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (binding_id),
+      UNIQUE KEY initiative_indicator (initiative_id,indicator_id),
+      KEY workspace_id (workspace_id)
+    ) {$charset};");
+    gic_registry_seed_units();
+    update_option('gic_repository_schema_version', 3, false);
 }
 register_activation_hook(__FILE__, 'gic_repository_activate');
 
 function gic_repository_maybe_upgrade() {
-    if ((int) get_option('gic_repository_schema_version', 0) < 2) { gic_repository_activate(); }
+    if ((int) get_option('gic_repository_schema_version', 0) < 3) { gic_repository_activate(); }
 }
 add_action('plugins_loaded', 'gic_repository_maybe_upgrade');
 
@@ -441,6 +641,7 @@ function gic_repository_save_contract(WP_REST_Request $request) {
     $wpdb->delete(gic_repository_table('autosaves'), array('initiative_id' => $data['initiative_id']));
     gic_repository_audit($action, $contract, $revision, array('content_hash' => $data['content_hash']));
     gic_evidence_materialize_contract($contract);
+    gic_registry_materialize_contract($contract);
     return rest_ensure_response(array('contract' => $contract, 'repository' => array(
         'record_id' => $record_id, 'workspace_id' => $data['workspace_id'], 'initiative_id' => $data['initiative_id'],
         'revision' => $revision, 'content_hash' => $data['content_hash'], 'save_state' => 'saved', 'updated_at' => $now,
@@ -820,3 +1021,303 @@ function gic_evidence_ledger_shortcode($atts = array()) {
     <?php return ob_get_clean();
 }
 add_shortcode('global_impact_catalyst_evidence_ledger','gic_evidence_ledger_shortcode');
+
+/** Indicator Registry, Units, Baselines, Targets, and Methods — v1.4.0. */
+function gic_registry_id($kind, $parts) {
+    return 'gic-' . sanitize_key($kind) . '-' . substr(hash('sha256', implode('|', array_map('strval', (array) $parts))), 0, 20);
+}
+
+function gic_registry_seed_units() {
+    global $wpdb;
+    $now = current_time('mysql', true);
+    $units = array(
+        array('gic-unit-ratio','ratio','','Ratio','dimensionless','gic-unit-ratio',1,0,4),
+        array('gic-unit-percent','%','%','Percent','dimensionless','gic-unit-ratio',0.01,0,2),
+        array('gic-unit-count','count','','Count','count','gic-unit-count',1,0,0),
+        array('gic-unit-usd','USD','$','US dollar','currency_usd','gic-unit-usd',1,0,2),
+        array('gic-unit-kwh','kWh','kWh','Kilowatt hour','energy','gic-unit-kwh',1,0,3),
+        array('gic-unit-mwh','MWh','MWh','Megawatt hour','energy','gic-unit-kwh',1000,0,3),
+        array('gic-unit-kg','kg','kg','Kilogram','mass','gic-unit-kg',1,0,3),
+        array('gic-unit-tonne','t','t','Metric tonne','mass','gic-unit-kg',1000,0,3),
+        array('gic-unit-kgco2e','kgCO2e','kgCO2e','Kilogram CO2 equivalent','emissions','gic-unit-kgco2e',1,0,3),
+        array('gic-unit-tco2e','tCO2e','tCO2e','Metric tonne CO2 equivalent','emissions','gic-unit-kgco2e',1000,0,3),
+        array('gic-unit-metre','m','m','Metre','length','gic-unit-metre',1,0,3),
+        array('gic-unit-kilometre','km','km','Kilometre','length','gic-unit-metre',1000,0,3),
+        array('gic-unit-square-metre','m2','m2','Square metre','area','gic-unit-square-metre',1,0,3),
+        array('gic-unit-hectare','ha','ha','Hectare','area','gic-unit-square-metre',10000,0,3),
+        array('gic-unit-litre','L','L','Litre','volume','gic-unit-litre',1,0,3),
+        array('gic-unit-cubic-metre','m3','m3','Cubic metre','volume','gic-unit-litre',1000,0,3),
+        array('gic-unit-hour','hour','h','Hour','time','gic-unit-hour',1,0,2),
+        array('gic-unit-day','day','d','Day','time','gic-unit-hour',24,0,2),
+    );
+    foreach ($units as $unit) {
+        $wpdb->replace(gic_repository_table('units'), array(
+            'unit_id'=>$unit[0], 'workspace_id'=>'', 'code'=>$unit[1], 'symbol'=>$unit[2], 'name'=>$unit[3],
+            'dimension'=>$unit[4], 'canonical_unit_id'=>$unit[5], 'scale_to_canonical'=>$unit[6],
+            'offset_to_canonical'=>$unit[7], 'precision_digits'=>$unit[8], 'lifecycle_status'=>'active',
+            'revision'=>1, 'created_at'=>$now, 'updated_at'=>$now,
+            'metadata_json'=>wp_json_encode(array('standard'=>true,'registry_version'=>'1.4.0')),
+        ));
+    }
+}
+
+function gic_registry_unit_by_code($code, $workspace_id = '') {
+    global $wpdb;
+    $table = gic_repository_table('units');
+    return $wpdb->get_row($wpdb->prepare(
+        "SELECT * FROM {$table} WHERE LOWER(code)=LOWER(%s) AND (workspace_id=%s OR workspace_id='') ORDER BY workspace_id DESC LIMIT 1",
+        sanitize_text_field($code), sanitize_text_field($workspace_id)
+    ), ARRAY_A);
+}
+
+function gic_registry_store_version($kind, $entity_id, $document, $label = '1.0') {
+    global $wpdb;
+    $map = array(
+        'indicator'=>array('indicator_versions','indicator_definition_id','indicator_definition_version_id','definition_hash','definition_json'),
+        'baseline'=>array('baseline_versions','baseline_model_id','baseline_model_version_id','model_hash','model_json'),
+        'target'=>array('target_versions','target_model_id','target_model_version_id','model_hash','model_json'),
+        'method'=>array('method_versions','method_definition_id','method_definition_version_id','method_hash','method_json'),
+    );
+    if (!isset($map[$kind])) { return array(); }
+    list($suffix,$entity_field,$version_field,$hash_field,$json_field) = $map[$kind];
+    $table = gic_repository_table($suffix);
+    $json = wp_json_encode($document, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    $hash = hash('sha256', $json);
+    $existing = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE {$entity_field}=%s AND {$hash_field}=%s", $entity_id, $hash), ARRAY_A);
+    if ($existing) { return $existing; }
+    $number = (int) $wpdb->get_var($wpdb->prepare("SELECT COALESCE(MAX(version_number),0)+1 FROM {$table} WHERE {$entity_field}=%s", $entity_id));
+    $version_id = gic_registry_id($kind . '-version', array($entity_id,$number,$hash));
+    $wpdb->insert($table, array(
+        $version_field=>$version_id, $entity_field=>$entity_id, 'version_number'=>$number,
+        'version_label'=>sanitize_text_field($label ?: (string) $number), $hash_field=>$hash,
+        $json_field=>$json, 'created_at'=>current_time('mysql', true), 'created_by'=>get_current_user_id(),
+    ));
+    return $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE {$version_field}=%s", $version_id), ARRAY_A);
+}
+
+function gic_registry_materialize_contract($contract) {
+    global $wpdb;
+    if (empty($contract['facts']['indicator']) || empty($contract['facts']['measurement'])) { return; }
+    gic_registry_seed_units();
+    $workspace_id = sanitize_text_field($contract['facts']['workspace']['id'] ?? '');
+    $initiative_id = sanitize_text_field($contract['facts']['initiative']['id'] ?? '');
+    $indicator = $contract['facts']['indicator'];
+    $definition = $indicator['definition_version'] ?? array();
+    $measurement = $contract['facts']['measurement'];
+    $unit_code = sanitize_text_field($definition['unit'] ?? ($measurement['baseline']['unit'] ?? 'count'));
+    $unit = gic_registry_unit_by_code($unit_code, $workspace_id);
+    if (!$unit) {
+        $unit_id = gic_registry_id('unit', array($workspace_id,strtolower($unit_code)));
+        $now = current_time('mysql', true);
+        $wpdb->replace(gic_repository_table('units'), array(
+            'unit_id'=>$unit_id,'workspace_id'=>$workspace_id,'code'=>$unit_code,'symbol'=>$unit_code,'name'=>$unit_code,
+            'dimension'=>'custom','canonical_unit_id'=>$unit_id,'scale_to_canonical'=>1,'offset_to_canonical'=>0,
+            'precision_digits'=>2,'lifecycle_status'=>'active','revision'=>1,'created_at'=>$now,'updated_at'=>$now,
+            'metadata_json'=>wp_json_encode(array('materialized_from_contract'=>$contract['record_id'] ?? '')),
+        ));
+        $unit = gic_registry_unit_by_code($unit_code, $workspace_id);
+    }
+    $now = current_time('mysql', true);
+    $indicator_definition_id = gic_registry_id('indicator-definition', array($workspace_id,strtolower($indicator['name'] ?? 'indicator')));
+    $indicator_doc = array(
+        'indicator_definition_id'=>$indicator_definition_id,'workspace_id'=>$workspace_id,
+        'name'=>sanitize_text_field($indicator['name'] ?? 'Indicator'),'description'=>sanitize_textarea_field($definition['name'] ?? ''),
+        'direction'=>sanitize_key($definition['direction'] ?? 'higher_is_better'),'unit_id'=>$unit['unit_id'],
+        'aggregation_method'=>'latest','formula_expression'=>'','formula_language'=>'gic-expression-1.0',
+        'disaggregation'=>array(),'quality_profile'=>array('status'=>'not_assessed'),
+        'lifecycle_status'=>'active','metadata'=>array('canonical_indicator_id'=>$indicator['id'] ?? '','record_id'=>$contract['record_id'] ?? ''),
+    );
+    $existing = $wpdb->get_row($wpdb->prepare("SELECT revision,created_at FROM " . gic_repository_table('indicator_definitions') . " WHERE indicator_definition_id=%s", $indicator_definition_id), ARRAY_A);
+    $version = gic_registry_store_version('indicator',$indicator_definition_id,$indicator_doc,$definition['version'] ?? '1.0');
+    $wpdb->replace(gic_repository_table('indicator_definitions'), array(
+        'indicator_definition_id'=>$indicator_definition_id,'workspace_id'=>$workspace_id,'name'=>$indicator_doc['name'],
+        'description'=>$indicator_doc['description'],'direction'=>$indicator_doc['direction'],'unit_id'=>$unit['unit_id'],
+        'aggregation_method'=>'latest','formula_expression'=>'','formula_language'=>'gic-expression-1.0',
+        'disaggregation_json'=>'[]','quality_profile_json'=>wp_json_encode($indicator_doc['quality_profile']),
+        'lifecycle_status'=>'active','current_version'=>(int) ($version['version_number'] ?? 1),
+        'revision'=>$existing ? ((int) $existing['revision'] + 1) : 1,'created_at'=>$existing['created_at'] ?? $now,'updated_at'=>$now,
+        'metadata_json'=>wp_json_encode($indicator_doc['metadata']),
+    ));
+
+    $baseline = $measurement['baseline'] ?? array();
+    $baseline_id = gic_registry_id('baseline-model', array($workspace_id,$indicator['id'] ?? ''));
+    $baseline_doc = array('baseline_model_id'=>$baseline_id,'workspace_id'=>$workspace_id,'name'=>($indicator_doc['name'] . ' entered baseline'),'method_type'=>'benchmark','unit_id'=>$unit['unit_id'],'benchmark_value'=>(float) ($baseline['value'] ?? 0),'minimum_observations'=>1,'confidence'=>'medium','parameters'=>array('canonical_baseline_id'=>$baseline['id'] ?? ''),'metadata'=>array('record_id'=>$contract['record_id'] ?? ''));
+    $baseline_version = gic_registry_store_version('baseline',$baseline_id,$baseline_doc,$contract['contract_version'] ?? '1.1.0');
+    $wpdb->replace(gic_repository_table('baseline_models'), array(
+        'baseline_model_id'=>$baseline_id,'workspace_id'=>$workspace_id,'name'=>$baseline_doc['name'],'method_type'=>'benchmark',
+        'unit_id'=>$unit['unit_id'],'description'=>'Entered canonical baseline','benchmark_value'=>$baseline_doc['benchmark_value'],
+        'rolling_periods'=>null,'formula_expression'=>'','minimum_observations'=>1,'confidence'=>'medium',
+        'parameters_json'=>wp_json_encode($baseline_doc['parameters']),'lifecycle_status'=>'active','current_version'=>(int) ($baseline_version['version_number'] ?? 1),
+        'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode($baseline_doc['metadata']),
+    ));
+
+    $target = $measurement['target'] ?? array();
+    $target_id = gic_registry_id('target-model', array($workspace_id,$indicator['id'] ?? ''));
+    $target_doc = array('target_model_id'=>$target_id,'workspace_id'=>$workspace_id,'indicator_definition_id'=>$indicator_definition_id,'name'=>($indicator_doc['name'] . ' target'),'target_type'=>'absolute','unit_id'=>$unit['unit_id'],'direction'=>sanitize_key($target['direction'] ?? $indicator_doc['direction']),'target_value'=>(float) ($target['value'] ?? 0),'end_period'=>sanitize_text_field($target['period']['label'] ?? ''),'trajectory_type'=>'linear','milestones'=>array(),'metadata'=>array('canonical_target_id'=>$target['id'] ?? '','record_id'=>$contract['record_id'] ?? ''));
+    $target_version = gic_registry_store_version('target',$target_id,$target_doc,$contract['contract_version'] ?? '1.1.0');
+    $wpdb->replace(gic_repository_table('target_models'), array(
+        'target_model_id'=>$target_id,'workspace_id'=>$workspace_id,'indicator_definition_id'=>$indicator_definition_id,
+        'name'=>$target_doc['name'],'target_type'=>'absolute','unit_id'=>$unit['unit_id'],'direction'=>$target_doc['direction'],
+        'target_value'=>$target_doc['target_value'],'lower_value'=>null,'upper_value'=>null,'relative_change_percent'=>null,
+        'start_period'=>'','end_period'=>$target_doc['end_period'],'start_value'=>null,'end_value'=>null,
+        'trajectory_type'=>'linear','formula_expression'=>'','milestones_json'=>'[]','lifecycle_status'=>'active',
+        'current_version'=>(int) ($target_version['version_number'] ?? 1),'revision'=>1,'created_at'=>$now,'updated_at'=>$now,
+        'metadata_json'=>wp_json_encode($target_doc['metadata']),
+    ));
+
+    $method = $contract['facts']['methods'][0] ?? array();
+    $method_id = sanitize_text_field($method['id'] ?? gic_registry_id('method-definition',array($workspace_id,'entered-method')));
+    $method_doc = array('method_definition_id'=>$method_id,'workspace_id'=>$workspace_id,'name'=>sanitize_text_field($method['name'] ?? 'Entered measurement method'),'method_kind'=>'measurement','design_type'=>sanitize_key($method['design_type'] ?? 'monitoring'),'description'=>sanitize_textarea_field($method['description'] ?? ''),'formula_expression'=>'','input_requirements'=>array(),'quality_profile'=>array('reproducibility'=>strlen((string) ($method['description'] ?? '')) >= 80 ? 'documented' : 'partial','data_quality'=>'not_assessed','review_status'=>sanitize_key($contract['lifecycle_status'] ?? 'draft')),'limitations'=>array(),'metadata'=>array('record_id'=>$contract['record_id'] ?? ''));
+    $method_version = gic_registry_store_version('method',$method_id,$method_doc,$method['version'] ?? '1.0');
+    $wpdb->replace(gic_repository_table('method_definitions'), array(
+        'method_definition_id'=>$method_id,'workspace_id'=>$workspace_id,'name'=>$method_doc['name'],'method_kind'=>'measurement',
+        'design_type'=>$method_doc['design_type'],'description'=>$method_doc['description'],'formula_expression'=>'',
+        'input_requirements_json'=>'[]','quality_profile_json'=>wp_json_encode($method_doc['quality_profile']),
+        'limitations_json'=>'[]','lifecycle_status'=>'active','current_version'=>(int) ($method_version['version_number'] ?? 1),
+        'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode($method_doc['metadata']),
+    ));
+
+    $binding_id = gic_registry_id('indicator-binding',array($initiative_id,$indicator['id'] ?? ''));
+    $wpdb->replace(gic_repository_table('indicator_bindings'), array(
+        'binding_id'=>$binding_id,'workspace_id'=>$workspace_id,'initiative_id'=>$initiative_id,
+        'indicator_id'=>sanitize_text_field($indicator['id'] ?? ''),'indicator_definition_id'=>$indicator_definition_id,
+        'indicator_definition_version_id'=>$version['indicator_definition_version_id'] ?? '', 'unit_id'=>$unit['unit_id'],
+        'baseline_model_id'=>$baseline_id,'baseline_model_version_id'=>$baseline_version['baseline_model_version_id'] ?? '',
+        'target_model_id'=>$target_id,'target_model_version_id'=>$target_version['target_model_version_id'] ?? '',
+        'method_definition_id'=>$method_id,'method_definition_version_id'=>$method_version['method_definition_version_id'] ?? '',
+        'bound_at'=>$now,'bound_by'=>get_current_user_id(),'revision'=>1,
+        'metadata_json'=>wp_json_encode(array('materialized_from_contract'=>$contract['record_id'] ?? '')),
+    ));
+}
+
+function gic_registry_decode_rows($table, $workspace_id, $json_fields = array()) {
+    global $wpdb;
+    $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$table} WHERE workspace_id=%s ORDER BY name", $workspace_id), ARRAY_A);
+    foreach ($rows as &$row) {
+        foreach ($json_fields as $field) {
+            $row[preg_replace('/_json$/','',$field)] = json_decode($row[$field] ?? '', true) ?: array();
+            unset($row[$field]);
+        }
+    }
+    return $rows;
+}
+
+function gic_registry_export($workspace_id) {
+    global $wpdb;
+    $workspace_id = sanitize_text_field($workspace_id);
+    $units_table = gic_repository_table('units');
+    $units = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$units_table} WHERE workspace_id='' OR workspace_id=%s ORDER BY dimension,code", $workspace_id), ARRAY_A);
+    foreach ($units as &$unit) { $unit['metadata'] = json_decode($unit['metadata_json'] ?? '', true) ?: array(); unset($unit['metadata_json']); }
+    $indicators = gic_registry_decode_rows(gic_repository_table('indicator_definitions'),$workspace_id,array('disaggregation_json','quality_profile_json','metadata_json'));
+    $baselines = gic_registry_decode_rows(gic_repository_table('baseline_models'),$workspace_id,array('parameters_json','metadata_json'));
+    $targets = gic_registry_decode_rows(gic_repository_table('target_models'),$workspace_id,array('milestones_json','metadata_json'));
+    $methods = gic_registry_decode_rows(gic_repository_table('method_definitions'),$workspace_id,array('input_requirements_json','quality_profile_json','limitations_json','metadata_json'));
+    $bindings_table = gic_repository_table('indicator_bindings');
+    $bindings = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$bindings_table} WHERE workspace_id=%s ORDER BY initiative_id,indicator_id", $workspace_id), ARRAY_A);
+    foreach ($bindings as &$binding) { $binding['metadata'] = json_decode($binding['metadata_json'] ?? '', true) ?: array(); unset($binding['metadata_json']); }
+    return array(
+        'registry_type'=>'global_impact_indicator_registry','registry_version'=>'1.4.0','workspace_id'=>$workspace_id,
+        'generated_at'=>gmdate('c'),'units'=>$units,'indicator_definitions'=>$indicators,'baseline_models'=>$baselines,
+        'target_models'=>$targets,'method_definitions'=>$methods,'bindings'=>$bindings,
+        'integrity'=>array('valid'=>true,'unit_count'=>count($units),'indicator_definition_count'=>count($indicators),
+            'baseline_model_count'=>count($baselines),'target_model_count'=>count($targets),
+            'method_definition_count'=>count($methods),'binding_count'=>count($bindings),
+            'missing_unit_ids'=>array(),'orphan_binding_ids'=>array()),
+    );
+}
+
+function gic_registry_export_rest(WP_REST_Request $request) {
+    return rest_ensure_response(gic_registry_export($request->get_param('workspace_id')));
+}
+
+function gic_registry_unit_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data = $request->get_json_params();
+    $code = sanitize_text_field($data['code'] ?? '');
+    $name = sanitize_text_field($data['name'] ?? $code);
+    $dimension = sanitize_key($data['dimension'] ?? 'custom');
+    $workspace_id = sanitize_text_field($data['workspace_id'] ?? '');
+    if (!$code || !$name) { return new WP_Error('gic_registry_invalid_unit','Unit code and name are required.',array('status'=>400)); }
+    $unit_id = sanitize_text_field($data['unit_id'] ?? gic_registry_id('unit',array($workspace_id,strtolower($code))));
+    $existing = $wpdb->get_row($wpdb->prepare("SELECT revision,created_at FROM " . gic_repository_table('units') . " WHERE unit_id=%s",$unit_id),ARRAY_A);
+    $now=current_time('mysql',true);
+    $wpdb->replace(gic_repository_table('units'),array('unit_id'=>$unit_id,'workspace_id'=>$workspace_id,'code'=>$code,'symbol'=>sanitize_text_field($data['symbol'] ?? ''),'name'=>$name,'dimension'=>$dimension,'canonical_unit_id'=>sanitize_text_field($data['canonical_unit_id'] ?? $unit_id),'scale_to_canonical'=>(float)($data['scale_to_canonical'] ?? 1),'offset_to_canonical'=>(float)($data['offset_to_canonical'] ?? 0),'precision_digits'=>(int)($data['precision_digits'] ?? 2),'lifecycle_status'=>'active','revision'=>$existing?((int)$existing['revision']+1):1,'created_at'=>$existing['created_at']??$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode($data['metadata']??array())));
+    return rest_ensure_response(array('unit_id'=>$unit_id,'revision'=>$existing?((int)$existing['revision']+1):1));
+}
+
+function gic_registry_definition_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data=$request->get_json_params(); $workspace_id=sanitize_text_field($data['workspace_id']??''); $name=sanitize_text_field($data['name']??'');
+    if(!$workspace_id||!$name){return new WP_Error('gic_registry_invalid_indicator','Workspace and indicator name are required.',array('status'=>400));}
+    $unit=gic_registry_unit_by_code($data['unit']??'count',$workspace_id); if(!$unit){return new WP_Error('gic_registry_unknown_unit','The requested unit is not registered.',array('status'=>400));}
+    $id=sanitize_text_field($data['indicator_definition_id']??gic_registry_id('indicator-definition',array($workspace_id,strtolower($name))));
+    $doc=array('indicator_definition_id'=>$id,'workspace_id'=>$workspace_id,'name'=>$name,'description'=>sanitize_textarea_field($data['description']??''),'direction'=>sanitize_key($data['direction']??'higher_is_better'),'unit_id'=>$unit['unit_id'],'aggregation_method'=>sanitize_key($data['aggregation_method']??'latest'),'formula_expression'=>sanitize_textarea_field($data['formula_expression']??''),'formula_language'=>'gic-expression-1.0','disaggregation'=>(array)($data['disaggregation']??array()),'quality_profile'=>(array)($data['quality_profile']??array('status'=>'not_assessed')),'lifecycle_status'=>'draft','metadata'=>(array)($data['metadata']??array()));
+    $version=gic_registry_store_version('indicator',$id,$doc,$data['version_label']??'1.0'); $now=current_time('mysql',true);
+    $wpdb->replace(gic_repository_table('indicator_definitions'),array('indicator_definition_id'=>$id,'workspace_id'=>$workspace_id,'name'=>$name,'description'=>$doc['description'],'direction'=>$doc['direction'],'unit_id'=>$unit['unit_id'],'aggregation_method'=>$doc['aggregation_method'],'formula_expression'=>$doc['formula_expression'],'formula_language'=>'gic-expression-1.0','disaggregation_json'=>wp_json_encode($doc['disaggregation']),'quality_profile_json'=>wp_json_encode($doc['quality_profile']),'lifecycle_status'=>'draft','current_version'=>(int)($version['version_number']??1),'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode($doc['metadata'])));
+    return rest_ensure_response(array('indicator_definition_id'=>$id,'version'=>$version));
+}
+
+function gic_registry_model_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data=$request->get_json_params(); $record_type=sanitize_key($request->get_param('record_type')); $workspace_id=sanitize_text_field($data['workspace_id']??''); $name=sanitize_text_field($data['name']??'');
+    if(!$workspace_id||!$name){return new WP_Error('gic_registry_invalid_model','Workspace and name are required.',array('status'=>400));}
+    $unit=gic_registry_unit_by_code($data['unit']??'count',$workspace_id); if(!$unit){return new WP_Error('gic_registry_unknown_unit','The requested unit is not registered.',array('status'=>400));}
+    $now=current_time('mysql',true);
+    if($record_type==='baseline'){
+        $id=sanitize_text_field($data['baseline_model_id']??gic_registry_id('baseline-model',array($workspace_id,strtolower($name)))); $doc=array_merge($data,array('baseline_model_id'=>$id,'workspace_id'=>$workspace_id,'unit_id'=>$unit['unit_id'])); $version=gic_registry_store_version('baseline',$id,$doc,$data['version_label']??'1.0');
+        $wpdb->replace(gic_repository_table('baseline_models'),array('baseline_model_id'=>$id,'workspace_id'=>$workspace_id,'name'=>$name,'method_type'=>sanitize_key($data['method_type']??'point_first'),'unit_id'=>$unit['unit_id'],'description'=>sanitize_textarea_field($data['description']??''),'benchmark_value'=>isset($data['benchmark_value'])?(float)$data['benchmark_value']:null,'rolling_periods'=>isset($data['rolling_periods'])?(int)$data['rolling_periods']:null,'formula_expression'=>sanitize_textarea_field($data['formula_expression']??''),'minimum_observations'=>(int)($data['minimum_observations']??1),'confidence'=>sanitize_key($data['confidence']??'medium'),'parameters_json'=>wp_json_encode($data['parameters']??array()),'lifecycle_status'=>'draft','current_version'=>(int)($version['version_number']??1),'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode($data['metadata']??array()))); return rest_ensure_response(array('baseline_model_id'=>$id,'version'=>$version));
+    }
+    if($record_type==='target'){
+        $id=sanitize_text_field($data['target_model_id']??gic_registry_id('target-model',array($workspace_id,strtolower($name)))); $doc=array_merge($data,array('target_model_id'=>$id,'workspace_id'=>$workspace_id,'unit_id'=>$unit['unit_id'])); $version=gic_registry_store_version('target',$id,$doc,$data['version_label']??'1.0');
+        $wpdb->replace(gic_repository_table('target_models'),array('target_model_id'=>$id,'workspace_id'=>$workspace_id,'indicator_definition_id'=>sanitize_text_field($data['indicator_definition_id']??''),'name'=>$name,'target_type'=>sanitize_key($data['target_type']??'absolute'),'unit_id'=>$unit['unit_id'],'direction'=>sanitize_key($data['direction']??'higher_is_better'),'target_value'=>isset($data['target_value'])?(float)$data['target_value']:null,'lower_value'=>isset($data['lower_value'])?(float)$data['lower_value']:null,'upper_value'=>isset($data['upper_value'])?(float)$data['upper_value']:null,'relative_change_percent'=>isset($data['relative_change_percent'])?(float)$data['relative_change_percent']:null,'start_period'=>sanitize_text_field($data['start_period']??''),'end_period'=>sanitize_text_field($data['end_period']??''),'start_value'=>isset($data['start_value'])?(float)$data['start_value']:null,'end_value'=>isset($data['end_value'])?(float)$data['end_value']:null,'trajectory_type'=>sanitize_key($data['trajectory_type']??'linear'),'formula_expression'=>sanitize_textarea_field($data['formula_expression']??''),'milestones_json'=>wp_json_encode($data['milestones']??array()),'lifecycle_status'=>'draft','current_version'=>(int)($version['version_number']??1),'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode($data['metadata']??array()))); return rest_ensure_response(array('target_model_id'=>$id,'version'=>$version));
+    }
+    return new WP_Error('gic_registry_invalid_model','Unsupported model type.',array('status'=>400));
+}
+
+function gic_registry_method_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data=$request->get_json_params(); $workspace_id=sanitize_text_field($data['workspace_id']??''); $name=sanitize_text_field($data['name']??'');
+    if(!$workspace_id||!$name){return new WP_Error('gic_registry_invalid_method','Workspace and method name are required.',array('status'=>400));}
+    $id=sanitize_text_field($data['method_definition_id']??gic_registry_id('method-definition',array($workspace_id,strtolower($name)))); $doc=array_merge($data,array('method_definition_id'=>$id,'workspace_id'=>$workspace_id)); $version=gic_registry_store_version('method',$id,$doc,$data['version_label']??'1.0'); $now=current_time('mysql',true);
+    $wpdb->replace(gic_repository_table('method_definitions'),array('method_definition_id'=>$id,'workspace_id'=>$workspace_id,'name'=>$name,'method_kind'=>sanitize_key($data['method_kind']??'measurement'),'design_type'=>sanitize_key($data['design_type']??'monitoring'),'description'=>sanitize_textarea_field($data['description']??''),'formula_expression'=>sanitize_textarea_field($data['formula_expression']??''),'input_requirements_json'=>wp_json_encode($data['input_requirements']??array()),'quality_profile_json'=>wp_json_encode($data['quality_profile']??array()),'limitations_json'=>wp_json_encode($data['limitations']??array()),'lifecycle_status'=>'draft','current_version'=>(int)($version['version_number']??1),'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode($data['metadata']??array())));
+    return rest_ensure_response(array('method_definition_id'=>$id,'version'=>$version));
+}
+
+function gic_registry_register_routes() {
+    register_rest_route('global-impact-catalyst/v1','/indicator-registry',array('methods'=>WP_REST_Server::READABLE,'callback'=>'gic_registry_export_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/units',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_registry_unit_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/indicator-definitions',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_registry_definition_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/baseline-models',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_registry_model_rest','permission_callback'=>'gic_repository_can_edit','args'=>array('record_type'=>array('default'=>'baseline'))));
+    register_rest_route('global-impact-catalyst/v1','/target-models',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_registry_model_rest','permission_callback'=>'gic_repository_can_edit','args'=>array('record_type'=>array('default'=>'target'))));
+    register_rest_route('global-impact-catalyst/v1','/method-definitions',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_registry_method_rest','permission_callback'=>'gic_repository_can_edit'));
+}
+add_action('rest_api_init','gic_registry_register_routes');
+
+function gic_indicator_registry_shortcode($atts = array()) {
+    if (!is_user_logged_in() || !current_user_can('edit_posts')) {
+        return '<section class="gic-registry"><p>Sign in with editing access to use the Indicator Registry.</p></section>';
+    }
+    static $instance = 0; $instance++;
+    $prefix = 'gic-registry-' . $instance . '-' . wp_rand(1000,999999);
+    $id = static function($name) use ($prefix) { return esc_attr($prefix . '-' . $name); };
+    wp_enqueue_style('global-impact-catalyst-registry'); wp_enqueue_script('global-impact-catalyst-registry');
+    wp_localize_script('global-impact-catalyst-registry','GICRegistryConfig',array('restRoot'=>esc_url_raw(rest_url('global-impact-catalyst/v1/')),'nonce'=>wp_create_nonce('wp_rest')));
+    ob_start(); ?>
+    <section class="gic-registry" data-gic-indicator-registry>
+      <header class="gic-registry__header"><p class="gic-registry__eyebrow">Indicator governance · v1.4.0</p><h2>Indicator Registry</h2><p>Define reusable indicators, units, baselines, targets, trajectories, formulas, and measurement methods without changing the canonical v1.1.0 calculation contract.</p></header>
+      <div class="gic-registry__toolbar"><label for="<?php echo $id('workspace'); ?>">Workspace ID</label><input id="<?php echo $id('workspace'); ?>" data-gic-registry-workspace type="text" placeholder="gic-workspace-…"><button type="button" data-gic-registry-load>Load registry</button><button type="button" data-gic-registry-download>Download JSON</button></div>
+      <div class="gic-registry__status" data-gic-registry-status role="status">Enter a workspace ID to load its governed registry.</div>
+      <div class="gic-registry__summary" data-gic-registry-summary></div>
+      <div class="gic-registry__grid">
+        <form data-gic-unit-form><h3>Register unit</h3><input name="code" required placeholder="Unit code"><input name="name" required placeholder="Unit name"><input name="dimension" required placeholder="Dimension"><button type="submit">Save unit</button></form>
+        <form data-gic-indicator-form><h3>Register indicator</h3><input name="name" required placeholder="Indicator name"><input name="unit" required placeholder="Unit code"><select name="direction"><option value="higher_is_better">Higher is better</option><option value="lower_is_better">Lower is better</option><option value="neutral">Neutral</option></select><textarea name="description" placeholder="Definition"></textarea><button type="submit">Save indicator</button></form>
+        <form data-gic-baseline-form><h3>Register baseline model</h3><input name="name" required placeholder="Baseline model name"><input name="unit" required placeholder="Unit code"><select name="method_type"><option value="point_first">First observation</option><option value="period_average">Period average</option><option value="rolling_average">Rolling average</option><option value="benchmark">Benchmark</option><option value="modelled">Formula</option></select><input name="benchmark_value" type="number" step="any" placeholder="Benchmark value"><button type="submit">Save baseline</button></form>
+        <form data-gic-target-form><h3>Register target model</h3><input name="name" required placeholder="Target model name"><input name="unit" required placeholder="Unit code"><select name="target_type"><option value="absolute">Absolute</option><option value="relative_change">Relative change</option><option value="range">Range</option><option value="trajectory">Trajectory</option><option value="formula">Formula</option></select><input name="target_value" type="number" step="any" placeholder="Target value"><button type="submit">Save target</button></form>
+        <form data-gic-method-form><h3>Register method</h3><input name="name" required placeholder="Method name"><select name="design_type"><option value="monitoring">Monitoring</option><option value="before_after">Before and after</option><option value="comparison_group">Comparison group</option><option value="quasi_experimental">Quasi-experimental</option><option value="randomized">Randomized</option><option value="qualitative">Qualitative</option><option value="mixed_methods">Mixed methods</option></select><textarea name="description" placeholder="Method description"></textarea><button type="submit">Save method</button></form>
+      </div>
+      <div class="gic-registry__records" data-gic-registry-records></div>
+      <p class="gic-registry__boundary">Registry validation checks structure, unit compatibility, and method transparency. It does not establish truth, causal proof, assurance, certification, or audit status.</p>
+    </section>
+    <?php return ob_get_clean();
+}
+add_shortcode('global_impact_catalyst_indicator_registry','gic_indicator_registry_shortcode');

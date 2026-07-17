@@ -1,0 +1,661 @@
+{
+  "registry_type": "global_impact_indicator_registry",
+  "registry_version": "1.4.0",
+  "workspace_id": "gic-workspace-bdc75d8b68333af2",
+  "generated_at": "2026-07-17T19:50:09.888514+00:00",
+  "units": [
+    {
+      "unit_id": "gic-unit-hectare",
+      "workspace_id": null,
+      "code": "ha",
+      "symbol": "ha",
+      "name": "Hectare",
+      "dimension": "area",
+      "canonical_unit_id": "gic-unit-square-metre",
+      "scale_to_canonical": 10000.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-square-metre",
+      "workspace_id": null,
+      "code": "m2",
+      "symbol": "m²",
+      "name": "Square metre",
+      "dimension": "area",
+      "canonical_unit_id": "gic-unit-square-metre",
+      "scale_to_canonical": 1.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-count",
+      "workspace_id": null,
+      "code": "count",
+      "symbol": "",
+      "name": "Count",
+      "dimension": "count",
+      "canonical_unit_id": "gic-unit-count",
+      "scale_to_canonical": 1.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 0,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-usd",
+      "workspace_id": null,
+      "code": "USD",
+      "symbol": "$",
+      "name": "US dollar",
+      "dimension": "currency_usd",
+      "canonical_unit_id": "gic-unit-usd",
+      "scale_to_canonical": 1.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 2,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-percent",
+      "workspace_id": null,
+      "code": "%",
+      "symbol": "%",
+      "name": "Percent",
+      "dimension": "dimensionless",
+      "canonical_unit_id": "gic-unit-ratio",
+      "scale_to_canonical": 0.01,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 2,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-ratio",
+      "workspace_id": null,
+      "code": "ratio",
+      "symbol": "",
+      "name": "Ratio",
+      "dimension": "dimensionless",
+      "canonical_unit_id": "gic-unit-ratio",
+      "scale_to_canonical": 1.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 4,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-kgco2e",
+      "workspace_id": null,
+      "code": "kgCO2e",
+      "symbol": "kgCO₂e",
+      "name": "Kilogram CO2 equivalent",
+      "dimension": "emissions",
+      "canonical_unit_id": "gic-unit-kgco2e",
+      "scale_to_canonical": 1.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-tco2e",
+      "workspace_id": null,
+      "code": "tCO2e",
+      "symbol": "tCO₂e",
+      "name": "Metric tonne CO2 equivalent",
+      "dimension": "emissions",
+      "canonical_unit_id": "gic-unit-kgco2e",
+      "scale_to_canonical": 1000.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-mwh",
+      "workspace_id": null,
+      "code": "MWh",
+      "symbol": "MWh",
+      "name": "Megawatt hour",
+      "dimension": "energy",
+      "canonical_unit_id": "gic-unit-kwh",
+      "scale_to_canonical": 1000.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-kwh",
+      "workspace_id": null,
+      "code": "kWh",
+      "symbol": "kWh",
+      "name": "Kilowatt hour",
+      "dimension": "energy",
+      "canonical_unit_id": "gic-unit-kwh",
+      "scale_to_canonical": 1.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-kilometre",
+      "workspace_id": null,
+      "code": "km",
+      "symbol": "km",
+      "name": "Kilometre",
+      "dimension": "length",
+      "canonical_unit_id": "gic-unit-metre",
+      "scale_to_canonical": 1000.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-metre",
+      "workspace_id": null,
+      "code": "m",
+      "symbol": "m",
+      "name": "Metre",
+      "dimension": "length",
+      "canonical_unit_id": "gic-unit-metre",
+      "scale_to_canonical": 1.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-kg",
+      "workspace_id": null,
+      "code": "kg",
+      "symbol": "kg",
+      "name": "Kilogram",
+      "dimension": "mass",
+      "canonical_unit_id": "gic-unit-kg",
+      "scale_to_canonical": 1.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-tonne",
+      "workspace_id": null,
+      "code": "t",
+      "symbol": "t",
+      "name": "Metric tonne",
+      "dimension": "mass",
+      "canonical_unit_id": "gic-unit-kg",
+      "scale_to_canonical": 1000.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-day",
+      "workspace_id": null,
+      "code": "day",
+      "symbol": "d",
+      "name": "Day",
+      "dimension": "time",
+      "canonical_unit_id": "gic-unit-hour",
+      "scale_to_canonical": 24.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 2,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-hour",
+      "workspace_id": null,
+      "code": "hour",
+      "symbol": "h",
+      "name": "Hour",
+      "dimension": "time",
+      "canonical_unit_id": "gic-unit-hour",
+      "scale_to_canonical": 1.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 2,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-litre",
+      "workspace_id": null,
+      "code": "L",
+      "symbol": "L",
+      "name": "Litre",
+      "dimension": "volume",
+      "canonical_unit_id": "gic-unit-litre",
+      "scale_to_canonical": 1.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    },
+    {
+      "unit_id": "gic-unit-cubic-metre",
+      "workspace_id": null,
+      "code": "m3",
+      "symbol": "m³",
+      "name": "Cubic metre",
+      "dimension": "volume",
+      "canonical_unit_id": "gic-unit-litre",
+      "scale_to_canonical": 1000.0,
+      "offset_to_canonical": 0.0,
+      "precision_digits": 3,
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.872782+00:00",
+      "updated_at": "2026-07-17T19:50:09.872782+00:00",
+      "metadata": {
+        "registry_version": "1.4.0",
+        "standard": true
+      }
+    }
+  ],
+  "indicator_definitions": [
+    {
+      "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "name": "Average monthly bill reduction",
+      "description": "Mean reduction in monthly household utility bills relative to the baseline period.",
+      "direction": "higher_is_better",
+      "unit_id": "gic-unit-usd",
+      "aggregation_method": "latest",
+      "formula_expression": "",
+      "formula_language": "gic-expression-1.0",
+      "lifecycle_status": "active",
+      "current_version": 1,
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.877787+00:00",
+      "updated_at": "2026-07-17T19:50:09.878174+00:00",
+      "disaggregation": [],
+      "quality_profile": {
+        "status": "not_assessed"
+      },
+      "metadata": {
+        "canonical_definition_version_id": "gic-indicator-definition-version-be1d2b98d622d2df",
+        "canonical_indicator_id": "gic-indicator-2e7a8f93231487ce",
+        "record_id": "gic-record-3bb3e632355d26c9"
+      },
+      "versions": [
+        {
+          "indicator_definition_version_id": "gic-indicator_definition_version-b276f0e1a0dd266f63c1",
+          "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+          "version_number": 1,
+          "version_label": "1.0",
+          "effective_from": null,
+          "effective_through": null,
+          "definition_hash": "7adf7bfeee6c2462ce3934e6919af4bee315b3b2860fbbe922ce208584b37d8d",
+          "created_at": "2026-07-17T19:50:09.878125+00:00",
+          "created_by": "system",
+          "definition": {
+            "aggregation_method": "latest",
+            "description": "Mean reduction in monthly household utility bills relative to the baseline period.",
+            "direction": "higher_is_better",
+            "disaggregation": [],
+            "formula_expression": "",
+            "formula_language": "gic-expression-1.0",
+            "formula_variables": [],
+            "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+            "lifecycle_status": "active",
+            "metadata": {
+              "canonical_definition_version_id": "gic-indicator-definition-version-be1d2b98d622d2df",
+              "canonical_indicator_id": "gic-indicator-2e7a8f93231487ce",
+              "record_id": "gic-record-3bb3e632355d26c9"
+            },
+            "name": "Average monthly bill reduction",
+            "quality_profile": {
+              "status": "not_assessed"
+            },
+            "unit_id": "gic-unit-usd",
+            "workspace_id": "gic-workspace-bdc75d8b68333af2"
+          }
+        }
+      ]
+    }
+  ],
+  "baseline_models": [
+    {
+      "baseline_model_id": "gic-baseline-model-9c6e0716c2085cf79608",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "name": "Average monthly bill reduction entered baseline",
+      "method_type": "benchmark",
+      "unit_id": "gic-unit-usd",
+      "description": "",
+      "period_start": "2025 baseline",
+      "period_end": "2025 baseline",
+      "rolling_periods": null,
+      "benchmark_value": 0.0,
+      "formula_expression": "",
+      "formula_language": "gic-expression-1.0",
+      "minimum_observations": 1,
+      "confidence": "medium",
+      "lifecycle_status": "active",
+      "current_version": 1,
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.878475+00:00",
+      "updated_at": "2026-07-17T19:50:09.878754+00:00",
+      "parameters": {
+        "canonical_baseline_id": "gic-baseline-bccde48f17ee3898"
+      },
+      "metadata": {
+        "record_id": "gic-record-3bb3e632355d26c9"
+      },
+      "versions": [
+        {
+          "baseline_model_version_id": "gic-baseline_model_version-d0a3b36dfbc7ec53d831",
+          "baseline_model_id": "gic-baseline-model-9c6e0716c2085cf79608",
+          "version_number": 1,
+          "version_label": "1.1.0",
+          "model_hash": "56ad1c446534c3d426aeea8d5bc804a01e190d39913ab344c51429c07d84b9a3",
+          "created_at": "2026-07-17T19:50:09.878715+00:00",
+          "created_by": "system",
+          "model": {
+            "baseline_model_id": "gic-baseline-model-9c6e0716c2085cf79608",
+            "benchmark_value": 0.0,
+            "confidence": "medium",
+            "description": "",
+            "formula_expression": "",
+            "formula_language": "gic-expression-1.0",
+            "formula_variables": [],
+            "lifecycle_status": "active",
+            "metadata": {
+              "record_id": "gic-record-3bb3e632355d26c9"
+            },
+            "method_type": "benchmark",
+            "minimum_observations": 1,
+            "name": "Average monthly bill reduction entered baseline",
+            "parameters": {
+              "canonical_baseline_id": "gic-baseline-bccde48f17ee3898"
+            },
+            "period_end": "2025 baseline",
+            "period_start": "2025 baseline",
+            "rolling_periods": null,
+            "unit_id": "gic-unit-usd",
+            "workspace_id": "gic-workspace-bdc75d8b68333af2"
+          }
+        }
+      ]
+    }
+  ],
+  "target_models": [
+    {
+      "target_model_id": "gic-target-model-9c6e0716c2085cf79608",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+      "name": "Average monthly bill reduction target",
+      "target_type": "absolute",
+      "unit_id": "gic-unit-usd",
+      "direction": "higher_is_better",
+      "target_value": 30.0,
+      "lower_value": null,
+      "upper_value": null,
+      "relative_change_percent": null,
+      "start_period": null,
+      "end_period": "2027",
+      "start_value": null,
+      "end_value": null,
+      "trajectory_type": "linear",
+      "formula_expression": "",
+      "formula_language": "gic-expression-1.0",
+      "lifecycle_status": "active",
+      "current_version": 1,
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.879148+00:00",
+      "updated_at": "2026-07-17T19:50:09.879486+00:00",
+      "milestones": [],
+      "metadata": {
+        "canonical_target_id": "gic-target-61bc37e9887a3252",
+        "record_id": "gic-record-3bb3e632355d26c9"
+      },
+      "versions": [
+        {
+          "target_model_version_id": "gic-target_model_version-6ce7e0a7e4b5422fbfae",
+          "target_model_id": "gic-target-model-9c6e0716c2085cf79608",
+          "version_number": 1,
+          "version_label": "1.1.0",
+          "model_hash": "10a0c1c17dcd65f9feeac504afec5079876ba00781a0ccfc61358756dc7b02aa",
+          "created_at": "2026-07-17T19:50:09.879434+00:00",
+          "created_by": "system",
+          "model": {
+            "direction": "higher_is_better",
+            "end_period": "2027",
+            "end_value": null,
+            "formula_expression": "",
+            "formula_language": "gic-expression-1.0",
+            "formula_variables": [],
+            "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+            "lifecycle_status": "active",
+            "lower_value": null,
+            "metadata": {
+              "canonical_target_id": "gic-target-61bc37e9887a3252",
+              "record_id": "gic-record-3bb3e632355d26c9"
+            },
+            "milestones": [],
+            "name": "Average monthly bill reduction target",
+            "relative_change_percent": null,
+            "start_period": null,
+            "start_value": null,
+            "target_model_id": "gic-target-model-9c6e0716c2085cf79608",
+            "target_type": "absolute",
+            "target_value": 30.0,
+            "trajectory_type": "linear",
+            "unit_id": "gic-unit-usd",
+            "upper_value": null,
+            "workspace_id": "gic-workspace-bdc75d8b68333af2"
+          }
+        }
+      ]
+    }
+  ],
+  "method_definitions": [
+    {
+      "method_definition_id": "gic-method-dfc0b951aac86076",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "name": "Before-and-after billing comparison",
+      "method_kind": "measurement",
+      "design_type": "before_after",
+      "description": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills. Results should be reviewed for seasonality and household-size differences.",
+      "formula_expression": "",
+      "formula_language": "gic-expression-1.0",
+      "lifecycle_status": "active",
+      "current_version": 1,
+      "revision": 1,
+      "created_at": "2026-07-17T19:50:09.879757+00:00",
+      "updated_at": "2026-07-17T19:50:09.880052+00:00",
+      "input_requirements": [],
+      "quality_profile": {
+        "data_quality": "not_assessed",
+        "reproducibility": "documented",
+        "review_status": "needs_review"
+      },
+      "limitations": [],
+      "metadata": {
+        "canonical_method_id": "gic-method-dfc0b951aac86076",
+        "record_id": "gic-record-3bb3e632355d26c9"
+      },
+      "versions": [
+        {
+          "method_definition_version_id": "gic-method_definition_version-4341591fd3389a358d25",
+          "method_definition_id": "gic-method-dfc0b951aac86076",
+          "version_number": 1,
+          "version_label": "1.0",
+          "method_hash": "da0faf44f1022bab9c297cbf657134caa8bf7bf4929858f5f2e780ceb89405c1",
+          "created_at": "2026-07-17T19:50:09.880012+00:00",
+          "created_by": "system",
+          "method": {
+            "description": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills. Results should be reviewed for seasonality and household-size differences.",
+            "design_type": "before_after",
+            "formula_expression": "",
+            "formula_language": "gic-expression-1.0",
+            "formula_variables": [],
+            "input_requirements": [],
+            "lifecycle_status": "active",
+            "limitations": [],
+            "metadata": {
+              "canonical_method_id": "gic-method-dfc0b951aac86076",
+              "record_id": "gic-record-3bb3e632355d26c9"
+            },
+            "method_definition_id": "gic-method-dfc0b951aac86076",
+            "method_kind": "measurement",
+            "name": "Before-and-after billing comparison",
+            "quality_profile": {
+              "data_quality": "not_assessed",
+              "reproducibility": "documented",
+              "review_status": "needs_review"
+            },
+            "workspace_id": "gic-workspace-bdc75d8b68333af2"
+          }
+        }
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "gic-indicator-binding-2876e151e5652c8f8383",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "indicator_id": "gic-indicator-2e7a8f93231487ce",
+      "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+      "indicator_definition_version_id": "gic-indicator_definition_version-b276f0e1a0dd266f63c1",
+      "unit_id": "gic-unit-usd",
+      "baseline_model_id": "gic-baseline-model-9c6e0716c2085cf79608",
+      "baseline_model_version_id": "gic-baseline_model_version-d0a3b36dfbc7ec53d831",
+      "target_model_id": "gic-target-model-9c6e0716c2085cf79608",
+      "target_model_version_id": "gic-target_model_version-6ce7e0a7e4b5422fbfae",
+      "method_definition_id": "gic-method-dfc0b951aac86076",
+      "method_definition_version_id": "gic-method_definition_version-4341591fd3389a358d25",
+      "bound_at": "2026-07-17T19:50:09.880509+00:00",
+      "bound_by": "system",
+      "revision": 1,
+      "metadata": {
+        "materialized_from_contract": "gic-record-3bb3e632355d26c9"
+      }
+    }
+  ],
+  "integrity": {
+    "valid": true,
+    "unit_count": 18,
+    "indicator_definition_count": 1,
+    "indicator_definition_version_count": 1,
+    "baseline_model_count": 1,
+    "target_model_count": 1,
+    "method_definition_count": 1,
+    "binding_count": 1,
+    "missing_unit_ids": [],
+    "orphan_binding_ids": []
+  }
+}
