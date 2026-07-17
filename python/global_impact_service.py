@@ -1,4 +1,4 @@
-"""Application service layer for Global Impact Catalyst v1.5.0."""
+"""Application service layer for Global Impact Catalyst v1.6.0."""
 from __future__ import annotations
 
 import copy
@@ -20,7 +20,7 @@ from python.global_impact_repository import (
     utc_now,
 )
 
-SERVICE_VERSION = "1.5.0"
+SERVICE_VERSION = "1.6.0"
 
 
 def compact_input_from_contract(contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -258,6 +258,41 @@ class ImpactApplicationService:
             path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(measurement, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         return measurement
+
+
+    def register_workflow_role(self, role: Dict[str, Any], *, workspace_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_workflow_role(role, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def create_review_assignment(self, assignment: Dict[str, Any], *, workspace_id: str, initiative_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_review_assignment(assignment, workspace_id=workspace_id, initiative_id=initiative_id, actor=actor)
+
+    def add_review_comment(self, assignment_id: str, comment: Dict[str, Any], *, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.add_review_comment(assignment_id, comment, actor=actor)
+
+    def submit_quality_assessment(self, assessment: Dict[str, Any], *, workspace_id: str, initiative_id: str, assignment_id: Optional[str] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.submit_quality_assessment(assessment, workspace_id=workspace_id, initiative_id=initiative_id, assignment_id=assignment_id, actor=actor)
+
+    def record_approval_decision(self, assignment_id: str, decision: str, *, rationale: str, conditions: Optional[list[Any]] = None, reviewer_id: Optional[str] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.record_approval_decision(assignment_id, decision, rationale=rationale, conditions=conditions, reviewer_id=reviewer_id, actor=actor)
+
+    def open_correction(self, correction: Dict[str, Any], *, workspace_id: str, initiative_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.open_correction(correction, workspace_id=workspace_id, initiative_id=initiative_id, actor=actor)
+
+    def create_publication(self, publication: Dict[str, Any], *, workspace_id: str, initiative_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_publication(publication, workspace_id=workspace_id, initiative_id=initiative_id, actor=actor)
+
+    def publish(self, publication_id: str, *, actor: str = "system", quality_threshold: float = 60.0) -> Dict[str, Any]:
+        return self.repository.publish(publication_id, actor=actor, quality_threshold=quality_threshold)
+
+    def withdraw_publication(self, publication_id: str, *, reason: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.withdraw_publication(publication_id, reason=reason, actor=actor)
+
+    def review_workflow(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
+        workflow = self.repository.export_review_workflow(workspace_id)
+        if destination:
+            path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(workflow, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return workflow
 
     def export_workspace(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
         bundle = self.repository.export_workspace_bundle(workspace_id)

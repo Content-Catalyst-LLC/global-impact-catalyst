@@ -31,8 +31,8 @@ def test_migration_6_and_contract_materialization(tmp_path):
     with SQLiteImpactRepository(tmp_path / "measurement.sqlite3") as repo:
         created = create(repo)
         workspace_id, initiative_id, indicator_id = ids(created)
-        assert DATABASE_SCHEMA_VERSION == 6
-        assert repo.schema_version == 6
+        assert DATABASE_SCHEMA_VERSION == 7
+        assert repo.schema_version == 7
         summary = repo.repository_summary()
         assert summary["impact_results"] == 1
         assert summary["observation_series"] == 1

@@ -1,4 +1,4 @@
-"""Persistent repository for Global Impact Catalyst v1.5.0.
+"""Persistent repository for Global Impact Catalyst v1.6.0.
 
 The repository stores canonical contracts as immutable calculation snapshots and
 maintains indexed entity projections for workspace operations. SQLite is the
@@ -19,8 +19,9 @@ from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence
 
 from python.global_impact_registry import IndicatorRegistryMixin
 from python.global_impact_measurement import MeasurementPortfolioMixin
+from python.global_impact_review import ReviewWorkflowMixin
 
-DATABASE_SCHEMA_VERSION = 6
+DATABASE_SCHEMA_VERSION = 7
 SUPPORTED_CONTRACT_VERSIONS = {"1.0.0", "1.0.1", "1.1.0", "1.2.0"}
 ENTITY_TYPES = {"workspace", "initiative", "goal", "indicator", "observation", "target", "source"}
 EVIDENCE_TYPES = {"excerpt", "quotation", "dataset_excerpt", "observation_note", "document_note", "table", "figure"}
@@ -217,9 +218,14 @@ MIGRATIONS: Sequence[tuple[int, str, str]] = (
         "observations_beneficiaries_budgets_outcome_portfolios",
         (Path(__file__).resolve().parents[1] / "migrations/006_observations_beneficiaries_budgets_outcome_portfolios.sql").read_text(encoding="utf-8"),
     ),
+    (
+        7,
+        "review_quality_revision_workflow",
+        (Path(__file__).resolve().parents[1] / "migrations/007_review_quality_revision_workflow.sql").read_text(encoding="utf-8"),
+    ),
 )
 
-class SQLiteImpactRepository(MeasurementPortfolioMixin, IndicatorRegistryMixin):
+class SQLiteImpactRepository(ReviewWorkflowMixin, MeasurementPortfolioMixin, IndicatorRegistryMixin):
     """SQLite reference repository with repeatable migrations and JSON projections."""
 
     def __init__(self, database: str | Path = ":memory:", *, auto_migrate: bool = True):
@@ -528,8 +534,9 @@ class SQLiteImpactRepository(MeasurementPortfolioMixin, IndicatorRegistryMixin):
         digest = content_hash(contract)
         with self.transaction():
             existing = self.connection.execute(
-                "SELECT revision, created_at FROM canonical_contracts WHERE record_id=?", (record_id,)
+                "SELECT revision, created_at, content_hash FROM canonical_contracts WHERE record_id=?", (record_id,)
             ).fetchone()
+            previous_content_hash = str(existing["content_hash"]) if existing else None
             if existing:
                 actual = int(existing["revision"])
                 if expected_revision is not None and expected_revision != actual:
@@ -572,6 +579,10 @@ class SQLiteImpactRepository(MeasurementPortfolioMixin, IndicatorRegistryMixin):
             self._materialize_contract_evidence(contract, actor=actor)
             self._materialize_contract_registry(contract, actor=actor)
             self._materialize_contract_measurement(contract, actor=actor)
+            self._materialize_contract_workflow(
+                contract, repository_revision=revision, previous_content_hash=previous_content_hash,
+                action=action, actor=actor,
+            )
             self.connection.execute("DELETE FROM draft_autosaves WHERE initiative_id=?", (initiative_id,))
             self._audit(action, "contract", record_id, workspace_id=workspace_id, initiative_id=initiative_id, revision=revision, actor=actor, details={"save_state": save_state, "content_hash": digest})
         return self.get_contract(record_id=record_id)
@@ -1021,7 +1032,7 @@ class SQLiteImpactRepository(MeasurementPortfolioMixin, IndicatorRegistryMixin):
         portfolios = self.list_portfolios(workspace_id, include_archived=True)
         return {
             "bundle_type": "global_impact_workspace_bundle",
-            "bundle_version": "1.5.0",
+            "bundle_version": "1.6.0",
             "database_schema_version": self.schema_version,
             "exported_at": utc_now(),
             "workspace": workspace,
@@ -1030,6 +1041,7 @@ class SQLiteImpactRepository(MeasurementPortfolioMixin, IndicatorRegistryMixin):
             "evidence_repository": self.export_evidence_repository(workspace_id),
             "indicator_registry": self.export_indicator_registry(workspace_id),
             "measurement_repository": self.export_measurement_repository(workspace_id),
+            "review_workflow": self.export_review_workflow(workspace_id),
             "audit": self.audit_records(workspace_id=workspace_id, limit=1000),
         }
 
@@ -1060,6 +1072,7 @@ class SQLiteImpactRepository(MeasurementPortfolioMixin, IndicatorRegistryMixin):
         self._restore_evidence_repository(bundle.get("evidence_repository") or {})
         self._restore_indicator_registry(bundle.get("indicator_registry") or {}, actor=actor)
         self._restore_measurement_repository(bundle.get("measurement_repository") or {}, actor=actor)
+        self._restore_review_workflow(bundle.get("review_workflow") or {}, actor=actor)
         restore_id = f"gic-restore-{digest[:20]}"
         summary = {"workspace_id": workspace_id, "contracts_imported": imported, "contracts_unchanged": unchanged}
         self.connection.execute(
@@ -1116,4 +1129,13 @@ class SQLiteImpactRepository(MeasurementPortfolioMixin, IndicatorRegistryMixin):
             "contribution_notes": count("contribution_notes"),
             "outcome_portfolios": count("outcome_portfolios"),
             "portfolio_aggregation_runs": count("portfolio_aggregation_runs"),
+            "workflow_roles": count("workflow_roles"),
+            "review_assignments": count("review_assignments"),
+            "review_comments": count("review_comments"),
+            "quality_assessments": count("quality_assessments"),
+            "approval_decisions": count("approval_decisions"),
+            "workflow_revisions": count("workflow_revisions"),
+            "correction_records": count("correction_records"),
+            "publication_records": count("publication_records"),
+            "publication_events": count("publication_events"),
         }

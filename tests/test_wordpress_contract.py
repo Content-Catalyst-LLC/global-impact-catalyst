@@ -9,15 +9,18 @@ REGISTRY_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-ca
 REGISTRY_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-registry.css').read_text()
 MEASUREMENT_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-measurement.js').read_text()
 MEASUREMENT_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-measurement.css').read_text()
+REVIEW_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-review.js').read_text()
+REVIEW_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-review.css').read_text()
 
 def test_plugin_version_shortcodes_and_instance_ids():
-    assert '* Version: 1.5.0' in PHP
-    assert "define('GIC_DEMO_VERSION', '1.5.0')" in PHP
+    assert '* Version: 1.6.0' in PHP
+    assert "define('GIC_DEMO_VERSION', '1.6.0')" in PHP
     assert "add_shortcode('global_impact_catalyst_demo'" in PHP
     assert "add_shortcode('global_impact_catalyst_workspace'" in PHP
     assert "add_shortcode('global_impact_catalyst_evidence_ledger'" in PHP
     assert "add_shortcode('global_impact_catalyst_indicator_registry'" in PHP
     assert "add_shortcode('global_impact_catalyst_measurement_portfolio'" in PHP
+    assert "add_shortcode('global_impact_catalyst_review_workflow'" in PHP
     assert 'static $instance = 0' in PHP and '$id_prefix' in PHP
 
 def test_plugin_exposes_contract_and_claim_fields():
@@ -89,3 +92,20 @@ def test_measurement_client_and_styles_support_program_records():
     for operation in ['measurement-repository?workspace_id=','beneficiary-definitions','beneficiary-observations','financial-records','outcome-portfolios','data-gic-measurement-download']:
         assert operation in MEASUREMENT_JS or operation in PHP
     assert '.gic-measurement__grid' in MEASUREMENT_CSS and '@media' in MEASUREMENT_CSS
+
+
+def test_review_workflow_tables_routes_materialization_and_shortcode_are_present():
+    for table in ['workflow_roles','review_assignments','review_comments','quality_assessments','approval_decisions','workflow_revisions','correction_records','publication_records','publication_events']:
+        assert f"gic_repository_table('{table}')" in PHP
+    for behavior in ['gic_review_ensure_roles','gic_review_record_contract_revision','gic_review_export','gic_review_assignment_rest','gic_review_comment_rest','gic_review_quality_rest','gic_review_decision_rest','gic_review_correction_rest','gic_review_publication_rest','gic_review_publish_rest','gic_review_withdraw_rest']:
+        assert f'function {behavior}' in PHP
+    for route in ['/review-workflow','/review-assignments','/review-comments','/quality-assessments','/approval-decisions','/corrections','/publications']:
+        assert route in PHP
+    for control in ['data-gic-review','data-gic-review-load','data-gic-review-assignment','data-gic-review-assessment','data-gic-review-list']:
+        assert control in PHP
+
+
+def test_review_workflow_client_and_styles_support_governed_review():
+    for operation in ['review-workflow?workspace_id=','review-assignments','quality-assessments','data-gic-review-count']:
+        assert operation in REVIEW_JS or operation in PHP
+    assert '.gic-review__grid' in REVIEW_CSS and '@media' in REVIEW_CSS

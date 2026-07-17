@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.0 — Review, Quality, and Revision Workflow
+
+- Added governed reviewer roles, assignments, comments, quality assessments, approval decisions, corrections, publication controls, withdrawal, and immutable revision history.
+- Added SQLite migration 7, review workflow schema/export/restore, service and CLI operations, and an authenticated WordPress review interface.
+- Preserved canonical contract v1.1.0, evidence v1.3.0, registry v1.4.0, and measurement v1.5.0 semantics.
+
 All notable changes to Global Impact Catalyst are documented in this file.
 
 ## [1.5.0] - 2026-07-17

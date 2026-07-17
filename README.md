@@ -1,28 +1,28 @@
 # Global Impact Catalyst
 
-Global Impact Catalyst is open public-interest infrastructure for defining, validating, saving, sourcing, governing, measuring, and transporting impact records. It combines a canonical impact contract with persistent initiatives, evidence provenance, governed indicator definitions, multi-period observations, aggregate beneficiary records, program finances, and guarded outcome portfolios.
+Global Impact Catalyst is open public-interest infrastructure for defining, validating, saving, sourcing, governing, measuring, reviewing, and publishing impact records. It combines a canonical impact contract with persistent initiatives, evidence provenance, governed indicator definitions, multi-period observations, aggregate beneficiary records, program finances, guarded outcome portfolios, and auditable review workflows.
 
 The system is not an ESG assurance platform, certification tool, audit substitute, causal-proof engine, regulatory filing system, or automatic truth system.
 
-## v1.5.0 — Observations, Beneficiaries, Budgets, and Outcome Portfolios
+## v1.6.0 governance workflow — Review, Quality, and Revision Workflow
 
-v1.5.0 adds a program-measurement layer around the canonical v1.1.0 contract, the v1.3.0 evidence chain, and the v1.4.0 indicator registry:
+v1.6.0 adds governed review and publication operations around the existing contract, evidence, registry, and measurement layers:
 
-- Multi-period observations with complete, missing, late, revised, and partial data states
-- Revision links, aggregate disaggregation dimensions, denominator definitions, and source/method references
-- Aggregate-only beneficiary definitions for direct, indirect, and combined reach
-- Unique, estimated-unique, encounter, household, and organization counting methods
-- Explicit overlap assumptions, overlap estimates, and privacy-safe beneficiary summaries
-- Budgets, expenditures, commitments, and funding records with cost categories and funding sources
-- Explicit exchange rates and reporting currencies rather than silent currency conversion
-- Cost-per-output, cost-per-outcome, and cost-per-beneficiary calculations with methodological boundaries
-- Output, outcome, and long-term-impact records with typed contribution relationships
-- External factors and contribution notes that preserve alternative explanations and limitations
-- Outcome portfolios with period, unit, missing-data, and population-overlap guards
-- Schema-validated measurement-repository export and lossless workspace restore
-- Python service, CLI, and authenticated WordPress measurement workflows
+- Workspace-scoped review roles and permissions
+- Review assignments with priority, due date, scope, and status
+- Threaded comments with explicit resolution states
+- Weighted quality assessments and descriptive grades
+- Approval, change-request, rejection, and abstention decisions
+- Approval gates for unresolved comments and inadequate quality review
+- Immutable contract snapshots, immutable revision history, and SHA-256 lineage
+- Correction records linked to resulting revisions
+- Publication drafts bound to exact content hashes
+- Approval, quality, correction, and stale-content publication gates
+- Published, withdrawn, and superseded lifecycle history
+- Review-workflow export, schema validation, backup, and lossless restore
+- Python service, CLI, and authenticated WordPress review interface
 
-The package, application, database schema, workspace bundle, measurement repository, and WordPress plugin are v1.5.0. The indicator registry remains v1.4.0, the evidence formats remain v1.3.0, and the canonical calculation contract remains v1.1.0. This additive release does not alter the existing canonical metrics or browser/Python parity fixtures.
+Compatibility identities remain explicit: canonical contract v1.1.0, evidence repository v1.3.0, indicator registry v1.4.0, measurement repository v1.5.0, and review workflow/workspace bundle v1.6.0. Database schema version is 7.
 
 ## Architecture
 
@@ -37,12 +37,13 @@ SQLite repository / CLI / WordPress repository
         ├── initiatives + autosaves + audit history
         ├── sources + versions + evidence + datasets + provenance
         ├── units + indicators + baselines + targets + methods
-        └── results + observations + beneficiaries + finances + outcome portfolios
+        ├── results + observations + beneficiaries + finances + outcome portfolios
+        └── roles + assignments + comments + quality + decisions + corrections + publications
                                       ↓
- workspace bundle / evidence export / registry export / measurement export / backup
+ workspace bundle / evidence export / registry export / measurement export / review export / backup
 ```
 
-Canonical contracts remain complete JSON snapshots. Evidence, registry, and measurement records are additive governed repository objects. Updating an observation creates a revision record; updating a unit, definition, model, or method creates a governed version rather than rewriting the version already bound to an initiative.
+Canonical contracts remain complete JSON snapshots. Evidence, registry, measurement, and review records are additive governed repository objects. Observation changes create revision lineage; registry updates create immutable versions; contract saves create workflow revision snapshots; published records remain tied to the exact reviewed content hash.
 
 ## Python repository quick start
 
@@ -55,42 +56,42 @@ python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqli
   --generated-at 2026-07-17T18:00:00+00:00
 ```
 
-Record a new observation:
+Create a review assignment and inspect the workflow:
 
 ```bash
-python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 add-observation \
+python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 assign-review \
   --workspace-id gic-workspace-… \
   --initiative-id gic-initiative-… \
-  --input observation.json
+  --input review-assignment.json
+
+python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 review-workflow \
+  --workspace-id gic-workspace-… \
+  --output outputs/review-workflow.json
 ```
 
-Register aggregate beneficiaries and financial records:
+Record quality and a decision:
 
 ```bash
-python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 add-beneficiary-definition \
-  --workspace-id gic-workspace-… --initiative-id gic-initiative-… --input beneficiary-definition.json
-python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 add-beneficiary-observation \
-  --definition-id gic-beneficiary-… --input beneficiary-observation.json
-python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 add-financial-record \
-  --workspace-id gic-workspace-… --initiative-id gic-initiative-… --input financial-record.json
+python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 assess-quality \
+  --workspace-id gic-workspace-… --initiative-id gic-initiative-… --input quality-assessment.json
+
+python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 review-decision \
+  --workspace-id gic-workspace-… --initiative-id gic-initiative-… --input approval-decision.json
 ```
 
-Create and aggregate an outcome portfolio:
+Create and publish an approved record:
 
 ```bash
-python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 add-outcome-portfolio \
-  --workspace-id gic-workspace-… --input portfolio.json
-python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 add-outcome-member \
-  --portfolio-id gic-outcome-portfolio-… --input member.json
-python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 aggregate-outcome-portfolio \
-  --portfolio-id gic-outcome-portfolio-… --period-label "2026 Q3"
+python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 create-publication \
+  --workspace-id gic-workspace-… --initiative-id gic-initiative-… --input publication.json
+
+python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 publish \
+  --publication-id gic-publication-… --publisher-id reviewer@example.org
 ```
 
-Export the measurement repository or complete workspace bundle:
+Export a complete workspace bundle:
 
 ```bash
-python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 measurement-repository \
-  --workspace-id gic-workspace-… --output outputs/measurement-repository.json
 python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 export \
   --workspace-id gic-workspace-… --output outputs/workspace-bundle.json
 ```
@@ -120,9 +121,10 @@ Shortcodes:
 [global_impact_catalyst_evidence_ledger]
 [global_impact_catalyst_indicator_registry]
 [global_impact_catalyst_measurement_portfolio]
+[global_impact_catalyst_review_workflow]
 ```
 
-The public demo is stateless. The workspace, evidence ledger, indicator registry, and measurement portfolio require an authenticated user with `edit_posts` capability. The measurement interface records observations, aggregate beneficiary counts, financial records, portfolio memberships, and guarded aggregations.
+The public demo is stateless. The repository interfaces require an authenticated user with `edit_posts` capability. The review workflow displays assignments and publication status and supports governed quality review operations through nonce-protected REST routes.
 
 ## JSON Schemas and examples
 
@@ -130,11 +132,9 @@ The public demo is stateless. The workspace, evidence ledger, indicator registry
 - `schemas/global_impact_evidence_chain.schema.json` — evidence chain v1.3.0
 - `schemas/global_impact_indicator_registry.schema.json` — indicator registry v1.4.0
 - `schemas/global_impact_measurement_repository.schema.json` — measurement repository v1.5.0
-- `schemas/global_impact_outcome_portfolio_aggregation.schema.json` — guarded aggregation v1.5.0
-- `schemas/global_impact_beneficiary_summary.schema.json` — aggregate reach summary v1.5.0
-- `schemas/global_impact_workspace_bundle.schema.json` — complete workspace bundle v1.5.0
-- `examples/example_global_impact_measurement_repository.json`
-- `examples/example_global_impact_outcome_portfolio_aggregation.json`
+- `schemas/global_impact_review_workflow.schema.json` — review workflow v1.6.0
+- `schemas/global_impact_workspace_bundle.schema.json` — complete workspace bundle v1.6.0
+- `examples/example_global_impact_review_workflow.json`
 - `examples/example_global_impact_workspace_bundle.json`
 
 ## Validation
@@ -144,7 +144,7 @@ python3 -m pip install -r requirements-dev.txt
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q
 python3 scripts/check_contracts.py
 node scripts/check_browser_parity.js
-node --check wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-measurement.js
+node --check wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-review.js
 php scripts/check_wordpress_instances.php
 python3 scripts/smoke_test.py
 ```
@@ -155,22 +155,23 @@ python3 scripts/smoke_test.py
 app/                                  Application-facing service wrapper
 contracts/                            Canonical fixtures and legacy imports
 data/                                 Compact authoring sample
-docs/                                 Contract, evidence, registry, measurement, and WordPress docs
-examples/                             Contract, evidence, registry, measurement, and workspace examples
+docs/                                 Contract, evidence, registry, measurement, review, and WordPress docs
+examples/                             Contract and repository examples
 migrations/                           Versioned SQLite migrations
 python/global_impact_core.py          Canonical v1.1.0 engine
 python/global_impact_repository.py    SQLite repository and workspace bundles
 python/global_impact_registry.py      Units, indicators, baselines, targets, and methods
 python/global_impact_measurement.py   Observations, beneficiaries, finances, results, and portfolios
+python/global_impact_review.py        Roles, review, quality, revisions, corrections, and publications
 python/global_impact_service.py       Shared application service
 schemas/                              Contract and repository JSON Schemas
 scripts/gic_repository.py             Repository CLI
-wordpress/                            Demo and authenticated repository interfaces
+wordpress/                            Public demo and authenticated repository interfaces
 ```
 
-## Methodological and privacy boundary
+## Governance boundary
 
-Global Impact Catalyst improves structure, persistence, integrity signals, reproducibility, and review visibility. A unit conversion demonstrates numerical compatibility under registered rules; it does not establish methodological comparability. A cost metric is a transparent ratio under declared records and denominators; it is not proof of efficiency or value for money. A portfolio aggregation combines compatible recorded observations; it does not prove attribution or eliminate double counting beyond its disclosed rules. Core beneficiary workflows store aggregate counts and dimensions, not individual beneficiary records or direct identifiers.
+Global Impact Catalyst improves structure, persistence, integrity signals, reproducibility, and review visibility. A quality score is a documented reviewer judgment, not an audit opinion. Approval records internal governance, not external assurance. Publication confirms that configured workflow gates were met for a specific content hash; it does not establish source truth, regulatory compliance, attribution, causal proof, certification, or impact assurance.
 
 ## License
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.5.0."""
+"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.6.0."""
 from __future__ import annotations
 
 import json
@@ -39,7 +39,7 @@ def main() -> int:
         for asset in (
             "global-impact-catalyst-demo.js", "global-impact-catalyst-workspace.js",
             "global-impact-catalyst-evidence.js", "global-impact-catalyst-registry.js",
-            "global-impact-catalyst-measurement.js",
+            "global-impact-catalyst-measurement.js", "global-impact-catalyst-review.js",
         ):
             run("node", "--check", f"wordpress/global-impact-catalyst-demo/assets/{asset}")
     else:
@@ -55,7 +55,7 @@ def main() -> int:
     from python.global_impact_service import ImpactApplicationService
 
     payload = json.loads((ROOT / "data/sample_global_impact_input.json").read_text(encoding="utf-8"))
-    with tempfile.TemporaryDirectory(prefix="gic-v150-") as temp:
+    with tempfile.TemporaryDirectory(prefix="gic-v160-") as temp:
         directory = Path(temp)
         database = directory / "impact.sqlite3"
         restored_database = directory / "restored.sqlite3"
@@ -73,7 +73,7 @@ def main() -> int:
             initiative_id = created["repository"]["initiative_id"]
             indicator_id = contract["facts"]["indicator"]["id"]
             summary = repository.repository_summary()
-            assert summary["database_schema_version"] == 6
+            assert summary["database_schema_version"] == 7
             assert summary["contracts"] == 1
             assert summary["sources"] == 1
             assert summary["units"] >= 18
@@ -81,6 +81,8 @@ def main() -> int:
             assert summary["observation_series"] == 1
             assert summary["beneficiary_definitions"] == 1
             assert summary["financial_records"] == 1
+            assert summary["workflow_roles"] == 5
+            assert summary["workflow_revisions"] == 1
 
             q3 = service.record_observation({
                 "indicator_id": indicator_id, "period_label": "2026 Q3", "value": 21.5,
@@ -180,9 +182,42 @@ def main() -> int:
             assert evidence["repository_version"] == "1.3.0"
             validate(evidence, "global_impact_evidence_repository.schema.json")
 
+            record_id = created["repository"]["record_id"]
+            approver_role = next(role for role in repository.list_workflow_roles(workspace_id) if role["metadata"].get("role_key") == "approver")
+            assignment = service.create_review_assignment({
+                "subject_type": "contract", "subject_id": record_id,
+                "reviewer_id": "reviewer@example.org", "role_id": approver_role["role_id"], "priority": "high",
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            comment = service.add_review_comment(assignment["assignment_id"], {
+                "author_id": "reviewer@example.org", "body": "Retain the seasonality limitation."
+            }, actor="reviewer@example.org")
+            service.submit_quality_assessment({
+                "assessor_id": "reviewer@example.org",
+                "dimensions": [
+                    {"key": "evidence", "score": 85, "maximum_score": 100},
+                    {"key": "method", "score": 80, "maximum_score": 100},
+                    {"key": "traceability", "score": 90, "maximum_score": 100},
+                ],
+            }, workspace_id=workspace_id, initiative_id=initiative_id, assignment_id=assignment["assignment_id"], actor="reviewer@example.org")
+            repository.resolve_review_comment(comment["comment_id"], actor="release-smoke")
+            decision = service.record_approval_decision(
+                assignment["assignment_id"], "approve", rationale="Approved for publication.",
+                reviewer_id="reviewer@example.org", actor="reviewer@example.org",
+            )
+            publication = service.create_publication({
+                "subject_type": "contract", "subject_id": record_id, "title": "Release smoke impact brief"
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="publisher")
+            publication = service.publish(publication["publication_id"], actor="publisher")
+            assert publication["approved_decision_id"] == decision["decision_id"]
+            workflow = service.review_workflow(workspace_id)
+            assert workflow["workflow_version"] == "1.6.0"
+            assert workflow["integrity"]["valid"]
+            assert workflow["integrity"]["publication_count"] == 1
+            validate(workflow, "global_impact_review_workflow.schema.json")
+
             bundle = repository.export_workspace_bundle(workspace_id)
-            assert bundle["bundle_version"] == "1.5.0"
-            assert bundle["database_schema_version"] == 6
+            assert bundle["bundle_version"] == "1.6.0"
+            assert bundle["database_schema_version"] == 7
             validate(bundle, "global_impact_workspace_bundle.schema.json")
             repository.backup_database(backup)
 
@@ -194,8 +229,11 @@ def main() -> int:
             restored_measurement = restored.export_measurement_repository(workspace_id)
             assert restored_measurement["integrity"] == measurement["integrity"]
             assert restored.repository_summary()["portfolio_aggregation_runs"] == 1
+            restored_workflow = restored.export_review_workflow(workspace_id)
+            assert restored_workflow["integrity"] == workflow["integrity"]
+            assert restored_workflow["publications"][0]["publication_status"] == "published"
 
-    print("Global Impact Catalyst v1.5.0 portable release smoke tests passed.")
+    print("Global Impact Catalyst v1.6.0 portable release smoke tests passed.")
     return 0
 
 

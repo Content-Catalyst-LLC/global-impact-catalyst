@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line workspace, evidence, indicator-registry, and program-measurement operations for v1.5.0."""
+"""Command-line workspace, evidence, indicator-registry, and program-measurement and review-workflow operations for v1.6.0."""
 from __future__ import annotations
 import argparse,json,sys
 from pathlib import Path
@@ -14,7 +14,7 @@ def read_json(path:str): return json.loads(Path(path).read_text(encoding='utf-8'
 def emit(value): print(json.dumps(value,indent=2,ensure_ascii=False,default=lambda o:o.__dict__))
 
 def main()->int:
-    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, indicator-registry, and program-measurement CLI')
+    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, indicator-registry, and program-measurement and review-workflow CLI')
     parser.add_argument('--database',default='outputs/global-impact-catalyst.sqlite3')
     sub=parser.add_subparsers(dest='command',required=True)
     sub.add_parser('init')
@@ -60,6 +60,17 @@ def main()->int:
     add_outcome_member=sub.add_parser('add-outcome-member'); add_outcome_member.add_argument('--portfolio-id',required=True); add_outcome_member.add_argument('--input',required=True)
     aggregate_outcome=sub.add_parser('aggregate-outcome-portfolio'); aggregate_outcome.add_argument('--portfolio-id',required=True); aggregate_outcome.add_argument('--period-label',default=''); aggregate_outcome.add_argument('--period-start'); aggregate_outcome.add_argument('--period-end'); aggregate_outcome.add_argument('--output')
     measurement=sub.add_parser('measurement-repository'); measurement.add_argument('--workspace-id',required=True); measurement.add_argument('--output')
+    workflow=sub.add_parser('review-workflow'); workflow.add_argument('--workspace-id',required=True); workflow.add_argument('--output')
+    add_role=sub.add_parser('add-review-role'); add_role.add_argument('--workspace-id',required=True); add_role.add_argument('--input',required=True)
+    assign=sub.add_parser('assign-review'); assign.add_argument('--workspace-id',required=True); assign.add_argument('--initiative-id',required=True); assign.add_argument('--input',required=True)
+    comment=sub.add_parser('add-review-comment'); comment.add_argument('--assignment-id',required=True); comment.add_argument('--input',required=True)
+    resolve_comment=sub.add_parser('resolve-review-comment'); resolve_comment.add_argument('--comment-id',required=True); resolve_comment.add_argument('--resolution',default='resolved',choices=['resolved','wont_fix'])
+    assess=sub.add_parser('assess-quality'); assess.add_argument('--workspace-id',required=True); assess.add_argument('--initiative-id',required=True); assess.add_argument('--assignment-id'); assess.add_argument('--input',required=True)
+    decide=sub.add_parser('review-decision'); decide.add_argument('--assignment-id',required=True); decide.add_argument('--decision',required=True,choices=['approve','request_changes','reject','abstain']); decide.add_argument('--rationale',required=True); decide.add_argument('--reviewer-id')
+    correction=sub.add_parser('open-correction'); correction.add_argument('--workspace-id',required=True); correction.add_argument('--initiative-id',required=True); correction.add_argument('--input',required=True)
+    publication=sub.add_parser('create-publication'); publication.add_argument('--workspace-id',required=True); publication.add_argument('--initiative-id',required=True); publication.add_argument('--input',required=True)
+    publish=sub.add_parser('publish'); publish.add_argument('--publication-id',required=True); publish.add_argument('--quality-threshold',type=float,default=60.0)
+    withdraw=sub.add_parser('withdraw-publication'); withdraw.add_argument('--publication-id',required=True); withdraw.add_argument('--reason',required=True)
     sub.add_parser('summary')
     args=parser.parse_args()
     with SQLiteImpactRepository(args.database) as repository:
@@ -111,6 +122,17 @@ def main()->int:
             if args.output: Path(args.output).write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
             emit(result)
         elif args.command=='measurement-repository': emit(service.measurement_repository(args.workspace_id,args.output))
+        elif args.command=='review-workflow': emit(service.review_workflow(args.workspace_id,args.output))
+        elif args.command=='add-review-role': emit(service.register_workflow_role(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='assign-review': emit(service.create_review_assignment(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,actor='cli'))
+        elif args.command=='add-review-comment': emit(service.add_review_comment(args.assignment_id,read_json(args.input),actor='cli'))
+        elif args.command=='resolve-review-comment': emit(repository.resolve_review_comment(args.comment_id,resolution_status=args.resolution,actor='cli'))
+        elif args.command=='assess-quality': emit(service.submit_quality_assessment(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,assignment_id=args.assignment_id,actor='cli'))
+        elif args.command=='review-decision': emit(service.record_approval_decision(args.assignment_id,args.decision,rationale=args.rationale,reviewer_id=args.reviewer_id,actor=args.reviewer_id or 'cli'))
+        elif args.command=='open-correction': emit(service.open_correction(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,actor='cli'))
+        elif args.command=='create-publication': emit(service.create_publication(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,actor='cli'))
+        elif args.command=='publish': emit(service.publish(args.publication_id,actor='cli',quality_threshold=args.quality_threshold))
+        elif args.command=='withdraw-publication': emit(service.withdraw_publication(args.publication_id,reason=args.reason,actor='cli'))
         elif args.command=='summary': emit(repository.repository_summary())
     return 0
 if __name__=='__main__': raise SystemExit(main())

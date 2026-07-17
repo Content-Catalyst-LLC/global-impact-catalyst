@@ -13,4 +13,4 @@ def test_validate_demo_payload_returns_structured_result():
     assert result['issues'][0]['rule_id']=='GIC-REQ-001'
 
 def test_healthcheck_version():
-    assert healthcheck()=={'status':'ok','module':'global-impact-catalyst','version':'1.5.0','contract_version':'1.1.0','database_schema_version':6,'persistence':'sqlite','evidence_repository':'sources-provenance-evidence','indicator_registry':'units-baselines-targets-methods','indicator_registry_version':'1.4.0','measurement_repository':'observations-beneficiaries-budgets-outcome-portfolios','measurement_repository_version':'1.5.0'}
+    assert healthcheck()=={'status':'ok','module':'global-impact-catalyst','version':'1.6.0','contract_version':'1.1.0','database_schema_version':7,'persistence':'sqlite','evidence_repository':'sources-provenance-evidence','indicator_registry':'units-baselines-targets-methods','indicator_registry_version':'1.4.0','measurement_repository':'observations-beneficiaries-budgets-outcome-portfolios','measurement_repository_version':'1.5.0','review_workflow':'roles-assignments-comments-quality-approvals-corrections-publications','review_workflow_version':'1.6.0'}

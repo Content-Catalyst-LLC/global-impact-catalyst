@@ -11,6 +11,7 @@ function wp_enqueue_script() {}
 function wp_localize_script() {}
 function add_shortcode() {}
 function esc_attr($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
+function esc_url($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
 function esc_url_raw($value) { return $value; }
 function wp_rand($min, $max) { static $counter = 1000; return $counter++; }
 function is_user_logged_in() { return true; }
@@ -63,4 +64,14 @@ preg_match_all('/\sfor="([^"]+)"/', $measurement, $measurement_labels);
 foreach ($measurement_labels[1] as $target) {
     if (!in_array($target, $measurement_ids[1], true)) { fwrite(STDERR, "Measurement label target is missing: {$target}\n"); exit(1); }
 }
-echo "WordPress v1.5.0 workspace, evidence ledger, indicator registry, measurement portfolio, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";
+
+$review = gic_review_workflow_shortcode();
+foreach (array('data-gic-review','data-gic-review-load','data-gic-review-assignment','data-gic-review-assessment','data-gic-review-list') as $needle) {
+    if (strpos($review, $needle) === false) { fwrite(STDERR, "Review workflow control missing: {$needle}\n"); exit(1); }
+}
+preg_match_all('/\sid="([^"]+)"/', $review, $review_ids);
+preg_match_all('/\sfor="([^"]+)"/', $review, $review_labels);
+foreach ($review_labels[1] as $target) {
+    if (!in_array($target, $review_ids[1], true)) { fwrite(STDERR, "Review label target is missing: {$target}\n"); exit(1); }
+}
+echo "WordPress v1.6.0 workspace, evidence ledger, indicator registry, measurement portfolio, review workflow, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";

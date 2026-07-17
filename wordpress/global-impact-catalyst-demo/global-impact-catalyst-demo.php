@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Global Impact Catalyst
- * Description: Persistent impact workspaces, evidence chains, governed indicators, multi-period measurement, beneficiary and budget records, outcome portfolios, and canonical contract demo. Shortcodes: [global_impact_catalyst_measurement_portfolio], [global_impact_catalyst_workspace], [global_impact_catalyst_evidence_ledger], [global_impact_catalyst_indicator_registry], [global_impact_catalyst_demo]
- * Version: 1.5.0
+ * Description: Persistent impact workspaces, evidence chains, governed indicators, multi-period measurement, review and approval workflow, corrections, publication controls, and canonical contract demo. Shortcodes: [global_impact_catalyst_review_workflow], [global_impact_catalyst_measurement_portfolio], [global_impact_catalyst_workspace], [global_impact_catalyst_evidence_ledger], [global_impact_catalyst_indicator_registry], [global_impact_catalyst_demo]
+ * Version: 1.6.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('GIC_DEMO_VERSION', '1.5.0');
+define('GIC_DEMO_VERSION', '1.6.0');
 define('GIC_DEMO_URL', plugin_dir_url(__FILE__));
 
 function gic_demo_register_assets() {
@@ -25,6 +25,8 @@ function gic_demo_register_assets() {
     wp_register_script('global-impact-catalyst-registry', GIC_DEMO_URL . 'assets/global-impact-catalyst-registry.js', array(), GIC_DEMO_VERSION, true);
     wp_register_style('global-impact-catalyst-measurement', GIC_DEMO_URL . 'assets/global-impact-catalyst-measurement.css', array('global-impact-catalyst-demo'), GIC_DEMO_VERSION);
     wp_register_script('global-impact-catalyst-measurement', GIC_DEMO_URL . 'assets/global-impact-catalyst-measurement.js', array(), GIC_DEMO_VERSION, true);
+    wp_register_style('global-impact-catalyst-review', GIC_DEMO_URL . 'assets/global-impact-catalyst-review.css', array('global-impact-catalyst-demo'), GIC_DEMO_VERSION);
+    wp_register_script('global-impact-catalyst-review', GIC_DEMO_URL . 'assets/global-impact-catalyst-review.js', array(), GIC_DEMO_VERSION, true);
 }
 add_action('wp_enqueue_scripts', 'gic_demo_register_assets');
 
@@ -751,13 +753,194 @@ function gic_repository_activate() {
       KEY outcome_portfolio_id (outcome_portfolio_id),
       KEY workspace_id (workspace_id)
     ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('workflow_roles') . " (
+      role_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      name text NOT NULL,
+      description longtext NOT NULL,
+      permissions_json longtext NOT NULL,
+      is_system tinyint unsigned NOT NULL DEFAULT 0,
+      archived_at datetime NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (role_id),
+      KEY workspace_id (workspace_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('review_assignments') . " (
+      assignment_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      subject_type varchar(48) NOT NULL,
+      subject_id varchar(96) NOT NULL,
+      reviewer_id varchar(190) NOT NULL,
+      role_id varchar(96) NOT NULL,
+      status varchar(32) NOT NULL DEFAULT 'pending',
+      priority varchar(16) NOT NULL DEFAULT 'normal',
+      due_at datetime NULL,
+      assigned_by varchar(190) NOT NULL,
+      assigned_at datetime NOT NULL,
+      started_at datetime NULL,
+      completed_at datetime NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (assignment_id),
+      KEY workspace_status (workspace_id,status),
+      KEY reviewer_status (reviewer_id,status)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('review_comments') . " (
+      comment_id varchar(96) NOT NULL,
+      assignment_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      subject_type varchar(48) NOT NULL,
+      subject_id varchar(96) NOT NULL,
+      author_id varchar(190) NOT NULL,
+      parent_comment_id varchar(96) NOT NULL DEFAULT '',
+      visibility varchar(24) NOT NULL DEFAULT 'workspace',
+      body longtext NOT NULL,
+      resolution_status varchar(24) NOT NULL DEFAULT 'open',
+      resolved_by varchar(190) NOT NULL DEFAULT '',
+      resolved_at datetime NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (comment_id),
+      KEY assignment_status (assignment_id,resolution_status)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('quality_assessments') . " (
+      assessment_id varchar(96) NOT NULL,
+      assignment_id varchar(96) NOT NULL DEFAULT '',
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      subject_type varchar(48) NOT NULL,
+      subject_id varchar(96) NOT NULL,
+      rubric_id varchar(96) NOT NULL,
+      rubric_version varchar(32) NOT NULL,
+      assessor_id varchar(190) NOT NULL,
+      status varchar(24) NOT NULL DEFAULT 'submitted',
+      score double NOT NULL,
+      maximum_score double NOT NULL DEFAULT 100,
+      grade varchar(24) NOT NULL,
+      dimensions_json longtext NOT NULL,
+      findings_json longtext NOT NULL,
+      limitations longtext NOT NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      submitted_at datetime NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (assessment_id),
+      KEY subject_status (subject_type,subject_id,status)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('approval_decisions') . " (
+      decision_id varchar(96) NOT NULL,
+      assignment_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      subject_type varchar(48) NOT NULL,
+      subject_id varchar(96) NOT NULL,
+      reviewer_id varchar(190) NOT NULL,
+      decision varchar(24) NOT NULL,
+      rationale longtext NOT NULL,
+      conditions_json longtext NOT NULL,
+      decided_at datetime NOT NULL,
+      supersedes_decision_id varchar(96) NOT NULL DEFAULT '',
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (decision_id),
+      KEY subject_id (subject_type,subject_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('workflow_revisions') . " (
+      workflow_revision_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      subject_type varchar(48) NOT NULL,
+      subject_id varchar(96) NOT NULL,
+      revision_number bigint unsigned NOT NULL,
+      change_type varchar(32) NOT NULL,
+      actor_id varchar(190) NOT NULL,
+      summary longtext NOT NULL,
+      previous_content_hash char(64) NOT NULL DEFAULT '',
+      content_hash char(64) NOT NULL,
+      snapshot_json longtext NOT NULL,
+      created_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (workflow_revision_id),
+      UNIQUE KEY subject_revision (subject_type,subject_id,revision_number),
+      KEY workspace_id (workspace_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('correction_records') . " (
+      correction_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      subject_type varchar(48) NOT NULL,
+      subject_id varchar(96) NOT NULL,
+      severity varchar(24) NOT NULL DEFAULT 'minor',
+      status varchar(24) NOT NULL DEFAULT 'open',
+      reason longtext NOT NULL,
+      proposed_changes_json longtext NOT NULL,
+      opened_by varchar(190) NOT NULL,
+      opened_at datetime NOT NULL,
+      applied_by varchar(190) NOT NULL DEFAULT '',
+      applied_at datetime NULL,
+      resulting_revision_id varchar(96) NOT NULL DEFAULT '',
+      resolution_notes longtext NOT NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (correction_id),
+      KEY subject_status (subject_type,subject_id,status)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('publication_records') . " (
+      publication_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      subject_type varchar(48) NOT NULL,
+      subject_id varchar(96) NOT NULL,
+      title text NOT NULL,
+      publication_status varchar(24) NOT NULL DEFAULT 'draft',
+      release_label varchar(160) NOT NULL DEFAULT '',
+      public_url text NOT NULL,
+      approved_decision_id varchar(96) NOT NULL DEFAULT '',
+      quality_assessment_id varchar(96) NOT NULL DEFAULT '',
+      content_hash char(64) NOT NULL,
+      published_revision_id varchar(96) NOT NULL DEFAULT '',
+      published_at datetime NULL,
+      published_by varchar(190) NOT NULL DEFAULT '',
+      withdrawn_at datetime NULL,
+      withdrawn_by varchar(190) NOT NULL DEFAULT '',
+      withdrawal_reason longtext NOT NULL,
+      supersedes_publication_id varchar(96) NOT NULL DEFAULT '',
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (publication_id),
+      KEY workspace_status (workspace_id,publication_status)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('publication_events') . " (
+      publication_event_id varchar(96) NOT NULL,
+      publication_id varchar(96) NOT NULL,
+      event_type varchar(32) NOT NULL,
+      actor_id varchar(190) NOT NULL,
+      reason longtext NOT NULL,
+      event_at datetime NOT NULL,
+      details_json longtext NOT NULL,
+      PRIMARY KEY  (publication_event_id),
+      KEY publication_id (publication_id)
+    ) {$charset};");
     gic_registry_seed_units();
-    update_option('gic_repository_schema_version', 4, false);
+    update_option('gic_repository_schema_version', 5, false);
 }
 register_activation_hook(__FILE__, 'gic_repository_activate');
 
 function gic_repository_maybe_upgrade() {
-    if ((int) get_option('gic_repository_schema_version', 0) < 4) { gic_repository_activate(); }
+    if ((int) get_option('gic_repository_schema_version', 0) < 5) { gic_repository_activate(); }
 }
 add_action('plugins_loaded', 'gic_repository_maybe_upgrade');
 
@@ -869,6 +1052,7 @@ function gic_repository_save_contract(WP_REST_Request $request) {
     gic_repository_audit($action, $contract, $revision, array('content_hash' => $data['content_hash']));
     gic_evidence_materialize_contract($contract);
     gic_registry_materialize_contract($contract);
+    gic_review_record_contract_revision($contract, $revision, $existing ? $existing['content_hash'] : '');
     return rest_ensure_response(array('contract' => $contract, 'repository' => array(
         'record_id' => $record_id, 'workspace_id' => $data['workspace_id'], 'initiative_id' => $data['initiative_id'],
         'revision' => $revision, 'content_hash' => $data['content_hash'], 'save_state' => 'saved', 'updated_at' => $now,
@@ -1800,3 +1984,288 @@ function gic_measurement_portfolio_shortcode($atts = array()) {
     <?php return ob_get_clean();
 }
 add_shortcode('global_impact_catalyst_measurement_portfolio','gic_measurement_portfolio_shortcode');
+
+/** Review, quality, revision, correction, and publication workflow introduced in v1.6.0. */
+function gic_review_id($kind, $parts) {
+    return 'gic-' . sanitize_key($kind) . '-' . substr(hash('sha256', implode('|', array_map('strval', $parts))), 0, 20);
+}
+
+function gic_review_ensure_roles($workspace_id) {
+    global $wpdb;
+    $table = gic_repository_table('workflow_roles');
+    $now = current_time('mysql', true);
+    $roles = array(
+        'program_owner' => array('Program Owner', array('edit','submit_review','respond_review','open_correction')),
+        'evidence_reviewer' => array('Evidence Reviewer', array('review_evidence','comment','assess_quality','request_changes')),
+        'methods_reviewer' => array('Methods Reviewer', array('review_methods','comment','assess_quality','request_changes')),
+        'approver' => array('Approver', array('comment','assess_quality','approve','reject')),
+        'publisher' => array('Publisher', array('publish','withdraw','supersede')),
+    );
+    foreach ($roles as $key => $definition) {
+        $role_id = gic_review_id('role', array($workspace_id, $key));
+        if (!$wpdb->get_var($wpdb->prepare("SELECT role_id FROM {$table} WHERE role_id=%s", $role_id))) {
+            $wpdb->insert($table, array(
+                'role_id'=>$role_id,'workspace_id'=>$workspace_id,'name'=>$definition[0],
+                'description'=>'System role for ' . strtolower($definition[0]) . ' workflow responsibilities.',
+                'permissions_json'=>wp_json_encode($definition[1]),'is_system'=>1,'archived_at'=>null,
+                'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode(array('role_key'=>$key)),
+            ));
+        }
+    }
+}
+
+function gic_review_decode_rows($table, $workspace_id, $json_fields = array()) {
+    global $wpdb;
+    $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$table} WHERE workspace_id=%s ORDER BY 1", $workspace_id), ARRAY_A);
+    foreach ($rows as &$row) {
+        foreach ($json_fields as $field) {
+            if (array_key_exists($field . '_json', $row)) {
+                $row[$field] = json_decode($row[$field . '_json'], true) ?: array();
+                unset($row[$field . '_json']);
+            }
+        }
+    }
+    return $rows;
+}
+
+function gic_review_record_contract_revision($contract, $revision, $previous_hash = '') {
+    global $wpdb;
+    $workspace_id = sanitize_text_field($contract['facts']['workspace']['id'] ?? '');
+    $initiative_id = sanitize_text_field($contract['facts']['initiative']['id'] ?? '');
+    $record_id = sanitize_text_field($contract['record_id'] ?? '');
+    if (!$workspace_id || !$initiative_id || !$record_id) { return; }
+    gic_review_ensure_roles($workspace_id);
+    $hash = gic_repository_hash($contract);
+    $revision_id = gic_review_id('workflow-revision', array('contract',$record_id,$revision,$hash));
+    $wpdb->replace(gic_repository_table('workflow_revisions'), array(
+        'workflow_revision_id'=>$revision_id,'workspace_id'=>$workspace_id,'initiative_id'=>$initiative_id,
+        'subject_type'=>'contract','subject_id'=>$record_id,'revision_number'=>(int)$revision,
+        'change_type'=>(int)$revision === 1 ? 'create' : 'edit','actor_id'=>(string)get_current_user_id(),
+        'summary'=>'Canonical contract repository revision ' . (int)$revision,
+        'previous_content_hash'=>sanitize_text_field($previous_hash),'content_hash'=>$hash,
+        'snapshot_json'=>wp_json_encode($contract, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+        'created_at'=>current_time('mysql', true),'metadata_json'=>wp_json_encode(array('contract_version'=>$contract['contract_version'] ?? '1.1.0')),
+    ));
+}
+
+function gic_review_export(WP_REST_Request $request) {
+    global $wpdb;
+    $workspace_id = sanitize_text_field($request->get_param('workspace_id') ?? '');
+    if (!$workspace_id) { return new WP_Error('gic_workspace_required','workspace_id is required.',array('status'=>400)); }
+    gic_review_ensure_roles($workspace_id);
+    $roles = gic_review_decode_rows(gic_repository_table('workflow_roles'), $workspace_id, array('permissions','metadata'));
+    $assignments = gic_review_decode_rows(gic_repository_table('review_assignments'), $workspace_id, array('metadata'));
+    $comments = gic_review_decode_rows(gic_repository_table('review_comments'), $workspace_id, array('metadata'));
+    $assessments = gic_review_decode_rows(gic_repository_table('quality_assessments'), $workspace_id, array('dimensions','findings','metadata'));
+    $decisions = gic_review_decode_rows(gic_repository_table('approval_decisions'), $workspace_id, array('conditions','metadata'));
+    $revisions = gic_review_decode_rows(gic_repository_table('workflow_revisions'), $workspace_id, array('snapshot','metadata'));
+    $corrections = gic_review_decode_rows(gic_repository_table('correction_records'), $workspace_id, array('proposed_changes','metadata'));
+    $publications = gic_review_decode_rows(gic_repository_table('publication_records'), $workspace_id, array('metadata'));
+    $events = $wpdb->get_results($wpdb->prepare(
+        "SELECT e.* FROM " . gic_repository_table('publication_events') . " e JOIN " . gic_repository_table('publication_records') . " p ON p.publication_id=e.publication_id WHERE p.workspace_id=%s ORDER BY e.event_at",
+        $workspace_id
+    ), ARRAY_A);
+    foreach ($events as &$event) { $event['details'] = json_decode($event['details_json'], true) ?: array(); unset($event['details_json']); }
+    $open_comments = count(array_filter($comments, static function($item){ return $item['resolution_status'] === 'open'; }));
+    $open_corrections = count(array_filter($corrections, static function($item){ return $item['status'] === 'open'; }));
+    $published_without_gate = array_values(array_map(static function($item){ return $item['publication_id']; }, array_filter($publications, static function($item){ return $item['publication_status']==='published' && (!$item['approved_decision_id'] || !$item['quality_assessment_id']); })));
+    return rest_ensure_response(array(
+        'workflow_type'=>'global_impact_review_workflow','workflow_version'=>'1.6.0','workspace_id'=>$workspace_id,
+        'generated_at'=>gmdate('c'),'roles'=>$roles,'review_assignments'=>$assignments,'review_comments'=>$comments,
+        'quality_assessments'=>$assessments,'approval_decisions'=>$decisions,'revisions'=>$revisions,
+        'corrections'=>$corrections,'publications'=>$publications,'publication_events'=>$events,
+        'integrity'=>array('valid'=>empty($published_without_gate),'role_count'=>count($roles),'assignment_count'=>count($assignments),
+            'comment_count'=>count($comments),'open_comment_count'=>$open_comments,'quality_assessment_count'=>count($assessments),
+            'approval_decision_count'=>count($decisions),'revision_count'=>count($revisions),'correction_count'=>count($corrections),
+            'open_correction_count'=>$open_corrections,'publication_count'=>count($publications),'broken_decision_ids'=>array(),
+            'published_without_gate_ids'=>$published_without_gate),
+        'boundary'=>'Workflow approval documents governance decisions; it is not external assurance, certification, or a guarantee that source claims are true.',
+    ));
+}
+
+function gic_review_assignment_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data = $request->get_json_params();
+    $workspace_id = sanitize_text_field($data['workspace_id'] ?? '');
+    $initiative_id = sanitize_text_field($data['initiative_id'] ?? '');
+    $role_id = sanitize_text_field($data['role_id'] ?? '');
+    $reviewer_id = sanitize_text_field($data['reviewer_id'] ?? '');
+    if (!$workspace_id || !$initiative_id || !$role_id || !$reviewer_id) { return new WP_Error('gic_review_fields','workspace_id, initiative_id, role_id, and reviewer_id are required.',array('status'=>400)); }
+    gic_review_ensure_roles($workspace_id);
+    if (!$wpdb->get_var($wpdb->prepare("SELECT role_id FROM " . gic_repository_table('workflow_roles') . " WHERE role_id=%s AND workspace_id=%s AND archived_at IS NULL", $role_id, $workspace_id))) {
+        return new WP_Error('gic_role_invalid','The review role is not active in this workspace.',array('status'=>400));
+    }
+    $now = current_time('mysql', true);
+    $assignment_id = gic_review_id('review-assignment', array($workspace_id,$initiative_id,$data['subject_type'] ?? 'contract',$data['subject_id'] ?? $initiative_id,$reviewer_id,$role_id,microtime(true)));
+    $row = array('assignment_id'=>$assignment_id,'workspace_id'=>$workspace_id,'initiative_id'=>$initiative_id,
+        'subject_type'=>sanitize_key($data['subject_type'] ?? 'contract'),'subject_id'=>sanitize_text_field($data['subject_id'] ?? $initiative_id),
+        'reviewer_id'=>$reviewer_id,'role_id'=>$role_id,'status'=>'pending','priority'=>sanitize_key($data['priority'] ?? 'normal'),
+        'due_at'=>!empty($data['due_at']) ? sanitize_text_field($data['due_at']) : null,'assigned_by'=>(string)get_current_user_id(),
+        'assigned_at'=>$now,'started_at'=>null,'completed_at'=>null,'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode($data['metadata'] ?? array()));
+    $wpdb->insert(gic_repository_table('review_assignments'), $row);
+    $row['metadata'] = json_decode($row['metadata_json'], true); unset($row['metadata_json']);
+    return rest_ensure_response($row);
+}
+
+function gic_review_comment_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data = $request->get_json_params();
+    $assignment_id = sanitize_text_field($data['assignment_id'] ?? '');
+    $body = sanitize_textarea_field($data['body'] ?? '');
+    $assignment = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . gic_repository_table('review_assignments') . " WHERE assignment_id=%s", $assignment_id), ARRAY_A);
+    if (!$assignment || !$body) { return new WP_Error('gic_comment_invalid','A valid assignment and comment body are required.',array('status'=>400)); }
+    $now = current_time('mysql', true);
+    $comment_id = gic_review_id('review-comment', array($assignment_id,get_current_user_id(),microtime(true),$body));
+    $row = array('comment_id'=>$comment_id,'assignment_id'=>$assignment_id,'workspace_id'=>$assignment['workspace_id'],'initiative_id'=>$assignment['initiative_id'],
+        'subject_type'=>$assignment['subject_type'],'subject_id'=>$assignment['subject_id'],'author_id'=>sanitize_text_field($data['author_id'] ?? (string)get_current_user_id()),
+        'parent_comment_id'=>sanitize_text_field($data['parent_comment_id'] ?? ''),'visibility'=>sanitize_key($data['visibility'] ?? 'workspace'),
+        'body'=>$body,'resolution_status'=>'open','resolved_by'=>'','resolved_at'=>null,'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode($data['metadata'] ?? array()));
+    $wpdb->insert(gic_repository_table('review_comments'), $row);
+    return rest_ensure_response($row);
+}
+
+function gic_review_quality_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data = $request->get_json_params();
+    $dimensions = is_array($data['dimensions'] ?? null) ? $data['dimensions'] : array();
+    $weighted = 0.0; $maximum = 0.0; $clean = array();
+    foreach ($dimensions as $dimension) {
+        $score = (float)($dimension['score'] ?? 0); $max = (float)($dimension['maximum_score'] ?? 100); $weight = (float)($dimension['weight'] ?? 1);
+        if ($max <= 0 || $weight <= 0 || $score < 0 || $score > $max) { return new WP_Error('gic_quality_invalid','Quality dimensions contain invalid scores.',array('status'=>400)); }
+        $weighted += $score * $weight; $maximum += $max * $weight;
+        $clean[] = array('key'=>sanitize_key($dimension['key'] ?? 'dimension'),'score'=>$score,'maximum_score'=>$max,'weight'=>$weight,'finding'=>sanitize_textarea_field($dimension['finding'] ?? ''));
+    }
+    if (!$clean) { return new WP_Error('gic_quality_required','At least one quality dimension is required.',array('status'=>400)); }
+    $score = round(($weighted / $maximum) * 100, 2);
+    $grade = $score >= 90 ? 'excellent' : ($score >= 75 ? 'strong' : ($score >= 60 ? 'adequate' : 'weak'));
+    $workspace_id = sanitize_text_field($data['workspace_id'] ?? ''); $initiative_id = sanitize_text_field($data['initiative_id'] ?? '');
+    $assignment_id = sanitize_text_field($data['assignment_id'] ?? '');
+    $assignment = $assignment_id ? $wpdb->get_row($wpdb->prepare("SELECT * FROM " . gic_repository_table('review_assignments') . " WHERE assignment_id=%s", $assignment_id), ARRAY_A) : null;
+    $subject_type = $assignment ? $assignment['subject_type'] : sanitize_key($data['subject_type'] ?? 'contract');
+    $subject_id = $assignment ? $assignment['subject_id'] : sanitize_text_field($data['subject_id'] ?? $initiative_id);
+    $now = current_time('mysql', true); $assessor = sanitize_text_field($data['assessor_id'] ?? (string)get_current_user_id());
+    $assessment_id = gic_review_id('quality-assessment', array($workspace_id,$initiative_id,$subject_type,$subject_id,$assessor,microtime(true)));
+    $row = array('assessment_id'=>$assessment_id,'assignment_id'=>$assignment_id,'workspace_id'=>$workspace_id,'initiative_id'=>$initiative_id,
+        'subject_type'=>$subject_type,'subject_id'=>$subject_id,'rubric_id'=>sanitize_text_field($data['rubric_id'] ?? 'gic-core-quality'),
+        'rubric_version'=>sanitize_text_field($data['rubric_version'] ?? '1.0'),'assessor_id'=>$assessor,'status'=>'submitted','score'=>$score,
+        'maximum_score'=>100,'grade'=>$grade,'dimensions_json'=>wp_json_encode($clean),'findings_json'=>wp_json_encode($data['findings'] ?? array()),
+        'limitations'=>sanitize_textarea_field($data['limitations'] ?? ''),'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'submitted_at'=>$now,'metadata_json'=>wp_json_encode($data['metadata'] ?? array()));
+    $wpdb->insert(gic_repository_table('quality_assessments'), $row);
+    $row['dimensions']=$clean; unset($row['dimensions_json']);
+    return rest_ensure_response($row);
+}
+
+function gic_review_decision_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data = $request->get_json_params(); $assignment_id = sanitize_text_field($data['assignment_id'] ?? '');
+    $decision = sanitize_key($data['decision'] ?? '');
+    if (!in_array($decision,array('approve','request_changes','reject','abstain'),true)) { return new WP_Error('gic_decision_invalid','Unsupported review decision.',array('status'=>400)); }
+    $assignment = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . gic_repository_table('review_assignments') . " WHERE assignment_id=%s", $assignment_id), ARRAY_A);
+    if (!$assignment) { return new WP_Error('gic_assignment_missing','Review assignment not found.',array('status'=>404)); }
+    if ($decision === 'approve') {
+        $open = (int)$wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM " . gic_repository_table('review_comments') . " WHERE assignment_id=%s AND resolution_status='open'", $assignment_id));
+        $score = $wpdb->get_var($wpdb->prepare("SELECT score FROM " . gic_repository_table('quality_assessments') . " WHERE assignment_id=%s AND status='submitted' ORDER BY created_at DESC LIMIT 1", $assignment_id));
+        if ($open) { return new WP_Error('gic_open_comments','Approval is blocked while comments remain open.',array('status'=>409)); }
+        if ($score === null || (float)$score < 60) { return new WP_Error('gic_quality_gate','Approval requires an adequate submitted quality assessment.',array('status'=>409)); }
+    }
+    $now = current_time('mysql', true); $reviewer = sanitize_text_field($data['reviewer_id'] ?? $assignment['reviewer_id']);
+    $decision_id = gic_review_id('approval-decision', array($assignment_id,$reviewer,$decision,microtime(true)));
+    $prior = (string)$wpdb->get_var($wpdb->prepare("SELECT decision_id FROM " . gic_repository_table('approval_decisions') . " WHERE assignment_id=%s ORDER BY decided_at DESC LIMIT 1", $assignment_id));
+    $row = array('decision_id'=>$decision_id,'assignment_id'=>$assignment_id,'workspace_id'=>$assignment['workspace_id'],'initiative_id'=>$assignment['initiative_id'],
+        'subject_type'=>$assignment['subject_type'],'subject_id'=>$assignment['subject_id'],'reviewer_id'=>$reviewer,'decision'=>$decision,
+        'rationale'=>sanitize_textarea_field($data['rationale'] ?? ''),'conditions_json'=>wp_json_encode($data['conditions'] ?? array()),
+        'decided_at'=>$now,'supersedes_decision_id'=>$prior,'revision'=>1,'metadata_json'=>wp_json_encode($data['metadata'] ?? array()));
+    $wpdb->insert(gic_repository_table('approval_decisions'), $row);
+    $status = array('approve'=>'approved','request_changes'=>'changes_requested','reject'=>'rejected','abstain'=>'in_review')[$decision];
+    $wpdb->update(gic_repository_table('review_assignments'),array('status'=>$status,'completed_at'=>in_array($status,array('approved','rejected'),true)?$now:null,'revision'=>(int)$assignment['revision']+1,'updated_at'=>$now),array('assignment_id'=>$assignment_id));
+    return rest_ensure_response($row);
+}
+
+function gic_review_correction_rest(WP_REST_Request $request) {
+    global $wpdb; $data=$request->get_json_params();
+    $workspace_id=sanitize_text_field($data['workspace_id']??''); $initiative_id=sanitize_text_field($data['initiative_id']??''); $reason=sanitize_textarea_field($data['reason']??'');
+    if(!$workspace_id||!$initiative_id||!$reason){return new WP_Error('gic_correction_fields','workspace_id, initiative_id, and reason are required.',array('status'=>400));}
+    $now=current_time('mysql',true); $subject_type=sanitize_key($data['subject_type']??'contract'); $subject_id=sanitize_text_field($data['subject_id']??$initiative_id);
+    $id=gic_review_id('correction',array($workspace_id,$initiative_id,$subject_type,$subject_id,microtime(true),$reason));
+    $row=array('correction_id'=>$id,'workspace_id'=>$workspace_id,'initiative_id'=>$initiative_id,'subject_type'=>$subject_type,'subject_id'=>$subject_id,
+        'severity'=>sanitize_key($data['severity']??'minor'),'status'=>'open','reason'=>$reason,'proposed_changes_json'=>wp_json_encode($data['proposed_changes']??array()),
+        'opened_by'=>(string)get_current_user_id(),'opened_at'=>$now,'applied_by'=>'','applied_at'=>null,'resulting_revision_id'=>'','resolution_notes'=>'','revision'=>1,'updated_at'=>$now,'metadata_json'=>wp_json_encode($data['metadata']??array()));
+    $wpdb->insert(gic_repository_table('correction_records'),$row); return rest_ensure_response($row);
+}
+
+function gic_review_contract_row($subject_id, $initiative_id = '') {
+    global $wpdb; $table=gic_repository_table('contracts');
+    $row=$wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE record_id=%s",$subject_id),ARRAY_A);
+    if(!$row && $initiative_id){$row=$wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE initiative_id=%s",$initiative_id),ARRAY_A);} return $row;
+}
+
+function gic_review_publication_event($publication_id,$type,$reason='',$details=array()){
+    global $wpdb; $now=current_time('mysql',true); $id=gic_review_id('publication-event',array($publication_id,$type,microtime(true),$reason));
+    $wpdb->insert(gic_repository_table('publication_events'),array('publication_event_id'=>$id,'publication_id'=>$publication_id,'event_type'=>$type,'actor_id'=>(string)get_current_user_id(),'reason'=>$reason,'event_at'=>$now,'details_json'=>wp_json_encode($details)));
+}
+
+function gic_review_publication_rest(WP_REST_Request $request) {
+    global $wpdb; $data=$request->get_json_params();
+    $workspace_id=sanitize_text_field($data['workspace_id']??''); $initiative_id=sanitize_text_field($data['initiative_id']??'');
+    $subject_type=sanitize_key($data['subject_type']??'contract'); $subject_id=sanitize_text_field($data['subject_id']??$initiative_id); $title=sanitize_text_field($data['title']??'');
+    if(!$workspace_id||!$initiative_id||!$title){return new WP_Error('gic_publication_fields','workspace_id, initiative_id, and title are required.',array('status'=>400));}
+    $contract=gic_review_contract_row($subject_id,$initiative_id); if(!$contract){return new WP_Error('gic_subject_missing','Publication subject not found.',array('status'=>404));}
+    $now=current_time('mysql',true); $id=gic_review_id('publication',array($workspace_id,$initiative_id,$subject_type,$subject_id,$title,microtime(true)));
+    $row=array('publication_id'=>$id,'workspace_id'=>$workspace_id,'initiative_id'=>$initiative_id,'subject_type'=>$subject_type,'subject_id'=>$subject_id,'title'=>$title,
+        'publication_status'=>'draft','release_label'=>sanitize_text_field($data['release_label']??''),'public_url'=>esc_url_raw($data['public_url']??''),'approved_decision_id'=>'','quality_assessment_id'=>'',
+        'content_hash'=>$contract['content_hash'],'published_revision_id'=>'','published_at'=>null,'published_by'=>'','withdrawn_at'=>null,'withdrawn_by'=>'','withdrawal_reason'=>'',
+        'supersedes_publication_id'=>sanitize_text_field($data['supersedes_publication_id']??''),'revision'=>1,'created_at'=>$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode($data['metadata']??array()));
+    $wpdb->insert(gic_repository_table('publication_records'),$row); gic_review_publication_event($id,'created','',array('content_hash'=>$contract['content_hash'])); return rest_ensure_response($row);
+}
+
+function gic_review_publish_rest(WP_REST_Request $request) {
+    global $wpdb; $id=sanitize_text_field($request['publication_id']); $table=gic_repository_table('publication_records');
+    $publication=$wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE publication_id=%s",$id),ARRAY_A); if(!$publication){return new WP_Error('gic_publication_missing','Publication not found.',array('status'=>404));}
+    if($publication['publication_status']!=='draft'){return new WP_Error('gic_publication_state','Only draft publications can be published.',array('status'=>409));}
+    $decision=$wpdb->get_row($wpdb->prepare("SELECT * FROM ".gic_repository_table('approval_decisions')." WHERE subject_type=%s AND subject_id=%s AND decision='approve' ORDER BY decided_at DESC LIMIT 1",$publication['subject_type'],$publication['subject_id']),ARRAY_A);
+    $assessment=$wpdb->get_row($wpdb->prepare("SELECT * FROM ".gic_repository_table('quality_assessments')." WHERE subject_type=%s AND subject_id=%s AND status='submitted' AND score>=60 ORDER BY submitted_at DESC LIMIT 1",$publication['subject_type'],$publication['subject_id']),ARRAY_A);
+    $open=(int)$wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM ".gic_repository_table('correction_records')." WHERE subject_type=%s AND subject_id=%s AND status='open'",$publication['subject_type'],$publication['subject_id']));
+    if(!$decision||!$assessment){return new WP_Error('gic_publication_gate','Publication requires approval and an adequate quality assessment.',array('status'=>409));}
+    if($open){return new WP_Error('gic_publication_corrections','Publication is blocked while corrections remain open.',array('status'=>409));}
+    $contract=gic_review_contract_row($publication['subject_id'],$publication['initiative_id']); if(!$contract||!hash_equals($publication['content_hash'],$contract['content_hash'])){return new WP_Error('gic_publication_stale','Publication content changed after the draft was created.',array('status'=>409));}
+    $revision_id=(string)$wpdb->get_var($wpdb->prepare("SELECT workflow_revision_id FROM ".gic_repository_table('workflow_revisions')." WHERE subject_type=%s AND subject_id=%s AND content_hash=%s ORDER BY revision_number DESC LIMIT 1",$publication['subject_type'],$publication['subject_id'],$publication['content_hash']));
+    $now=current_time('mysql',true); $wpdb->update($table,array('publication_status'=>'published','approved_decision_id'=>$decision['decision_id'],'quality_assessment_id'=>$assessment['assessment_id'],'published_revision_id'=>$revision_id,'published_at'=>$now,'published_by'=>(string)get_current_user_id(),'revision'=>(int)$publication['revision']+1,'updated_at'=>$now),array('publication_id'=>$id));
+    gic_review_publication_event($id,'published','',array('decision_id'=>$decision['decision_id'],'assessment_id'=>$assessment['assessment_id'])); return rest_ensure_response($wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE publication_id=%s",$id),ARRAY_A));
+}
+
+function gic_review_withdraw_rest(WP_REST_Request $request) {
+    global $wpdb; $id=sanitize_text_field($request['publication_id']); $reason=sanitize_textarea_field(($request->get_json_params()['reason']??'')); $table=gic_repository_table('publication_records');
+    $publication=$wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE publication_id=%s",$id),ARRAY_A); if(!$publication||$publication['publication_status']!=='published'||!$reason){return new WP_Error('gic_withdraw_invalid','A published record and withdrawal reason are required.',array('status'=>400));}
+    $now=current_time('mysql',true); $wpdb->update($table,array('publication_status'=>'withdrawn','withdrawn_at'=>$now,'withdrawn_by'=>(string)get_current_user_id(),'withdrawal_reason'=>$reason,'revision'=>(int)$publication['revision']+1,'updated_at'=>$now),array('publication_id'=>$id));
+    gic_review_publication_event($id,'withdrawn',$reason); return rest_ensure_response($wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE publication_id=%s",$id),ARRAY_A));
+}
+
+function gic_review_register_routes() {
+    register_rest_route('global-impact-catalyst/v1','/review-workflow',array('methods'=>WP_REST_Server::READABLE,'callback'=>'gic_review_export','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/review-assignments',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_review_assignment_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/review-comments',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_review_comment_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/quality-assessments',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_review_quality_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/approval-decisions',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_review_decision_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/corrections',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_review_correction_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/publications',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_review_publication_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/publications/(?P<publication_id>[A-Za-z0-9_-]+)/publish',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_review_publish_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/publications/(?P<publication_id>[A-Za-z0-9_-]+)/withdraw',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_review_withdraw_rest','permission_callback'=>'gic_repository_can_edit'));
+}
+add_action('rest_api_init','gic_review_register_routes');
+
+function gic_review_workflow_shortcode($atts = array()) {
+    if (!is_user_logged_in() || !current_user_can('edit_posts')) { return '<p class="gic-review__login">Sign in with editing access to use the review and publication workflow.</p>'; }
+    wp_enqueue_style('global-impact-catalyst-review'); wp_enqueue_script('global-impact-catalyst-review');
+    ob_start(); ?>
+    <section class="gic-review" data-gic-review data-rest="<?php echo esc_url(rest_url('global-impact-catalyst/v1/')); ?>" data-nonce="<?php echo esc_attr(wp_create_nonce('wp_rest')); ?>">
+      <header class="gic-review__header"><div><p class="gic-review__eyebrow">Governed review workflow · v1.6.0</p><h2>Review, Quality, and Publication</h2><p>Assign reviewers, document findings, score quality, approve exact revisions, and retain publication or withdrawal history.</p></div><p class="gic-review__boundary">Internal approval is not external assurance, certification, audit, causal proof, or source-truth verification.</p></header>
+      <div class="gic-review__cards"><div class="gic-review__card"><span>Assignments</span><strong data-gic-review-count="assignments">0</strong></div><div class="gic-review__card"><span>Open items</span><strong data-gic-review-count="open">0</strong></div><div class="gic-review__card"><span>Publications</span><strong data-gic-review-count="publications">0</strong></div></div>
+      <div class="gic-review__grid">
+        <div class="gic-review__panel"><h3>Workflow context</h3><div class="gic-review__form"><label class="gic-review__field gic-review__field--wide">Workspace ID<input name="workspace_id" type="text"></label><label class="gic-review__field gic-review__field--wide">Initiative ID<input name="initiative_id" type="text"></label><div class="gic-review__actions gic-review__field--wide"><button type="button" data-gic-review-load>Load workflow</button></div></div><div class="gic-review__status" data-gic-review-status role="status" aria-live="polite">Enter a workspace ID.</div><div class="gic-review__list" data-gic-review-list><p class="gic-review__empty">No workflow loaded.</p></div></div>
+        <div class="gic-review__panel"><h3>Assign review</h3><form class="gic-review__form" data-gic-review-assignment><input name="workspace_id" type="hidden"><input name="initiative_id" type="hidden"><label class="gic-review__field gic-review__field--wide">Contract record ID<input name="subject_id" required></label><label class="gic-review__field">Reviewer ID<input name="reviewer_id" required></label><label class="gic-review__field">Role ID<input name="role_id" required></label><label class="gic-review__field">Priority<select name="priority"><option>normal</option><option>high</option><option>urgent</option><option>low</option></select></label><div class="gic-review__actions gic-review__field--wide"><button type="submit">Create assignment</button></div></form><h3>Quality assessment</h3><form class="gic-review__form" data-gic-review-assessment><input name="workspace_id" type="hidden"><input name="initiative_id" type="hidden"><label class="gic-review__field gic-review__field--wide">Assignment ID<input name="assignment_id" required></label><label class="gic-review__field gic-review__field--wide">Assessor ID<input name="assessor_id" required></label><label class="gic-review__field">Evidence score<input name="evidence_score" type="number" min="0" max="100" value="80"></label><label class="gic-review__field">Method score<input name="method_score" type="number" min="0" max="100" value="80"></label><label class="gic-review__field">Traceability score<input name="traceability_score" type="number" min="0" max="100" value="80"></label><div class="gic-review__actions gic-review__field--wide"><button type="submit">Save assessment</button></div></form></div>
+      </div>
+    </section>
+    <script>document.addEventListener('input',function(e){var root=e.target.closest('[data-gic-review]');if(!root)return;if(e.target.name==='workspace_id'||e.target.name==='initiative_id'){root.querySelectorAll('input[type="hidden"][name="'+e.target.name+'"]').forEach(function(input){input.value=e.target.value;});}});</script>
+    <?php return ob_get_clean();
+}
+add_shortcode('global_impact_catalyst_review_workflow','gic_review_workflow_shortcode');
