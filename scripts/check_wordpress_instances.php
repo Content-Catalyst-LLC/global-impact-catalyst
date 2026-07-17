@@ -1,15 +1,22 @@
 <?php
 // Minimal WordPress stubs for release rendering checks.
-define('ABSPATH', __DIR__);
+define('ABSPATH', __DIR__ . '/');
 function plugin_dir_url($file) { return 'https://example.test/plugin/'; }
 function wp_register_style() {}
 function wp_register_script() {}
 function add_action() {}
+function register_activation_hook() {}
 function wp_enqueue_style() {}
 function wp_enqueue_script() {}
+function wp_localize_script() {}
 function add_shortcode() {}
 function esc_attr($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
+function esc_url_raw($value) { return $value; }
 function wp_rand($min, $max) { static $counter = 1000; return $counter++; }
+function is_user_logged_in() { return true; }
+function current_user_can($capability) { return true; }
+function rest_url($path='') { return 'https://example.test/wp-json/' . ltrim($path, '/'); }
+function wp_create_nonce($action) { return 'test-nonce'; }
 require __DIR__ . '/../wordpress/global-impact-catalyst-demo/global-impact-catalyst-demo.php';
 $html = gic_demo_shortcode() . gic_demo_shortcode();
 preg_match_all('/\sid="([^"]+)"/', $html, $matches);
@@ -19,8 +26,13 @@ preg_match_all('/\sfor="([^"]+)"/', $html, $label_matches);
 foreach ($label_matches[1] as $target) {
     if (!in_array($target, $ids, true)) { fwrite(STDERR, "Label target is missing: {$target}\n"); exit(1); }
 }
-if (substr_count($html, 'data-gic-demo') !== 2) { fwrite(STDERR, "Expected two shortcode instances.\n"); exit(1); }
+if (substr_count($html, 'data-gic-demo') !== 2) { fwrite(STDERR, "Expected two demo instances.\n"); exit(1); }
 foreach (array('name="workspace"','name="indicatorDefinition"','name="designType"','name="claimType"') as $needle) {
-    if (substr_count($html, $needle) !== 2) { fwrite(STDERR, "Canonical field missing from one or more instances: {$needle}\n"); exit(1); }
+    if (substr_count($html, $needle) !== 2) { fwrite(STDERR, "Canonical field missing: {$needle}\n"); exit(1); }
 }
-echo "WordPress v1.1.0 multi-instance contract passed for " . count($ids) . " unique IDs.\n";
+$workspace = gic_workspace_shortcode();
+foreach (array('data-gic-workspace','data-gic-workspace-list','data-gic-workspace-save','data-gic-workspace-import') as $needle) {
+    if (strpos($workspace, $needle) === false) { fwrite(STDERR, "Workspace control missing: {$needle}\n"); exit(1); }
+}
+if (substr_count($workspace, 'data-gic-demo') !== 1) { fwrite(STDERR, "Workspace must preserve one canonical editor.\n"); exit(1); }
+echo "WordPress v1.2.0 workspace and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";

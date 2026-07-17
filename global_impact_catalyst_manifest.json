@@ -1,9 +1,9 @@
 {
   "name": "global-impact-catalyst",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "contract_version": "1.1.0",
   "schema_version": "1.1.0",
-  "description": "Canonical, versioned impact contracts with stable entity identity, fact/derived separation, semantic validation, claim governance, lossless migration, and exact Python/browser parity.",
+  "description": "Persistent initiatives, portfolios, measurements, autosaves, imports, audit history, and workspace recovery around the canonical v1.1.0 impact contract.",
   "repository": "https://github.com/Content-Catalyst-LLC/global-impact-catalyst",
   "shortcode": "[global_impact_catalyst_demo]",
   "core_path": "python/global_impact_core.py",
@@ -69,5 +69,31 @@
     "Derived progress is not causal, contribution, attribution, or comparative proof",
     "Validation checks consistency rather than truth or source authenticity",
     "Stronger claims require explicit evidence, design metadata, confidence, and review"
+  ],
+  "database_schema_version": 3,
+  "workspace_bundle_version": "1.2.0",
+  "workspace_shortcode": "[global_impact_catalyst_workspace]",
+  "repository_path": "python/global_impact_repository.py",
+  "service_path": "python/global_impact_service.py",
+  "repository_cli_path": "scripts/gic_repository.py",
+  "workspace_bundle_schema_path": "schemas/global_impact_workspace_bundle.schema.json",
+  "database_migrations_path": "migrations",
+  "persistent_repository_doc_path": "docs/persistent-repository.md",
+  "database_migrations_doc_path": "docs/database-migrations.md",
+  "workspace_bundles_doc_path": "docs/workspace-bundles.md",
+  "wordpress_workspace_doc_path": "docs/wordpress-workspace.md",
+  "repository_capabilities": [
+    "sqlite",
+    "migrations",
+    "entity_crud",
+    "initiative_search",
+    "portfolio_memberships",
+    "autosave",
+    "optimistic_concurrency",
+    "idempotent_import",
+    "audit_log",
+    "workspace_bundle",
+    "restore_receipt",
+    "database_backup"
   ]
 }

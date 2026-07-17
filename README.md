@@ -1,84 +1,87 @@
 # Global Impact Catalyst
 
-Global Impact Catalyst is an open, reproducible impact-contract and validation engine for Sustainable Catalyst. It converts compact authoring inputs into durable, versioned contracts that preserve entered facts, derived metrics, evidence references, methods, claim boundaries, validation issues, review state, revisions, and publication metadata.
+Global Impact Catalyst is open public-interest infrastructure for defining, validating, saving, revising, and transporting impact-measurement records. It combines a canonical impact-contract engine with a persistent repository for initiatives, portfolios, measurements, imports, autosaves, audit records, and recovery bundles.
 
-The system is not a proprietary ESG platform, certification tool, assurance product, audit substitute, causal-proof engine, or automatic truth system. It is public-interest infrastructure for making impact records inspectable and portable.
+The system is not an ESG assurance platform, certification tool, audit substitute, causal-proof engine, or automatic truth system.
 
-## v1.1.0 — Canonical Impact Contract and Validation Engine
+## v1.2.0 — Persistent Initiatives, Portfolios, and Measurement Repository
 
-v1.1.0 replaces the flat output record with a canonical entity-oriented contract. It adds:
+v1.2.0 adds durable workspaces around the canonical v1.1.0 contract engine:
 
-- Stable deterministic IDs and timestamps for material entities
-- `contract_version`, `schema_version`, `record_id`, lifecycle state, and provenance
-- Explicit separation between entered `facts` and reproducible `derived` values
-- Structured validation issues with severity, JSON-style path, rule ID, message, and remediation
-- Semantic validation for required facts, units, periods, indicator direction, target compatibility, sources, and methods
-- Governed claim types from descriptive observation through causal claim
-- Evidence and design gates for comparison, contribution, and causal language
-- Lossless migration from v1.0.x flat records
-- Strict schemas for authoring inputs, canonical contracts, and validation results
-- Fifteen exact Python/browser golden fixtures
-- An expanded WordPress contract builder and validation interface
+- SQLite persistence with repeatable schema migrations
+- Complete contract snapshots and indexed entity projections
+- Workspace and initiative lists, search, filtering, archive, restore, and duplication
+- Portfolios and initiative memberships
+- Draft autosave and explicit saved revisions
+- Optimistic concurrency conflict protection
+- Idempotent v1.0.x and v1.1.0 imports with audit records
+- Workspace export, restore, and database backup
+- Shared application service and repository CLI
+- Authenticated persistent WordPress workspace
 
-## Canonical contract layers
+Persistence does not change calculation results. The package and repository release are v1.2.0; the canonical contract and calculation schema remain v1.1.0.
+
+## Architecture
 
 ```text
 compact authoring input
-        ↓ normalize
-entered facts + stable entity identity
-        ↓ validate
-structured errors, warnings, and remediation
-        ↓ derive
-metrics, interpretations, and claim eligibility
-        ↓ govern
-reviews, revisions, publications, provenance, boundaries
-        ↓ export
-canonical JSON contract + Markdown brief
+        ↓
+canonical v1.1.0 contract + validation engine
+        ↓
+application service
+        ↓
+SQLite repository / application wrapper / repository CLI
+        ↓
+workspaces, initiatives, portfolios, autosaves, imports, audit, bundles
 ```
 
-The root contract keys are:
+Canonical contracts remain complete JSON snapshots. Indexed projections support operational queries without splitting or silently recalculating the source record.
 
-```text
-contract_type
-contract_version
-schema_version
-record_id
-created_at / updated_at
-lifecycle_status
-provenance
-facts
-  workspace / initiative / goal / outcomes / indicator
-  measurement / sources / methods / populations / geographies / budgets
-derived
-  metrics / interpretations / claims
-governance
-  reviews / revisions / publications
-validation
-traceability_path
-boundaries
+## Python repository quick start
+
+Initialize a local repository:
+
+```bash
+python3 scripts/gic_repository.py \
+  --database outputs/global-impact-catalyst.sqlite3 \
+  init
 ```
 
-See `docs/canonical-impact-contract.md` for field definitions.
+Create and save an initiative:
 
-## WordPress demo
-
-Plugin folder:
-
-```text
-wordpress/global-impact-catalyst-demo/
+```bash
+python3 scripts/gic_repository.py \
+  --database outputs/global-impact-catalyst.sqlite3 \
+  create \
+  --input data/sample_global_impact_input.json \
+  --generated-at 2026-07-17T18:00:00+00:00
 ```
 
-Shortcode:
+List or search initiatives:
 
-```text
-[global_impact_catalyst_demo]
+```bash
+python3 scripts/gic_repository.py --database outputs/global-impact-catalyst.sqlite3 list --search energy
 ```
 
-The browser demo builds the same contract shape as Python and applies the same validation and claim rules. Multiple shortcode instances can appear on one page without duplicate HTML IDs.
+Import a v1.0.x flat record or v1.1.0 canonical contract:
 
-## Python quick start
+```bash
+python3 scripts/gic_repository.py \
+  --database outputs/global-impact-catalyst.sqlite3 \
+  import --input contracts/legacy/legacy-v1.0.1-record.json
+```
 
-Generate a strict contract. The command exits with status `2` if semantic errors are present:
+Export a workspace bundle:
+
+```bash
+python3 scripts/gic_repository.py \
+  --database outputs/global-impact-catalyst.sqlite3 \
+  export --workspace-id gic-workspace-… --output outputs/workspace-bundle.json
+```
+
+## Canonical contract CLI
+
+The original strict generator remains available:
 
 ```bash
 python3 python/global_impact_core.py \
@@ -87,30 +90,22 @@ python3 python/global_impact_core.py \
   --markdown outputs/sample_global_impact_brief.md
 ```
 
-Allow an invalid draft to be written with its validation issues attached:
+## WordPress
 
-```bash
-python3 python/global_impact_core.py \
-  --input data/sample_global_impact_input.json \
-  --output outputs/sample_global_impact_contract.json \
-  --allow-invalid
+Plugin folder:
+
+```text
+wordpress/global-impact-catalyst-demo/
 ```
 
-Migrate a v1.0.x flat record without discarding its original content:
+Shortcodes:
 
-```bash
-python3 python/global_impact_core.py \
-  --input contracts/legacy/legacy-v1.0.1-record.json \
-  --output outputs/migrated-v1.1.0-contract.json \
-  --migrate \
-  --allow-invalid
+```text
+[global_impact_catalyst_demo]
+[global_impact_catalyst_workspace]
 ```
 
-For reproducible builds, provide a fixed timestamp:
-
-```bash
---generated-at 2026-07-17T18:00:00+00:00
-```
+The public demo is stateless. The workspace requires authenticated editing access and supports saved records, autosave recovery, search, duplicate, archive/restore, import, and export.
 
 ## Validation
 
@@ -119,65 +114,33 @@ python3 -m pip install -r requirements-dev.txt
 python3 -m pytest -q
 python3 scripts/check_contracts.py
 node scripts/check_browser_parity.js
+node --check wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-workspace.js
 php scripts/check_wordpress_instances.php
 python3 scripts/smoke_test.py
 ```
 
-Validation issues use this shape:
-
-```json
-{
-  "issue_id": "gic-issue-…",
-  "severity": "error",
-  "path": "$.facts.measurement.target.value",
-  "rule_id": "GIC-DIRECTION-001",
-  "message": "A higher-is-better indicator has a target below its baseline.",
-  "remediation": "Change the direction to lower-is-better or correct the target."
-}
-```
-
-See `docs/validation-rules.md` for the rule catalog.
-
-## Claim governance
-
-Supported claim types:
-
-1. `descriptive_observation`
-2. `progress_to_target_statement`
-3. `comparison`
-4. `contribution_statement`
-5. `causal_claim`
-
-Stronger claim types require explicit claim text and additional design metadata. Causal claims require a quasi-experimental or randomized design, causal design documentation, high confidence, and reviewed or published status. A contract may still be exported as a draft when a claim is blocked, but its validation and claim eligibility state remain attached.
-
-## Cross-runtime parity
-
-The Python and browser implementations are independently executable and governed by complete fixtures in `contracts/fixtures/`. Every fixture contains compact input, a fixed timestamp, and the entire expected canonical contract. Exact output parity includes IDs, fingerprints, issue IDs, metrics, entity order, claim eligibility, boundaries, and governance data.
-
 ## Repository structure
 
 ```text
-app/                         Application-facing wrapper
-app/tests/                   Wrapper tests
-contracts/fixtures/          Canonical cross-runtime golden fixtures
-contracts/legacy/            Legacy migration fixture
-python/                      Canonical Python contract engine
-schemas/                     Input, contract, compatibility, and validation schemas
-data/                        Canonical authoring sample
-examples/                    Generated contract and Markdown brief
-docs/                        Contract, validation, methodology, migration, and review docs
-scripts/                     Fixture, parity, release, WordPress, and smoke checks
-tests/                       Core, schema, parity, and WordPress tests
-wordpress/global-impact-catalyst-demo/  WordPress shortcode plugin
-release/                     Version-specific release notes
-.github/workflows/           Continuous integration
-outputs/                     Local generated outputs
+app/                         Application-facing service wrapper
+contracts/                   Canonical fixtures and legacy import records
+data/                        Compact authoring sample
+docs/                        Contract, persistence, migration, bundle, and WordPress docs
+examples/                    Canonical contract, brief, and workspace bundle examples
+migrations/                  Human-readable database migration inventory
+python/global_impact_core.py Canonical v1.1.0 engine
+python/global_impact_repository.py  SQLite repository
+python/global_impact_service.py     Shared application service
+schemas/                     Contract and workspace-bundle schemas
+scripts/gic_repository.py    Persistent repository CLI
+tests/                       Engine, schema, parity, repository, and integration tests
+wordpress/                   Demo and persistent workspace plugin
 ```
 
 ## Methodological boundary
 
-Global Impact Catalyst improves structure, reproducibility, and review visibility. It does not prove that entered data is accurate, that a source is authentic, that a method is appropriate, that an intervention caused an outcome, or that a public claim satisfies legal, accounting, evaluation, regulatory, or assurance requirements.
+Global Impact Catalyst improves structure, persistence, reproducibility, and review visibility. It does not prove that entered data is accurate, that evidence is authentic, that a method is appropriate, that an intervention caused an outcome, or that a public claim satisfies legal, accounting, evaluation, regulatory, or assurance requirements.
 
 ## License
 
-See `LICENSE`. Review applicable legal, privacy, ethical, evaluation, data-governance, and reporting obligations before formal use.
+See `LICENSE`.

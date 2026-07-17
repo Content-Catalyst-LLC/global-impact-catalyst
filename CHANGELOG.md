@@ -2,6 +2,26 @@
 
 All notable changes to Global Impact Catalyst are documented in this file.
 
+## [1.2.0] - 2026-07-17
+
+### Added
+
+- SQLite repository abstraction with repeatable, version-tracked database migrations.
+- Durable canonical contract snapshots and indexed projections for workspaces, initiatives, goals, indicators, observations, targets, and sources.
+- Shared application service for create, explicit save, autosave, import, duplicate, list, export, and restore operations.
+- Initiative and portfolio search, archive, restore, duplication, and membership workflows.
+- Recoverable draft autosaves and optimistic concurrency conflict responses.
+- Idempotent v1.0.x and v1.1.0 imports with audit receipts.
+- Workspace export/restore bundles and transactionally consistent SQLite backups.
+- Persistent authenticated WordPress workspace shortcode and REST repository.
+- Repository CLI, workspace bundle schema, persistence documentation, migration tests, and backup/restore tests.
+
+### Compatibility
+
+- The canonical contract, schemas, and cross-runtime calculation engine remain v1.1.0 because persistence does not change the contract shape or mathematical output.
+- The package, application, WordPress plugin, repository workflows, and workspace bundle are v1.2.0.
+- The public `[global_impact_catalyst_demo]` shortcode remains available; `[global_impact_catalyst_workspace]` is additive.
+
 ## [1.1.0] - 2026-07-17
 
 ### Added

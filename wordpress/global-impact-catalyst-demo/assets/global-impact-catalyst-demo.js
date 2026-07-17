@@ -467,6 +467,9 @@
     buildImpactContract: buildImpactContract,
     buildImpactRecord: buildImpactContract,
     stableToken: stableToken,
+    formInput: formInput,
+    render: render,
+    setExample: setExample,
     example: example
   };
 }));

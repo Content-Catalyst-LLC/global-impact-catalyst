@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.2.0/global_impact_workspace_bundle.schema.json",
+  "title": "Global Impact Catalyst Workspace Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["bundle_type", "bundle_version", "database_schema_version", "exported_at", "workspace", "contracts", "portfolios", "audit"],
+  "properties": {
+    "bundle_type": {"const": "global_impact_workspace_bundle"},
+    "bundle_version": {"const": "1.2.0"},
+    "database_schema_version": {"type": "integer", "minimum": 1},
+    "exported_at": {"type": "string", "format": "date-time"},
+    "workspace": {"type": "object", "required": ["entity_type", "entity_id", "document"], "additionalProperties": true},
+    "contracts": {"type": "array", "items": {"type": "object", "required": ["record_id", "workspace_id", "initiative_id", "revision", "content_hash", "contract"], "additionalProperties": true}},
+    "portfolios": {"type": "array", "items": {"type": "object", "required": ["portfolio_id", "workspace_id", "name", "initiative_ids"], "additionalProperties": true}},
+    "audit": {"type": "array", "items": {"type": "object"}}
+  },
+  "x-global-impact-catalyst-version": "1.2.0"
+}
