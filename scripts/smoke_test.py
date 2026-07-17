@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.7.0."""
+"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.8.0."""
 from __future__ import annotations
 
 import json
@@ -40,7 +40,7 @@ def main() -> int:
             "global-impact-catalyst-demo.js", "global-impact-catalyst-workspace.js",
             "global-impact-catalyst-evidence.js", "global-impact-catalyst-registry.js",
             "global-impact-catalyst-measurement.js", "global-impact-catalyst-review.js",
-            "global-impact-catalyst-analysis.js",
+            "global-impact-catalyst-analysis.js", "global-impact-catalyst-reporting.js",
         ):
             run("node", "--check", f"wordpress/global-impact-catalyst-demo/assets/{asset}")
     else:
@@ -56,7 +56,7 @@ def main() -> int:
     from python.global_impact_service import ImpactApplicationService
 
     payload = json.loads((ROOT / "data/sample_global_impact_input.json").read_text(encoding="utf-8"))
-    with tempfile.TemporaryDirectory(prefix="gic-v170-") as temp:
+    with tempfile.TemporaryDirectory(prefix="gic-v180-") as temp:
         directory = Path(temp)
         database = directory / "impact.sqlite3"
         restored_database = directory / "restored.sqlite3"
@@ -74,7 +74,7 @@ def main() -> int:
             initiative_id = created["repository"]["initiative_id"]
             indicator_id = contract["facts"]["indicator"]["id"]
             summary = repository.repository_summary()
-            assert summary["database_schema_version"] == 8
+            assert summary["database_schema_version"] == 9
             assert summary["contracts"] == 1
             assert summary["sources"] == 1
             assert summary["units"] >= 18
@@ -236,9 +236,24 @@ def main() -> int:
             assert analysis_repository["repository_version"] == "1.7.0" and analysis_repository["integrity"]["valid"]
             validate(analysis_repository, "global_impact_analysis_repository.schema.json")
 
+            template = service.register_report_template({"name":"Release impact report","citation_style":"harvard"}, workspace_id=workspace_id, actor="release-smoke")
+            report = service.create_report({"title":"Release smoke impact report","period_label":"2026 Q3","audience":"public"}, workspace_id=workspace_id, initiative_id=initiative_id, template_id=template["template_id"], actor="release-smoke")
+            assert "Skip to report" in report["rendered_html"] and report["citations"]
+            dashboard = service.create_dashboard({"name":"Release impact dashboard","audience":"board"}, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            service.add_dashboard_card(dashboard["dashboard_id"], {"card_type":"metric","title":"Observed result","alt_text":"Observed governed result","configuration":{"value":22,"unit":"USD"}}, actor="release-smoke")
+            assert repository.render_dashboard(dashboard["dashboard_id"])["accessibility"]["all_cards_have_alt_text"]
+            snapshot = service.create_publication_snapshot(publication["publication_id"], report_id=report["report_id"], actor="release-smoke")
+            export_path = directory / "reproducible-export.zip"
+            export_result = service.build_reproducible_export(workspace_id=workspace_id, initiative_id=initiative_id, report_id=report["report_id"], publication_snapshot_id=snapshot["snapshot_id"], destination=export_path, actor="release-smoke")
+            assert export_result["artifact_count"] >= 8 and repository.verify_reproducible_export(export_path)["valid"]
+            reporting = service.reporting_repository(workspace_id)
+            assert reporting["repository_version"] == "1.8.0" and reporting["integrity"]["valid"]
+            validate(reporting, "global_impact_reporting_repository.schema.json")
+            validate(export_result["manifest"], "global_impact_reproducible_export.schema.json")
+
             bundle = repository.export_workspace_bundle(workspace_id)
-            assert bundle["bundle_version"] == "1.7.0"
-            assert bundle["database_schema_version"] == 8
+            assert bundle["bundle_version"] == "1.8.0"
+            assert bundle["database_schema_version"] == 9
             validate(bundle, "global_impact_workspace_bundle.schema.json")
             repository.backup_database(backup)
 
@@ -255,8 +270,11 @@ def main() -> int:
             assert restored_workflow["publications"][0]["publication_status"] == "published"
             restored_analysis = restored.export_analysis_repository(workspace_id)
             assert restored_analysis["integrity"] == analysis_repository["integrity"]
+            restored_reporting = restored.export_reporting_repository(workspace_id)
+            assert restored_reporting["integrity"]["report_count"] == reporting["integrity"]["report_count"]
+            assert restored_reporting["integrity"]["dashboard_count"] == reporting["integrity"]["dashboard_count"]
 
-    print("Global Impact Catalyst v1.7.0 portable release smoke tests passed.")
+    print("Global Impact Catalyst v1.8.0 portable release smoke tests passed.")
     return 0
 
 

@@ -13,10 +13,12 @@ REVIEW_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-cata
 REVIEW_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-review.css').read_text()
 ANALYSIS_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-analysis.js').read_text()
 ANALYSIS_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-analysis.css').read_text()
+REPORTING_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-reporting.js').read_text()
+REPORTING_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-reporting.css').read_text()
 
 def test_plugin_version_shortcodes_and_instance_ids():
-    assert '* Version: 1.7.0' in PHP
-    assert "define('GIC_DEMO_VERSION', '1.7.0')" in PHP
+    assert '* Version: 1.8.0' in PHP
+    assert "define('GIC_DEMO_VERSION', '1.8.0')" in PHP
     assert "add_shortcode('global_impact_catalyst_demo'" in PHP
     assert "add_shortcode('global_impact_catalyst_workspace'" in PHP
     assert "add_shortcode('global_impact_catalyst_evidence_ledger'" in PHP
@@ -24,6 +26,7 @@ def test_plugin_version_shortcodes_and_instance_ids():
     assert "add_shortcode('global_impact_catalyst_measurement_portfolio'" in PHP
     assert "add_shortcode('global_impact_catalyst_review_workflow'" in PHP
     assert "add_shortcode('global_impact_catalyst_analysis_studio'" in PHP
+    assert "add_shortcode('global_impact_catalyst_reporting_studio'" in PHP
     assert 'static $instance = 0' in PHP and '$id_prefix' in PHP
 
 def test_plugin_exposes_contract_and_claim_fields():
@@ -128,3 +131,19 @@ def test_analysis_client_and_styles_support_analytical_operations():
     for operation in ['analysis-repository?workspace_id=','analysis-trends','analysis-benchmarks','analysis-uncertainty-models','analysis-scenarios']:
         assert operation in ANALYSIS_JS or operation in PHP
     assert '.gic-analysis__grid' in ANALYSIS_CSS and '@media' in ANALYSIS_CSS
+
+
+def test_reporting_tables_routes_and_shortcode_are_present():
+    for table in ['report_templates','report_documents','dashboard_definitions','dashboard_cards','publication_snapshots','export_bundles','export_artifacts']:
+        assert f"gic_repository_table('{table}')" in PHP
+    for behavior in ['gic_reporting_repository_rest','gic_reporting_template_rest','gic_reporting_report_rest','gic_reporting_dashboard_rest','gic_reporting_snapshot_rest','gic_reporting_export_rest','gic_reporting_register_routes','gic_reporting_studio_shortcode']:
+        assert f'function {behavior}' in PHP
+    for route in ['/reporting-repository','/report-templates','/reports','/dashboards','/publication-snapshots','/reproducible-exports']:
+        assert route in PHP
+    for control in ['data-gic-reporting-studio','data-gic-reporting-load','data-gic-reporting-template','data-gic-reporting-report','data-gic-reporting-dashboard','data-gic-reporting-snapshot','data-gic-reporting-export','data-gic-reporting-results']:
+        assert control in PHP
+
+def test_reporting_client_and_styles_support_accessible_publication_operations():
+    for operation in ['reporting-repository?workspace_id=','report-templates','reports','dashboards','publication-snapshots','reproducible-exports','data-gic-reporting-results']:
+        assert operation in REPORTING_JS or operation in PHP
+    assert '.gic-reporting__grid' in REPORTING_CSS and '@media' in REPORTING_CSS

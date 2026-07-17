@@ -1,0 +1,302 @@
+{
+  "repository_type": "global_impact_reporting_repository",
+  "repository_version": "1.8.0",
+  "workspace_id": "gic-workspace-bdc75d8b68333af2",
+  "generated_at": "2026-07-17T22:33:35.934431+00:00",
+  "report_templates": [
+    {
+      "template_id": "gic-report-template-531d7708654c2350dcc5",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "name": "Public Impact Report",
+      "description": "Accessible public report with methodology and references.",
+      "report_type": "impact_report",
+      "citation_style": "harvard",
+      "lifecycle_status": "draft",
+      "revision": 1,
+      "created_at": "2026-07-17T22:33:35.925705+00:00",
+      "updated_at": "2026-07-17T22:33:35.925705+00:00",
+      "sections": [
+        "executive_summary",
+        "initiative",
+        "results",
+        "evidence",
+        "analysis",
+        "quality",
+        "methodology",
+        "limitations",
+        "references"
+      ],
+      "accessibility_profile": {
+        "heading_order": true,
+        "table_captions": true,
+        "text_alternatives": true,
+        "wcag_target": "2.2 AA"
+      },
+      "metadata": {}
+    }
+  ],
+  "reports": [
+    {
+      "report_id": "gic-report-49ecec3ffabc9d0a8177",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "template_id": "gic-report-template-531d7708654c2350dcc5",
+      "title": "Community Energy Retrofit Impact Report",
+      "report_type": "impact_report",
+      "audience": "public",
+      "language": "en",
+      "period_label": "2026 Q2",
+      "lifecycle_status": "draft",
+      "source_bundle_hash": "81d323e0fbdac32ef4ec274e05789cc769c364960f9d7b1a3b52aa5b79b6045f",
+      "content_hash": "3aca219485d15b46fd2f053fc314da5e5f87654ebe866a1558ebd06ce8502af9",
+      "rendered_markdown": "# Community Energy Retrofit Impact Report\n\n**Audience:** public\n**Reporting period:** 2026 Q2\n\n## Executive summary\nCommunity Energy Retrofit Pilot reports governed impact evidence for 2026 Q2.\n\n## Initiative and goal\n**Community Energy Retrofit Pilot**\n\nReduce household energy burden while improving residential efficiency.\n\n## Results\n- Indicator: Average monthly bill reduction\n- Observed value: 18.0 USD\n- Period: 2026 Q2\n\n## Analysis\n- Saved analysis runs: 0\n- Scenarios: 0\n\n## Review and quality\n- Review workflow valid: True\n- Publications: 0\n\n## Methodology appendix\n- Canonical Contract Version: 1.1.0\n- Evidence Repository Version: 1.3.0\n- Indicator Registry Version: 1.4.0\n- Measurement Repository Version: 1.5.0\n- Review Workflow Version: 1.6.0\n- Analysis Repository Version: 1.7.0\n- Source Count: 1\n- Method Count: 1\n- Calculation Provenance: {}\n- Boundary: \n\n## Limitations\n- Validation tests consistency and traceability, not truth or source authenticity.\n- Observed change does not by itself establish attribution or causality.\n- Scenario and trend outputs are descriptive or planning artifacts, not verified forecasts.\n\n## References\n1. Unknown author (n.d.) Pilot utility-billing sample and participant survey summary. Internal pilot evidence package GIC-ENERGY-2026-Q2\n",
+      "rendered_html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Community Energy Retrofit Impact Report</title></head><body><a href=\"#main\">Skip to report</a><main id=\"main\"><header><h1>Community Energy Retrofit Impact Report</h1><p>Audience: public</p></header><section aria-labelledby=\"summary\"><h2 id=\"summary\">Executive summary</h2><p>Community Energy Retrofit Pilot reports governed impact evidence for 2026 Q2.</p></section><section aria-labelledby=\"results\"><h2 id=\"results\">Results</h2><dl><dt>Indicator</dt><dd>Average monthly bill reduction</dd><dt>Observed value</dt><dd>18.0 USD</dd><dt>Period</dt><dd>2026 Q2</dd></dl></section><section aria-labelledby=\"limitations\"><h2 id=\"limitations\">Limitations</h2><ul><li>Validation tests consistency and traceability, not truth or source authenticity.</li><li>Observed change does not by itself establish attribution or causality.</li><li>Scenario and trend outputs are descriptive or planning artifacts, not verified forecasts.</li></ul></section><section aria-labelledby=\"references\"><h2 id=\"references\">References</h2><ol><li id=\"ref-1\">Unknown author (n.d.) Pilot utility-billing sample and participant survey summary. Internal pilot evidence package GIC-ENERGY-2026-Q2</li></ol></section></main></body></html>\n",
+      "revision": 1,
+      "created_by": "example",
+      "created_at": "2026-07-17T22:33:35.931942+00:00",
+      "updated_at": "2026-07-17T22:33:35.931942+00:00",
+      "document": {
+        "analysis_summary": {
+          "analysis_run_count": 0,
+          "benchmark_count": 0,
+          "comparison_member_count": 0,
+          "comparison_set_count": 0,
+          "orphan_comparison_member_ids": [],
+          "orphan_sensitivity_run_ids": [],
+          "scenario_count": 0,
+          "sensitivity_run_count": 0,
+          "uncertainty_model_count": 0,
+          "valid": true
+        },
+        "audience": "public",
+        "citations": [
+          {
+            "creator": "Unknown author",
+            "formatted": "Unknown author (n.d.) Pilot utility-billing sample and participant survey summary. Internal pilot evidence package GIC-ENERGY-2026-Q2",
+            "locator": "Internal pilot evidence package GIC-ENERGY-2026-Q2",
+            "publisher": "",
+            "source_id": "gic-source-f2284ef9ae098b56",
+            "title": "Pilot utility-billing sample and participant survey summary",
+            "year": "n.d."
+          }
+        ],
+        "evidence_summary": {
+          "claim_link_count": 0,
+          "contradicting_link_count": 0,
+          "dataset_count": 0,
+          "edge_count": 9,
+          "evidence_count": 0,
+          "missing_checksum_source_ids": [],
+          "orphan_claim_evidence_links": [],
+          "source_count": 1,
+          "valid": true,
+          "version_count": 1
+        },
+        "executive_summary": "Community Energy Retrofit Pilot reports governed impact evidence for 2026 Q2.",
+        "goal": "Reduce household energy burden while improving residential efficiency.",
+        "indicator": {
+          "baseline": {
+            "created_at": "2026-07-17T20:00:00+00:00",
+            "entity_type": "baseline",
+            "id": "gic-baseline-bccde48f17ee3898",
+            "indicator_id": "gic-indicator-2e7a8f93231487ce",
+            "method_id": "gic-method-dfc0b951aac86076",
+            "period": {
+              "label": "2025 baseline"
+            },
+            "source_ids": [
+              "gic-source-f2284ef9ae098b56"
+            ],
+            "unit": "USD",
+            "updated_at": "2026-07-17T20:00:00+00:00",
+            "value": 0.0
+          },
+          "name": "Average monthly bill reduction",
+          "observed_value": 18.0,
+          "period": {
+            "label": "2026 Q2"
+          },
+          "target": {
+            "created_at": "2026-07-17T20:00:00+00:00",
+            "direction": "higher_is_better",
+            "entity_type": "target",
+            "id": "gic-target-61bc37e9887a3252",
+            "indicator_id": "gic-indicator-2e7a8f93231487ce",
+            "period": {
+              "label": "2027"
+            },
+            "unit": "USD",
+            "updated_at": "2026-07-17T20:00:00+00:00",
+            "value": 30.0
+          },
+          "unit": "USD"
+        },
+        "initiative": {
+          "id": "gic-initiative-09a657f60923ed45",
+          "name": "Community Energy Retrofit Pilot"
+        },
+        "interpretation": {},
+        "language": "en",
+        "limitations": [
+          "Validation tests consistency and traceability, not truth or source authenticity.",
+          "Observed change does not by itself establish attribution or causality.",
+          "Scenario and trend outputs are descriptive or planning artifacts, not verified forecasts."
+        ],
+        "methodology": {
+          "analysis_repository_version": "1.7.0",
+          "boundary": "",
+          "calculation_provenance": {},
+          "canonical_contract_version": "1.1.0",
+          "evidence_repository_version": "1.3.0",
+          "indicator_registry_version": "1.4.0",
+          "measurement_repository_version": "1.5.0",
+          "method_count": 1,
+          "review_workflow_version": "1.6.0",
+          "source_count": 1
+        },
+        "metrics": {
+          "absolute_change": 18.0,
+          "calculation_method": {
+            "engine": "global-impact-catalyst",
+            "engine_version": "1.1.0",
+            "progress_formula": "direction-aware change from baseline divided by baseline-to-target distance",
+            "rounding": "decimal half up"
+          },
+          "cost_per_beneficiary": {
+            "currency": "USD",
+            "value": 297.62
+          },
+          "data_quality_components": {
+            "confidence_signal": 15,
+            "method_documented": 25,
+            "review_signal": 10,
+            "source_documented": 25
+          },
+          "data_quality_score": 75,
+          "percent_change_from_baseline": null,
+          "progress_to_target_percent": 60.0,
+          "remaining_gap": 12.0,
+          "status": "draft — partial progress"
+        },
+        "outcomes": [
+          {
+            "created_at": "2026-07-17T20:00:00+00:00",
+            "entity_type": "outcome",
+            "goal_id": "gic-goal-ece2bacb67a2be38",
+            "id": "gic-outcome-5dfda192c94fd5fb",
+            "statement": "Participating households experience lower monthly energy costs.",
+            "updated_at": "2026-07-17T20:00:00+00:00"
+          }
+        ],
+        "period_label": "2026 Q2",
+        "quality_summary": {
+          "approval_decision_count": 0,
+          "assignment_count": 0,
+          "broken_decision_ids": [],
+          "comment_count": 0,
+          "correction_count": 0,
+          "open_comment_count": 0,
+          "open_correction_count": 0,
+          "publication_count": 0,
+          "published_without_gate_ids": [],
+          "quality_assessment_count": 0,
+          "revision_count": 1,
+          "role_count": 5,
+          "valid": true
+        },
+        "report_type": "impact_report",
+        "sections": [
+          "executive_summary",
+          "initiative",
+          "results",
+          "evidence",
+          "analysis",
+          "quality",
+          "methodology",
+          "limitations",
+          "references"
+        ],
+        "title": "Community Energy Retrofit Impact Report"
+      },
+      "citations": [
+        {
+          "creator": "Unknown author",
+          "formatted": "Unknown author (n.d.) Pilot utility-billing sample and participant survey summary. Internal pilot evidence package GIC-ENERGY-2026-Q2",
+          "locator": "Internal pilot evidence package GIC-ENERGY-2026-Q2",
+          "publisher": "",
+          "source_id": "gic-source-f2284ef9ae098b56",
+          "title": "Pilot utility-billing sample and participant survey summary",
+          "year": "n.d."
+        }
+      ],
+      "methodology": {
+        "analysis_repository_version": "1.7.0",
+        "boundary": "",
+        "calculation_provenance": {},
+        "canonical_contract_version": "1.1.0",
+        "evidence_repository_version": "1.3.0",
+        "indicator_registry_version": "1.4.0",
+        "measurement_repository_version": "1.5.0",
+        "method_count": 1,
+        "review_workflow_version": "1.6.0",
+        "source_count": 1
+      },
+      "metadata": {
+        "source_hashes": {
+          "analysis": "14aefcfa6986ded20ddc9a118357cd960655083b0166ba5b8197f85e12c35381",
+          "contract": "ea7d49905ce349f9fd765cf99dec77c255d280773070deba84db690d4992cbbb",
+          "evidence": "85dd9caa91a2bbaecdeda2f5a448396f8ebf004fb87063f99f83303b5448558d",
+          "measurement": "2595583e2895be96a5364dda3e0a9c8f5024b77155ac1252af654d7235daa231",
+          "registry": "c13f8e647c734c000a52eccb38ad83ce174cafae228a907029f444fa2f5f35f4",
+          "review": "730eac55a199a14a6e18f80b46dad14e8de716129997453f197df87b8c753898"
+        }
+      }
+    }
+  ],
+  "dashboards": [
+    {
+      "dashboard_id": "gic-dashboard-6c0b92283cc08cb0ff32",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "name": "Community Energy Impact Overview",
+      "description": "Board-ready governed summary.",
+      "audience": "board",
+      "lifecycle_status": "draft",
+      "revision": 1,
+      "created_at": "2026-07-17T22:33:35.932885+00:00",
+      "updated_at": "2026-07-17T22:33:35.932885+00:00",
+      "layout": {
+        "columns": 2
+      },
+      "metadata": {},
+      "cards": [
+        {
+          "card_id": "gic-dashboard-card-b8aa714a5c8c615a7723",
+          "dashboard_id": "gic-dashboard-6c0b92283cc08cb0ff32",
+          "card_type": "metric",
+          "title": "Observed monthly bill reduction",
+          "subject_type": "",
+          "subject_id": "",
+          "position": 1,
+          "alt_text": "Observed average monthly bill reduction in United States dollars",
+          "configuration": {
+            "unit": "USD",
+            "value": 18
+          },
+          "metadata": {}
+        }
+      ]
+    }
+  ],
+  "publication_snapshots": [],
+  "export_bundles": [],
+  "integrity": {
+    "valid": true,
+    "template_count": 1,
+    "report_count": 1,
+    "dashboard_count": 1,
+    "publication_snapshot_count": 0,
+    "export_bundle_count": 0
+  },
+  "boundary": "Reporting and export integrity do not constitute assurance, certification, audit, or causal proof."
+}

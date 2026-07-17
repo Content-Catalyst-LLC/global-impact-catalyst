@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Global Impact Catalyst
- * Description: Persistent impact workspaces, evidence chains, governed indicators, multi-period measurement, review and approval workflow, corrections, publication controls, and canonical contract demo. Shortcodes: [global_impact_catalyst_analysis_studio], [global_impact_catalyst_review_workflow], [global_impact_catalyst_measurement_portfolio], [global_impact_catalyst_workspace], [global_impact_catalyst_evidence_ledger], [global_impact_catalyst_indicator_registry], [global_impact_catalyst_demo]
- * Version: 1.7.0
+ * Description: Persistent impact workspaces, evidence chains, governed indicators, measurement, review, analysis, accessible reporting, publication snapshots, reproducible exports, and canonical contract demo. Shortcodes: [global_impact_catalyst_reporting_studio], [global_impact_catalyst_analysis_studio], [global_impact_catalyst_review_workflow], [global_impact_catalyst_measurement_portfolio], [global_impact_catalyst_workspace], [global_impact_catalyst_evidence_ledger], [global_impact_catalyst_indicator_registry], [global_impact_catalyst_demo]
+ * Version: 1.8.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('GIC_DEMO_VERSION', '1.7.0');
+define('GIC_DEMO_VERSION', '1.8.0');
 define('GIC_DEMO_URL', plugin_dir_url(__FILE__));
 
 function gic_demo_register_assets() {
@@ -29,6 +29,8 @@ function gic_demo_register_assets() {
     wp_register_script('global-impact-catalyst-review', GIC_DEMO_URL . 'assets/global-impact-catalyst-review.js', array(), GIC_DEMO_VERSION, true);
     wp_register_style('global-impact-catalyst-analysis', GIC_DEMO_URL . 'assets/global-impact-catalyst-analysis.css', array('global-impact-catalyst-demo'), GIC_DEMO_VERSION);
     wp_register_script('global-impact-catalyst-analysis', GIC_DEMO_URL . 'assets/global-impact-catalyst-analysis.js', array(), GIC_DEMO_VERSION, true);
+    wp_register_style('global-impact-catalyst-reporting', GIC_DEMO_URL . 'assets/global-impact-catalyst-reporting.css', array('global-impact-catalyst-demo'), GIC_DEMO_VERSION);
+    wp_register_script('global-impact-catalyst-reporting', GIC_DEMO_URL . 'assets/global-impact-catalyst-reporting.js', array(), GIC_DEMO_VERSION, true);
 }
 add_action('wp_enqueue_scripts', 'gic_demo_register_assets');
 
@@ -943,13 +945,20 @@ function gic_repository_activate() {
     dbDelta("CREATE TABLE " . gic_repository_table('analysis_uncertainty_models') . " (uncertainty_model_id varchar(96) NOT NULL, workspace_id varchar(96) NOT NULL, name text NOT NULL, uncertainty_type varchar(32) NOT NULL, absolute_margin decimal(30,10) NULL, relative_margin_percent decimal(20,8) NULL, lower_bound decimal(30,10) NULL, upper_bound decimal(30,10) NULL, confidence_level decimal(8,6) NOT NULL DEFAULT .95, distribution varchar(48) NOT NULL DEFAULT 'bounded', assumptions_json longtext NOT NULL, limitations_json longtext NOT NULL, revision bigint unsigned NOT NULL DEFAULT 1, created_at datetime NOT NULL, updated_at datetime NOT NULL, metadata_json longtext NOT NULL, PRIMARY KEY (uncertainty_model_id), KEY workspace_id (workspace_id)) {$charset};");
     dbDelta("CREATE TABLE " . gic_repository_table('analysis_runs') . " (analysis_run_id varchar(96) NOT NULL, workspace_id varchar(96) NOT NULL, initiative_id varchar(96) NOT NULL DEFAULT '', analysis_type varchar(48) NOT NULL, subject_id varchar(96) NOT NULL, input_hash char(64) NOT NULL, result_hash char(64) NOT NULL, result_json longtext NOT NULL, created_by varchar(190) NOT NULL, created_at datetime NOT NULL, metadata_json longtext NOT NULL, PRIMARY KEY (analysis_run_id), KEY workspace_id (workspace_id)) {$charset};");
     dbDelta("CREATE TABLE " . gic_repository_table('analysis_sensitivity_runs') . " (sensitivity_run_id varchar(96) NOT NULL, scenario_id varchar(96) NOT NULL, workspace_id varchar(96) NOT NULL, initiative_id varchar(96) NOT NULL, parameter_name varchar(120) NOT NULL, absolute_effect decimal(30,10) NOT NULL, rank_order int unsigned NOT NULL, created_at datetime NOT NULL, metadata_json longtext NOT NULL, PRIMARY KEY (sensitivity_run_id), KEY workspace_id (workspace_id)) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('report_templates') . " (template_id varchar(96) NOT NULL, workspace_id varchar(96) NOT NULL, name text NOT NULL, report_type varchar(48) NOT NULL, sections_json longtext NOT NULL, citation_style varchar(32) NOT NULL, accessibility_json longtext NOT NULL, revision bigint unsigned NOT NULL DEFAULT 1, created_at datetime NOT NULL, updated_at datetime NOT NULL, metadata_json longtext NOT NULL, PRIMARY KEY (template_id), KEY workspace_id (workspace_id)) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('report_documents') . " (report_id varchar(96) NOT NULL, workspace_id varchar(96) NOT NULL, initiative_id varchar(96) NOT NULL, template_id varchar(96) NOT NULL DEFAULT '', title text NOT NULL, report_type varchar(48) NOT NULL, audience varchar(48) NOT NULL, period_label varchar(160) NOT NULL DEFAULT '', source_bundle_hash char(64) NOT NULL, content_hash char(64) NOT NULL, document_json longtext NOT NULL, rendered_markdown longtext NOT NULL, rendered_html longtext NOT NULL, citations_json longtext NOT NULL, methodology_json longtext NOT NULL, revision bigint unsigned NOT NULL DEFAULT 1, created_at datetime NOT NULL, updated_at datetime NOT NULL, metadata_json longtext NOT NULL, PRIMARY KEY (report_id), KEY workspace_id (workspace_id)) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('dashboard_definitions') . " (dashboard_id varchar(96) NOT NULL, workspace_id varchar(96) NOT NULL, initiative_id varchar(96) NOT NULL DEFAULT '', name text NOT NULL, audience varchar(48) NOT NULL, layout_json longtext NOT NULL, revision bigint unsigned NOT NULL DEFAULT 1, created_at datetime NOT NULL, updated_at datetime NOT NULL, metadata_json longtext NOT NULL, PRIMARY KEY (dashboard_id), KEY workspace_id (workspace_id)) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('dashboard_cards') . " (card_id varchar(96) NOT NULL, dashboard_id varchar(96) NOT NULL, card_type varchar(48) NOT NULL, title text NOT NULL, subject_type varchar(48) NOT NULL DEFAULT '', subject_id varchar(96) NOT NULL DEFAULT '', position int NOT NULL DEFAULT 0, alt_text text NOT NULL, configuration_json longtext NOT NULL, metadata_json longtext NOT NULL, PRIMARY KEY (card_id), KEY dashboard_id (dashboard_id)) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('publication_snapshots') . " (snapshot_id varchar(96) NOT NULL, publication_id varchar(96) NOT NULL, workspace_id varchar(96) NOT NULL, initiative_id varchar(96) NOT NULL, report_id varchar(96) NOT NULL DEFAULT '', snapshot_hash char(64) NOT NULL, snapshot_json longtext NOT NULL, created_at datetime NOT NULL, metadata_json longtext NOT NULL, PRIMARY KEY (snapshot_id), KEY workspace_id (workspace_id)) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('export_bundles') . " (export_bundle_id varchar(96) NOT NULL, workspace_id varchar(96) NOT NULL, initiative_id varchar(96) NOT NULL DEFAULT '', report_id varchar(96) NOT NULL DEFAULT '', publication_snapshot_id varchar(96) NOT NULL DEFAULT '', manifest_hash char(64) NOT NULL, archive_hash char(64) NOT NULL DEFAULT '', artifact_count int unsigned NOT NULL DEFAULT 0, created_at datetime NOT NULL, metadata_json longtext NOT NULL, PRIMARY KEY (export_bundle_id), KEY workspace_id (workspace_id)) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('export_artifacts') . " (artifact_id varchar(96) NOT NULL, export_bundle_id varchar(96) NOT NULL, artifact_path text NOT NULL, media_type varchar(120) NOT NULL, byte_size bigint unsigned NOT NULL, sha256 char(64) NOT NULL, content_text longtext NOT NULL, created_at datetime NOT NULL, metadata_json longtext NOT NULL, PRIMARY KEY (artifact_id), KEY export_bundle_id (export_bundle_id)) {$charset};");
     gic_registry_seed_units();
-    update_option('gic_repository_schema_version', 8, false);
+    update_option('gic_repository_schema_version', 9, false);
 }
 register_activation_hook(__FILE__, 'gic_repository_activate');
 
 function gic_repository_maybe_upgrade() {
-    if ((int) get_option('gic_repository_schema_version', 0) < 8) { gic_repository_activate(); }
+    if ((int) get_option('gic_repository_schema_version', 0) < 9) { gic_repository_activate(); }
 }
 add_action('plugins_loaded', 'gic_repository_maybe_upgrade');
 
@@ -2329,3 +2338,106 @@ function gic_analysis_studio_shortcode($atts=array()) {
     </section><?php return ob_get_clean();
 }
 add_shortcode('global_impact_catalyst_analysis_studio','gic_analysis_studio_shortcode');
+
+/** Reporting, Publication, and Reproducible Export Studio — v1.8.0. */
+function gic_reporting_id($kind,$parts=array()){return 'gic-'.$kind.'-'.substr(hash('sha256',wp_json_encode($parts,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)),0,20);}
+function gic_reporting_rows($table,$workspace,$json_fields=array()){
+    global $wpdb;
+    $rows=$wpdb->get_results($wpdb->prepare('SELECT * FROM '.$table.' WHERE workspace_id=%s ORDER BY updated_at DESC',$workspace),ARRAY_A);
+    foreach($rows as &$row){foreach($json_fields as $field){$name=preg_replace('/_json$/','',$field);$row[$name]=json_decode($row[$field]??'{}',true);unset($row[$field]);}}
+    return $rows;
+}
+function gic_reporting_repository_rest(WP_REST_Request $request){
+    global $wpdb;
+    $w=sanitize_text_field($request->get_param('workspace_id'));
+    $templates=gic_reporting_rows(gic_repository_table('report_templates'),$w,array('sections_json','accessibility_json','metadata_json'));
+    $reports=gic_reporting_rows(gic_repository_table('report_documents'),$w,array('document_json','citations_json','methodology_json','metadata_json'));
+    $dashboards=gic_reporting_rows(gic_repository_table('dashboard_definitions'),$w,array('layout_json','metadata_json'));
+    foreach($dashboards as &$d){
+        $cards=$wpdb->get_results($wpdb->prepare('SELECT * FROM '.gic_repository_table('dashboard_cards').' WHERE dashboard_id=%s ORDER BY position,title',$d['dashboard_id']),ARRAY_A);
+        foreach($cards as &$c){$c['configuration']=json_decode($c['configuration_json']??'{}',true);$c['metadata']=json_decode($c['metadata_json']??'{}',true);unset($c['configuration_json'],$c['metadata_json']);}
+        $d['cards']=$cards;
+    }
+    $snapshots=$wpdb->get_results($wpdb->prepare('SELECT * FROM '.gic_repository_table('publication_snapshots').' WHERE workspace_id=%s ORDER BY created_at',$w),ARRAY_A);
+    foreach($snapshots as &$snapshot){$snapshot['snapshot']=json_decode($snapshot['snapshot_json']??'{}',true);$snapshot['metadata']=json_decode($snapshot['metadata_json']??'{}',true);unset($snapshot['snapshot_json'],$snapshot['metadata_json']);}
+    $bundles=$wpdb->get_results($wpdb->prepare('SELECT * FROM '.gic_repository_table('export_bundles').' WHERE workspace_id=%s ORDER BY created_at',$w),ARRAY_A);
+    $checksum_failures=array();$count_failures=array();
+    foreach($bundles as &$bundle){
+        $bundle['metadata']=json_decode($bundle['metadata_json']??'{}',true);unset($bundle['metadata_json']);
+        $artifacts=$wpdb->get_results($wpdb->prepare('SELECT * FROM '.gic_repository_table('export_artifacts').' WHERE export_bundle_id=%s ORDER BY artifact_path',$bundle['export_bundle_id']),ARRAY_A);
+        foreach($artifacts as &$artifact){
+            $artifact['metadata']=json_decode($artifact['metadata_json']??'{}',true);unset($artifact['metadata_json']);
+            if(hash('sha256',$artifact['content_text'])!==$artifact['sha256']){$checksum_failures[]=$artifact['artifact_id'];}
+        }
+        if(count($artifacts)!==(int)$bundle['artifact_count']){$count_failures[]=$bundle['export_bundle_id'];}
+        $bundle['artifacts']=$artifacts;
+    }
+    return rest_ensure_response(array(
+        'repository_type'=>'global_impact_reporting_repository','repository_version'=>'1.8.0','workspace_id'=>$w,'generated_at'=>gmdate('c'),
+        'report_templates'=>$templates,'reports'=>$reports,'dashboards'=>$dashboards,'publication_snapshots'=>$snapshots,'export_bundles'=>$bundles,
+        'integrity'=>array('valid'=>!$checksum_failures&&!$count_failures,'template_count'=>count($templates),'report_count'=>count($reports),'dashboard_count'=>count($dashboards),'publication_snapshot_count'=>count($snapshots),'export_bundle_count'=>count($bundles),'artifact_checksum_failures'=>$checksum_failures,'bundle_count_failures'=>$count_failures),
+        'boundary'=>'Reporting integrity is not assurance, certification, audit, or causal proof.'
+    ));
+}
+function gic_reporting_template_rest(WP_REST_Request $request){
+    global $wpdb;$p=$request->get_json_params();$workspace=sanitize_text_field($p['workspace_id']??'');$name=sanitize_text_field($p['name']??'');
+    if(!$workspace||!$name)return new WP_Error('gic_reporting_required','workspace_id and name are required.',array('status'=>400));
+    $id=sanitize_text_field($p['template_id']??gic_reporting_id('report-template',array($workspace,$name)));$existing=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.gic_repository_table('report_templates').' WHERE template_id=%s',$id),ARRAY_A);$now=current_time('mysql',true);
+    $wpdb->replace(gic_repository_table('report_templates'),array('template_id'=>$id,'workspace_id'=>$workspace,'name'=>$name,'report_type'=>sanitize_key($p['report_type']??'impact_report'),'sections_json'=>wp_json_encode((array)($p['sections']??array('executive_summary','results','methodology','limitations','references'))),'citation_style'=>sanitize_key($p['citation_style']??'harvard'),'accessibility_json'=>wp_json_encode((array)($p['accessibility_profile']??array('wcag_target'=>'2.2 AA','heading_order'=>true,'text_alternatives'=>true))),'revision'=>$existing?((int)$existing['revision']+1):1,'created_at'=>$existing['created_at']??$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode((array)($p['metadata']??array()))));
+    return rest_ensure_response(array('template_id'=>$id,'revision'=>$existing?((int)$existing['revision']+1):1));
+}
+function gic_reporting_report_rest(WP_REST_Request $request){
+    global $wpdb;$p=$request->get_json_params();foreach(array('workspace_id','initiative_id','title') as $key){if(empty($p[$key]))return new WP_Error('gic_reporting_required',$key.' is required.',array('status'=>400));}
+    $contract=$wpdb->get_row($wpdb->prepare('SELECT contract_json,content_hash FROM '.gic_repository_table('contracts').' WHERE initiative_id=%s',sanitize_text_field($p['initiative_id'])),ARRAY_A);if(!$contract)return new WP_Error('gic_reporting_missing','Initiative not found.',array('status'=>404));
+    $document=array('report_type'=>'impact_report','title'=>sanitize_text_field($p['title']),'audience'=>sanitize_key($p['audience']??'public'),'period_label'=>sanitize_text_field($p['period_label']??''),'contract'=>json_decode($contract['contract_json'],true),'limitations'=>array('Validation and reporting do not establish assurance or causality.'));
+    $hash=hash('sha256',wp_json_encode($document,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));$id=gic_reporting_id('report',array($p['workspace_id'],$p['initiative_id'],$hash));$existing=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.gic_repository_table('report_documents').' WHERE report_id=%s',$id),ARRAY_A);$now=current_time('mysql',true);
+    $markdown='# '.$document['title']."\n\nGoverned Global Impact Catalyst report.\n\n## Methodology appendix\n\n- Canonical contract: v1.1.0\n";
+    $html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'.esc_html($document['title']).'</title></head><body><a href="#main">Skip to report</a><main id="main"><h1>'.esc_html($document['title']).'</h1><p>Governed Global Impact Catalyst report.</p><h2>Limitations</h2><p>Validation and reporting do not establish assurance or causality.</p></main></body></html>';
+    $wpdb->replace(gic_repository_table('report_documents'),array('report_id'=>$id,'workspace_id'=>sanitize_text_field($p['workspace_id']),'initiative_id'=>sanitize_text_field($p['initiative_id']),'template_id'=>sanitize_text_field($p['template_id']??''),'title'=>$document['title'],'report_type'=>'impact_report','audience'=>$document['audience'],'period_label'=>$document['period_label'],'source_bundle_hash'=>$contract['content_hash'],'content_hash'=>$hash,'document_json'=>wp_json_encode($document),'rendered_markdown'=>$markdown,'rendered_html'=>$html,'citations_json'=>'[]','methodology_json'=>wp_json_encode(array('canonical_contract_version'=>'1.1.0','reporting_version'=>'1.8.0')),'revision'=>$existing?((int)$existing['revision']+1):1,'created_at'=>$existing['created_at']??$now,'updated_at'=>$now,'metadata_json'=>'{}'));
+    return rest_ensure_response(array('report_id'=>$id,'content_hash'=>$hash,'rendered_markdown'=>$markdown,'rendered_html'=>$html));
+}
+function gic_reporting_dashboard_rest(WP_REST_Request $request){
+    global $wpdb;$p=$request->get_json_params();if(empty($p['workspace_id']))return new WP_Error('gic_reporting_required','workspace_id is required.',array('status'=>400));
+    $id=gic_reporting_id('dashboard',array($p['workspace_id']??'',$p['initiative_id']??'',$p['name']??''));$existing=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.gic_repository_table('dashboard_definitions').' WHERE dashboard_id=%s',$id),ARRAY_A);$now=current_time('mysql',true);
+    $wpdb->replace(gic_repository_table('dashboard_definitions'),array('dashboard_id'=>$id,'workspace_id'=>sanitize_text_field($p['workspace_id']??''),'initiative_id'=>sanitize_text_field($p['initiative_id']??''),'name'=>sanitize_text_field($p['name']??'Impact Dashboard'),'audience'=>sanitize_key($p['audience']??'internal'),'layout_json'=>wp_json_encode($p['layout']??array('columns'=>2)),'revision'=>$existing?((int)$existing['revision']+1):1,'created_at'=>$existing['created_at']??$now,'updated_at'=>$now,'metadata_json'=>'{}'));
+    return rest_ensure_response(array('dashboard_id'=>$id));
+}
+function gic_reporting_snapshot_rest(WP_REST_Request $request){
+    global $wpdb;$p=$request->get_json_params();$publication_id=sanitize_text_field($p['publication_id']??'');
+    $publication=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.gic_repository_table('publication_records').' WHERE publication_id=%s',$publication_id),ARRAY_A);
+    if(!$publication||$publication['publication_status']!=='published')return new WP_Error('gic_reporting_publication','A published publication is required.',array('status'=>409));
+    $report_id=sanitize_text_field($p['report_id']??'');$report=$report_id?$wpdb->get_row($wpdb->prepare('SELECT report_id,content_hash,title FROM '.gic_repository_table('report_documents').' WHERE report_id=%s',$report_id),ARRAY_A):null;
+    $snapshot=array('snapshot_type'=>'global_impact_publication_snapshot','snapshot_version'=>'1.8.0','publication'=>$publication,'report'=>$report,'hashes'=>array('contract_hash'=>$publication['content_hash'],'report_hash'=>$report['content_hash']??''));
+    $snapshot_hash=hash('sha256',wp_json_encode($snapshot,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));$id=gic_reporting_id('publication-snapshot',array($publication_id,$snapshot_hash));$now=current_time('mysql',true);
+    $wpdb->replace(gic_repository_table('publication_snapshots'),array('snapshot_id'=>$id,'publication_id'=>$publication_id,'workspace_id'=>$publication['workspace_id'],'initiative_id'=>$publication['initiative_id'],'report_id'=>$report_id,'snapshot_hash'=>$snapshot_hash,'snapshot_json'=>wp_json_encode($snapshot),'created_at'=>$now,'metadata_json'=>'{}'));
+    return rest_ensure_response(array('snapshot_id'=>$id,'snapshot_hash'=>$snapshot_hash,'snapshot'=>$snapshot));
+}
+function gic_reporting_export_rest(WP_REST_Request $request){
+    global $wpdb;$p=$request->get_json_params();$workspace=sanitize_text_field($p['workspace_id']??'');if(!$workspace)return new WP_Error('gic_reporting_required','workspace_id is required.',array('status'=>400));
+    $report_id=sanitize_text_field($p['report_id']??'');$snapshot_id=sanitize_text_field($p['publication_snapshot_id']??'');$artifacts=array();
+    $repository_request=new WP_REST_Request('GET','/');$repository_request->set_param('workspace_id',$workspace);$repository=gic_reporting_repository_rest($repository_request)->get_data();$repository['generated_at']='1980-01-01T00:00:00+00:00';$repository['export_bundles']=array();$repository['integrity']['export_bundle_count']=0;$artifacts['reporting-repository.json']=wp_json_encode($repository,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
+    if($report_id){$report=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.gic_repository_table('report_documents').' WHERE report_id=%s',$report_id),ARRAY_A);if($report){$artifacts['report/report.md']=$report['rendered_markdown'];$artifacts['report/report.html']=$report['rendered_html'];$artifacts['report/report.json']=$report['document_json'];}}
+    if($snapshot_id){$snapshot=$wpdb->get_row($wpdb->prepare('SELECT snapshot_json FROM '.gic_repository_table('publication_snapshots').' WHERE snapshot_id=%s',$snapshot_id),ARRAY_A);if($snapshot)$artifacts['publication-snapshot.json']=$snapshot['snapshot_json'];}
+    ksort($artifacts);$manifest_artifacts=array();foreach($artifacts as $path=>$content){$manifest_artifacts[]=array('path'=>$path,'byte_size'=>strlen($content),'sha256'=>hash('sha256',$content));}
+    $manifest=array('bundle_type'=>'global_impact_reproducible_export','bundle_version'=>'1.8.0','workspace_id'=>$workspace,'initiative_id'=>sanitize_text_field($p['initiative_id']??''),'report_id'=>$report_id,'publication_snapshot_id'=>$snapshot_id,'artifacts'=>$manifest_artifacts,'reproducibility'=>array('hash_algorithm'=>'sha256','wordpress_artifact_set'=>true),'boundary'=>'Export integrity proves byte identity, not factual truth, assurance, or causal validity.');
+    $manifest_text=wp_json_encode($manifest,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";$artifacts['manifest.json']=$manifest_text;ksort($artifacts);$sums='';foreach($artifacts as $path=>$content){$sums.=hash('sha256',$content).'  '.$path."\n";}$artifacts['SHA256SUMS.txt']=$sums;ksort($artifacts);
+    $manifest_hash=hash('sha256',wp_json_encode($manifest,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));$archive_hash=hash('sha256',implode('',array_map(static function($path)use($artifacts){return $path."\0".$artifacts[$path]."\0";},array_keys($artifacts))));$bundle_id=gic_reporting_id('export-bundle',array($workspace,$manifest_hash));$now=current_time('mysql',true);
+    $wpdb->replace(gic_repository_table('export_bundles'),array('export_bundle_id'=>$bundle_id,'workspace_id'=>$workspace,'initiative_id'=>sanitize_text_field($p['initiative_id']??''),'report_id'=>$report_id,'publication_snapshot_id'=>$snapshot_id,'manifest_hash'=>$manifest_hash,'archive_hash'=>$archive_hash,'artifact_count'=>count($artifacts),'created_at'=>$now,'metadata_json'=>wp_json_encode(array('format'=>'wordpress-artifact-set'))));$wpdb->delete(gic_repository_table('export_artifacts'),array('export_bundle_id'=>$bundle_id));
+    foreach($artifacts as $path=>$content){$wpdb->insert(gic_repository_table('export_artifacts'),array('artifact_id'=>gic_reporting_id('export-artifact',array($bundle_id,$path)),'export_bundle_id'=>$bundle_id,'artifact_path'=>$path,'media_type'=>(substr($path,-5)==='.html'?'text/html':(substr($path,-3)==='.md'?'text/markdown':(substr($path,-4)==='.txt'?'text/plain':'application/json'))),'byte_size'=>strlen($content),'sha256'=>hash('sha256',$content),'content_text'=>$content,'created_at'=>$now,'metadata_json'=>'{}'));}
+    return rest_ensure_response(array('export_bundle_id'=>$bundle_id,'manifest_hash'=>$manifest_hash,'archive_hash'=>$archive_hash,'artifact_count'=>count($artifacts),'manifest'=>$manifest));
+}
+function gic_reporting_register_routes(){
+    register_rest_route('global-impact-catalyst/v1','/reporting-repository',array('methods'=>WP_REST_Server::READABLE,'callback'=>'gic_reporting_repository_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/report-templates',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_reporting_template_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/reports',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_reporting_report_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/dashboards',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_reporting_dashboard_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/publication-snapshots',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_reporting_snapshot_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/reproducible-exports',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_reporting_export_rest','permission_callback'=>'gic_repository_can_edit'));
+}
+add_action('rest_api_init','gic_reporting_register_routes');
+function gic_reporting_studio_shortcode($atts=array()){
+    if(!is_user_logged_in()||!current_user_can('edit_posts'))return '<p class="gic-reporting__login">Sign in with editing access to use the Reporting Studio.</p>';
+    wp_enqueue_style('global-impact-catalyst-reporting');wp_enqueue_script('global-impact-catalyst-reporting');ob_start();?>
+<section class="gic-reporting" data-gic-reporting-studio data-rest="<?php echo esc_url(rest_url('global-impact-catalyst/v1/')); ?>" data-nonce="<?php echo esc_attr(wp_create_nonce('wp_rest')); ?>"><header class="gic-reporting__header"><p class="gic-reporting__eyebrow">Governed reporting · v1.8.0</p><h2>Reporting, Publication, and Reproducible Export Studio</h2><p>Create accessible impact reports, methodology appendices, dashboards, publication snapshots, and checksum-governed export bundles.</p><p class="gic-reporting__boundary">Publication and checksum integrity do not constitute assurance, certification, audit, or causal proof.</p></header><div class="gic-reporting__grid"><div class="gic-reporting__panel"><h3>Report context</h3><label>Workspace ID<input name="workspace_id"></label><label>Initiative ID<input name="initiative_id"></label><label>Report title<input name="title" value="Impact Report"></label><label>Period label<input name="period_label"></label><label>Publication ID<input name="publication_id" placeholder="Published publication ID"></label><label>Report ID<input name="report_id" placeholder="Generated report ID"></label><label>Snapshot ID<input name="snapshot_id" placeholder="Publication snapshot ID"></label><div class="gic-reporting__actions"><button type="button" data-gic-reporting-load>Load repository</button><button type="button" data-gic-reporting-template>Create template</button><button type="button" data-gic-reporting-report>Create report</button><button type="button" data-gic-reporting-dashboard>Create dashboard</button><button type="button" data-gic-reporting-snapshot>Create snapshot</button><button type="button" data-gic-reporting-export>Create export</button></div></div><div class="gic-reporting__panel"><h3>Reporting output</h3><pre data-gic-reporting-results aria-live="polite">Enter workspace and initiative identifiers to begin.</pre></div></div></section><?php return ob_get_clean();}
+add_shortcode('global_impact_catalyst_reporting_studio','gic_reporting_studio_shortcode');
+

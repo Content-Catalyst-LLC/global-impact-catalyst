@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line workspace, evidence, indicator-registry, and program-measurement, review-workflow, and analysis operations for v1.7.0."""
+"""Command-line workspace, evidence, indicator-registry, and program-measurement, review-workflow, and analysis, reporting, and reproducible-export operations for v1.8.0."""
 from __future__ import annotations
 import argparse,json,sys
 from pathlib import Path
@@ -14,7 +14,7 @@ def read_json(path:str): return json.loads(Path(path).read_text(encoding='utf-8'
 def emit(value): print(json.dumps(value,indent=2,ensure_ascii=False,default=lambda o:o.__dict__))
 
 def main()->int:
-    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, indicator-registry, and program-measurement, review-workflow, and analysis CLI')
+    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, registry, measurement, review, analysis, reporting, and reproducible export CLI')
     parser.add_argument('--database',default='outputs/global-impact-catalyst.sqlite3')
     sub=parser.add_subparsers(dest='command',required=True)
     sub.add_parser('init')
@@ -84,6 +84,16 @@ def main()->int:
     sensitivity=sub.add_parser('sensitivity'); sensitivity.add_argument('--scenario-id',required=True); sensitivity.add_argument('--ranges',required=True)
     target_trajectory=sub.add_parser('target-trajectory'); target_trajectory.add_argument('--initiative-id',required=True); target_trajectory.add_argument('--indicator-id',required=True); target_trajectory.add_argument('--target-model-id',required=True); target_trajectory.add_argument('--persist',action='store_true')
     analysis_repository=sub.add_parser('analysis-repository'); analysis_repository.add_argument('--workspace-id',required=True); analysis_repository.add_argument('--output')
+    add_report_template=sub.add_parser('add-report-template'); add_report_template.add_argument('--workspace-id',required=True); add_report_template.add_argument('--input',required=True); add_report_template.add_argument('--expected-revision',type=int)
+    create_report=sub.add_parser('create-report'); create_report.add_argument('--workspace-id',required=True); create_report.add_argument('--initiative-id',required=True); create_report.add_argument('--input',required=True); create_report.add_argument('--template-id')
+    reports=sub.add_parser('reports'); reports.add_argument('--workspace-id'); reports.add_argument('--initiative-id')
+    add_dashboard=sub.add_parser('add-dashboard'); add_dashboard.add_argument('--workspace-id',required=True); add_dashboard.add_argument('--initiative-id'); add_dashboard.add_argument('--input',required=True); add_dashboard.add_argument('--expected-revision',type=int)
+    add_dashboard_card=sub.add_parser('add-dashboard-card'); add_dashboard_card.add_argument('--dashboard-id',required=True); add_dashboard_card.add_argument('--input',required=True)
+    render_dashboard=sub.add_parser('render-dashboard'); render_dashboard.add_argument('--dashboard-id',required=True)
+    publication_snapshot=sub.add_parser('publication-snapshot'); publication_snapshot.add_argument('--publication-id',required=True); publication_snapshot.add_argument('--report-id')
+    reproducible_export=sub.add_parser('reproducible-export'); reproducible_export.add_argument('--workspace-id',required=True); reproducible_export.add_argument('--initiative-id'); reproducible_export.add_argument('--report-id'); reproducible_export.add_argument('--publication-snapshot-id'); reproducible_export.add_argument('--output',required=True)
+    verify_export=sub.add_parser('verify-export'); verify_export.add_argument('--input',required=True)
+    reporting_repository=sub.add_parser('reporting-repository'); reporting_repository.add_argument('--workspace-id',required=True); reporting_repository.add_argument('--output')
     sub.add_parser('summary')
     args=parser.parse_args()
     with SQLiteImpactRepository(args.database) as repository:
@@ -159,6 +169,18 @@ def main()->int:
         elif args.command=='sensitivity': emit(service.run_sensitivity_analysis(args.scenario_id,read_json(args.ranges),actor='cli'))
         elif args.command=='target-trajectory': emit(service.compare_observations_to_target(args.initiative_id,args.indicator_id,args.target_model_id,actor='cli',persist=args.persist))
         elif args.command=='analysis-repository': emit(service.analysis_repository(args.workspace_id,args.output))
+        elif args.command=='add-report-template': emit(service.register_report_template(read_json(args.input),workspace_id=args.workspace_id,expected_revision=args.expected_revision,actor='cli'))
+        elif args.command=='create-report': emit(service.create_report(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,template_id=args.template_id,actor='cli'))
+        elif args.command=='reports': emit(repository.list_reports(workspace_id=args.workspace_id,initiative_id=args.initiative_id))
+        elif args.command=='add-dashboard': emit(service.create_dashboard(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,expected_revision=args.expected_revision,actor='cli'))
+        elif args.command=='add-dashboard-card': emit(service.add_dashboard_card(args.dashboard_id,read_json(args.input),actor='cli'))
+        elif args.command=='render-dashboard': emit(repository.render_dashboard(args.dashboard_id))
+        elif args.command=='publication-snapshot': emit(service.create_publication_snapshot(args.publication_id,report_id=args.report_id,actor='cli'))
+        elif args.command=='reproducible-export':
+            result=service.build_reproducible_export(workspace_id=args.workspace_id,initiative_id=args.initiative_id,report_id=args.report_id,publication_snapshot_id=args.publication_snapshot_id,destination=args.output,actor='cli')
+            emit({key:value for key,value in result.items() if key!='archive_bytes'})
+        elif args.command=='verify-export': emit(repository.verify_reproducible_export(args.input))
+        elif args.command=='reporting-repository': emit(service.reporting_repository(args.workspace_id,args.output))
         elif args.command=='summary': emit(repository.repository_summary())
     return 0
 if __name__=='__main__': raise SystemExit(main())

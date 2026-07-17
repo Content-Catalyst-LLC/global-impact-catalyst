@@ -1,0 +1,51 @@
+{
+  "bundle_type": "global_impact_reproducible_export",
+  "bundle_version": "1.8.0",
+  "workspace_id": "gic-workspace-bdc75d8b68333af2",
+  "initiative_id": "gic-initiative-09a657f60923ed45",
+  "report_id": "gic-report-49ecec3ffabc9d0a8177",
+  "publication_snapshot_id": null,
+  "artifacts": [
+    {
+      "path": "report/citations.json",
+      "media_type": "application/json",
+      "byte_size": 432,
+      "sha256": "0ec2a4da760fc022d09ba67ea3639c5e3af806237aa231359baaa95b32566b8b"
+    },
+    {
+      "path": "report/methodology.json",
+      "media_type": "application/json",
+      "byte_size": 344,
+      "sha256": "c94eae34bf8cc8fa84bc0b47f2933bf492c411cc440a73fd75a53cf574f044af"
+    },
+    {
+      "path": "report/report.html",
+      "media_type": "text/html",
+      "byte_size": 1338,
+      "sha256": "54450e182bc216a384bc701e8aa3d42c80a2e61073ece494d935da7c85efffc1"
+    },
+    {
+      "path": "report/report.json",
+      "media_type": "application/json",
+      "byte_size": 4929,
+      "sha256": "a36cec45b9c682c6f97033a5f08e2a193e5d39a519e0843b00349869be98558b"
+    },
+    {
+      "path": "report/report.md",
+      "media_type": "text/markdown",
+      "byte_size": 1289,
+      "sha256": "8afed00001609e932fd99996a8b95693612a2ad946c3423ba86384e80ff6598b"
+    },
+    {
+      "path": "workspace-bundle.json",
+      "media_type": "application/json",
+      "byte_size": 86372,
+      "sha256": "4a339a43945c359b7d160330780b5a288a708f9930ae02455219963de758bc9e"
+    }
+  ],
+  "reproducibility": {
+    "deterministic_zip_timestamps": true,
+    "hash_algorithm": "sha256"
+  },
+  "boundary": "Export integrity proves byte identity, not factual truth, assurance, or causal validity."
+}

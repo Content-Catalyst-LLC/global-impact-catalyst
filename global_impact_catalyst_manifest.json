@@ -1,9 +1,9 @@
 {
   "name": "global-impact-catalyst",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "contract_version": "1.1.0",
   "schema_version": "1.1.0",
-  "description": "Governed trends, benchmark comparisons, scenarios, target trajectories, uncertainty intervals, sensitivity analysis, and persisted analytical runs over impact records.",
+  "description": "Governed accessible reports, citations, methodology appendices, dashboards, publication snapshots, and deterministic checksum-verified reproducible exports over reviewed impact records.",
   "repository": "https://github.com/Content-Catalyst-LLC/global-impact-catalyst",
   "shortcode": "[global_impact_catalyst_demo]",
   "core_path": "python/global_impact_core.py",
@@ -45,7 +45,13 @@
     "claim",
     "review",
     "revision",
-    "publication"
+    "publication",
+    "report_template",
+    "report",
+    "dashboard",
+    "publication_snapshot",
+    "export_bundle",
+    "export_artifact"
   ],
   "traceability_path": [
     "workspace",
@@ -62,7 +68,10 @@
     "claim",
     "review",
     "revision",
-    "publication"
+    "publication",
+    "report",
+    "publication snapshot",
+    "reproducible export"
   ],
   "boundaries": [
     "Not ESG assurance, SDG certification, regulatory filing, or audit finding",
@@ -70,8 +79,8 @@
     "Validation checks consistency rather than truth or source authenticity",
     "Stronger claims require explicit evidence, design metadata, confidence, and review"
   ],
-  "database_schema_version": 8,
-  "workspace_bundle_version": "1.7.0",
+  "database_schema_version": 9,
+  "workspace_bundle_version": "1.8.0",
   "workspace_shortcode": "[global_impact_catalyst_workspace]",
   "repository_path": "python/global_impact_repository.py",
   "service_path": "python/global_impact_service.py",
@@ -174,7 +183,27 @@
     "absolute_relative_bounds_combined_uncertainty",
     "sensitivity_analysis",
     "analysis_run_history",
-    "analysis_repository_export"
+    "analysis_repository_export",
+    "report_template_registry",
+    "accessible_html_reports",
+    "markdown_reports",
+    "structured_citations",
+    "harvard_citations",
+    "apa_citations",
+    "methodology_appendices",
+    "report_content_hashes",
+    "dashboard_definitions",
+    "accessible_dashboard_cards",
+    "publication_snapshots",
+    "cross_repository_snapshot_hashes",
+    "deterministic_zip_exports",
+    "fixed_archive_timestamps",
+    "artifact_manifests",
+    "sha256_artifact_checksums",
+    "export_verification",
+    "reporting_repository_export",
+    "lossless_reporting_restore",
+    "wordpress_reporting_studio"
   ],
   "evidence_chain_version": "1.3.0",
   "evidence_shortcode": "[global_impact_catalyst_evidence_ledger]",
@@ -225,5 +254,16 @@
   "comparison_governance_doc_path": "docs/comparison-governance.md",
   "scenario_uncertainty_doc_path": "docs/scenario-and-uncertainty-governance.md",
   "analysis_repository_example_path": "examples/example_global_impact_analysis_repository.json",
-  "database_migration_8": "migrations/008_trends_comparisons_scenarios_uncertainty.sql"
+  "database_migration_8": "migrations/008_trends_comparisons_scenarios_uncertainty.sql",
+  "reporting_repository_version": "1.8.0",
+  "reporting_shortcode": "[global_impact_catalyst_reporting_studio]",
+  "reporting_module_path": "python/global_impact_reporting.py",
+  "reporting_repository_schema_path": "schemas/global_impact_reporting_repository.schema.json",
+  "reproducible_export_schema_path": "schemas/global_impact_reproducible_export.schema.json",
+  "reporting_doc_path": "docs/reporting-publication-export-studio.md",
+  "reproducible_exports_doc_path": "docs/reproducible-exports.md",
+  "accessible_reporting_doc_path": "docs/accessible-reporting.md",
+  "reporting_repository_example_path": "examples/example_global_impact_reporting_repository.json",
+  "reproducible_export_example_path": "examples/example_global_impact_reproducible_export_manifest.json",
+  "database_migration_9": "migrations/009_reporting_publication_reproducible_exports.sql"
 }

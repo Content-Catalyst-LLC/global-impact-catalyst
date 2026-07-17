@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.8.0/global_impact_reporting_repository.schema.json",
+  "title": "Global Impact Catalyst Reporting Repository",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["repository_type","repository_version","workspace_id","generated_at","report_templates","reports","dashboards","publication_snapshots","export_bundles","integrity","boundary"],
+  "properties": {
+    "repository_type": {"const": "global_impact_reporting_repository"},
+    "repository_version": {"const": "1.8.0"},
+    "workspace_id": {"type":"string","minLength":1},
+    "generated_at": {"type":"string","format":"date-time"},
+    "report_templates": {"type":"array","items":{"type":"object","required":["template_id","workspace_id","name","report_type","sections","citation_style","accessibility_profile","revision"],"additionalProperties":true}},
+    "reports": {"type":"array","items":{"type":"object","required":["report_id","workspace_id","initiative_id","title","report_type","content_hash","document","rendered_markdown","rendered_html","citations","methodology","revision"],"additionalProperties":true}},
+    "dashboards": {"type":"array","items":{"type":"object","required":["dashboard_id","workspace_id","name","layout","cards","revision"],"additionalProperties":true}},
+    "publication_snapshots": {"type":"array","items":{"type":"object","required":["snapshot_id","publication_id","workspace_id","initiative_id","snapshot_hash","contract_hash","evidence_hash","registry_hash","measurement_hash","review_hash","analysis_hash","report_hash","snapshot"],"additionalProperties":true}},
+    "export_bundles": {"type":"array","items":{"type":"object","required":["export_bundle_id","workspace_id","bundle_version","manifest_hash","archive_hash","artifact_count","artifacts"],"additionalProperties":true}},
+    "integrity": {"type":"object","required":["valid","template_count","report_count","dashboard_count","publication_snapshot_count","export_bundle_count"],"additionalProperties":true},
+    "boundary": {"type":"string","minLength":1}
+  },
+  "x-global-impact-catalyst-version": "1.8.0"
+}

@@ -79,4 +79,8 @@ $analysis = gic_analysis_studio_shortcode();
 foreach (array('data-gic-analysis-studio','data-gic-analysis-load','data-gic-analysis-trend','data-gic-analysis-benchmark','data-gic-analysis-uncertainty','data-gic-analysis-scenario','data-gic-analysis-results') as $needle) {
     if (strpos($analysis, $needle) === false) { fwrite(STDERR, "Analysis Studio control missing: {$needle}\n"); exit(1); }
 }
-echo "WordPress v1.7.0 workspace, evidence ledger, indicator registry, measurement portfolio, review workflow, analysis studio, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";
+$reporting = gic_reporting_studio_shortcode();
+foreach (array('data-gic-reporting-studio','data-gic-reporting-load','data-gic-reporting-report','data-gic-reporting-dashboard','data-gic-reporting-results') as $needle) {
+    if (strpos($reporting, $needle) === false) { fwrite(STDERR, "Reporting Studio control missing: {$needle}\n"); exit(1); }
+}
+echo "WordPress v1.8.0 workspace, evidence ledger, indicator registry, measurement portfolio, review workflow, analysis studio, reporting studio, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";

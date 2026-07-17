@@ -1,4 +1,4 @@
-"""Application service layer for Global Impact Catalyst v1.7.0."""
+"""Application service layer for Global Impact Catalyst v1.8.0."""
 from __future__ import annotations
 
 import copy
@@ -20,7 +20,7 @@ from python.global_impact_repository import (
     utc_now,
 )
 
-SERVICE_VERSION = "1.7.0"
+SERVICE_VERSION = "1.8.0"
 
 
 def compact_input_from_contract(contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -333,6 +333,31 @@ class ImpactApplicationService:
             path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(analysis, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         return analysis
+
+    def register_report_template(self, template: Dict[str, Any], *, workspace_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_report_template(template, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def create_report(self, report: Dict[str, Any], *, workspace_id: str, initiative_id: str, template_id: Optional[str] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_report(report, workspace_id=workspace_id, initiative_id=initiative_id, template_id=template_id, actor=actor)
+
+    def create_dashboard(self, dashboard: Dict[str, Any], *, workspace_id: str, initiative_id: Optional[str] = None, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_dashboard(dashboard, workspace_id=workspace_id, initiative_id=initiative_id, expected_revision=expected_revision, actor=actor)
+
+    def add_dashboard_card(self, dashboard_id: str, card: Dict[str, Any], *, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.add_dashboard_card(dashboard_id, card, actor=actor)
+
+    def create_publication_snapshot(self, publication_id: str, *, report_id: Optional[str] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_publication_snapshot(publication_id, report_id=report_id, actor=actor)
+
+    def build_reproducible_export(self, *, workspace_id: str, initiative_id: Optional[str] = None, report_id: Optional[str] = None, publication_snapshot_id: Optional[str] = None, destination: Optional[str | Path] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.build_reproducible_export(workspace_id=workspace_id, initiative_id=initiative_id, report_id=report_id, publication_snapshot_id=publication_snapshot_id, destination=destination, actor=actor)
+
+    def reporting_repository(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
+        reporting = self.repository.export_reporting_repository(workspace_id)
+        if destination:
+            path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(reporting, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return reporting
 
     def export_workspace(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
         bundle = self.repository.export_workspace_bundle(workspace_id)

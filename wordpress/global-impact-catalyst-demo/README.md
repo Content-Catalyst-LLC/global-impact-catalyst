@@ -1,6 +1,6 @@
 # Global Impact Catalyst WordPress Plugin
 
-Version 1.7.0 provides six shortcodes:
+Version 1.8.0 provides eight shortcodes:
 
 ```text
 [global_impact_catalyst_demo]
@@ -9,16 +9,41 @@ Version 1.7.0 provides six shortcodes:
 [global_impact_catalyst_indicator_registry]
 [global_impact_catalyst_measurement_portfolio]
 [global_impact_catalyst_review_workflow]
+[global_impact_catalyst_analysis_studio]
+[global_impact_catalyst_reporting_studio]
 ```
 
-The demo is a stateless public canonical-contract builder. The other interfaces require an authenticated user with `edit_posts` capability.
+The public demo is a stateless canonical-contract builder. The seven repository studios require an authenticated user with `edit_posts` capability.
 
-The review workflow adds governed roles, scoped assignments, threaded comments, weighted quality assessments, approval decisions, immutable contract revisions, correction records, publication approval, and withdrawal history. It complements the persistent workspace, evidence ledger, indicator registry, and measurement portfolio.
+## Reporting Studio
 
-Activation or plugin-version upgrade creates prefixed contract, audit, evidence, registry, observation, beneficiary, financial, result, relationship, portfolio, review, correction, publication, and publication-event tables. REST routes use the `global-impact-catalyst/v1` namespace, WordPress REST nonces, capability checks, sanitization, and repository integrity rules.
+`[global_impact_catalyst_reporting_studio]` supports:
 
-The package and plugin are v1.6.0. The embedded canonical contract engine remains v1.1.0, evidence formats remain v1.3.0, the indicator registry remains v1.4.0, and the measurement layer remains v1.5.0 to preserve compatibility.
+- report-template creation;
+- accessible HTML and Markdown reports;
+- methodology metadata and limitations;
+- dashboard definitions;
+- publication snapshots linked to published review records;
+- stored reproducible artifact sets;
+- manifests and SHA-256 checksums;
+- reporting-repository integrity inspection.
 
-## Analysis Studio
+The Python repository and CLI additionally create deterministic ZIP archives with fixed timestamps and independently verifiable artifact checksums.
 
-Use `[global_impact_catalyst_analysis_studio]` for authenticated benchmarks, trends, comparison sets, scenarios, uncertainty, and sensitivity records.
+## Release identities
+
+```text
+Plugin and package:     1.8.0
+Database schema:        9
+Reporting repository:   1.8.0
+Analysis repository:    1.7.0
+Review workflow:        1.6.0
+Measurement repository: 1.5.0
+Indicator registry:     1.4.0
+Evidence repository:    1.3.0
+Canonical contract:     1.1.0
+```
+
+Activation or version upgrade creates prefixed tables for contracts, evidence, registry definitions, observations, beneficiaries, finances, outcome portfolios, review workflows, analysis records, reports, dashboards, snapshots, bundles, and artifacts. REST routes use the `global-impact-catalyst/v1` namespace, WordPress REST nonces, capability checks, sanitization, and repository integrity rules.
+
+Publication and checksum integrity do not constitute assurance, certification, audit, source authentication, causal proof, or a verified forecast.

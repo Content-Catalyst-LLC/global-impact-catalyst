@@ -1,4 +1,4 @@
-"""Persistent repository for Global Impact Catalyst v1.7.0.
+"""Persistent repository for Global Impact Catalyst v1.8.0.
 
 The repository stores canonical contracts as immutable calculation snapshots and
 maintains indexed entity projections for workspace operations. SQLite is the
@@ -21,8 +21,9 @@ from python.global_impact_registry import IndicatorRegistryMixin
 from python.global_impact_measurement import MeasurementPortfolioMixin
 from python.global_impact_review import ReviewWorkflowMixin
 from python.global_impact_analysis import AnalysisScenarioMixin
+from python.global_impact_reporting import ReportingPublicationMixin
 
-DATABASE_SCHEMA_VERSION = 8
+DATABASE_SCHEMA_VERSION = 9
 SUPPORTED_CONTRACT_VERSIONS = {"1.0.0", "1.0.1", "1.1.0", "1.2.0"}
 ENTITY_TYPES = {"workspace", "initiative", "goal", "indicator", "observation", "target", "source"}
 EVIDENCE_TYPES = {"excerpt", "quotation", "dataset_excerpt", "observation_note", "document_note", "table", "figure"}
@@ -229,9 +230,14 @@ MIGRATIONS: Sequence[tuple[int, str, str]] = (
         "trends_comparisons_scenarios_uncertainty",
         (Path(__file__).resolve().parents[1] / "migrations/008_trends_comparisons_scenarios_uncertainty.sql").read_text(encoding="utf-8"),
     ),
+    (
+        9,
+        "reporting_publication_reproducible_exports",
+        (Path(__file__).resolve().parents[1] / "migrations/009_reporting_publication_reproducible_exports.sql").read_text(encoding="utf-8"),
+    ),
 )
 
-class SQLiteImpactRepository(AnalysisScenarioMixin, ReviewWorkflowMixin, MeasurementPortfolioMixin, IndicatorRegistryMixin):
+class SQLiteImpactRepository(ReportingPublicationMixin, AnalysisScenarioMixin, ReviewWorkflowMixin, MeasurementPortfolioMixin, IndicatorRegistryMixin):
     """SQLite reference repository with repeatable migrations and JSON projections."""
 
     def __init__(self, database: str | Path = ":memory:", *, auto_migrate: bool = True):
@@ -1038,7 +1044,7 @@ class SQLiteImpactRepository(AnalysisScenarioMixin, ReviewWorkflowMixin, Measure
         portfolios = self.list_portfolios(workspace_id, include_archived=True)
         return {
             "bundle_type": "global_impact_workspace_bundle",
-            "bundle_version": "1.7.0",
+            "bundle_version": "1.8.0",
             "database_schema_version": self.schema_version,
             "exported_at": utc_now(),
             "workspace": workspace,
@@ -1049,6 +1055,7 @@ class SQLiteImpactRepository(AnalysisScenarioMixin, ReviewWorkflowMixin, Measure
             "measurement_repository": self.export_measurement_repository(workspace_id),
             "review_workflow": self.export_review_workflow(workspace_id),
             "analysis_repository": self.export_analysis_repository(workspace_id),
+            "reporting_repository": self.export_reporting_repository(workspace_id),
             "audit": self.audit_records(workspace_id=workspace_id, limit=1000),
         }
 
@@ -1081,6 +1088,7 @@ class SQLiteImpactRepository(AnalysisScenarioMixin, ReviewWorkflowMixin, Measure
         self._restore_measurement_repository(bundle.get("measurement_repository") or {}, actor=actor)
         self._restore_review_workflow(bundle.get("review_workflow") or {}, actor=actor)
         self._restore_analysis_repository(bundle.get("analysis_repository") or {}, actor=actor)
+        self._restore_reporting_repository(bundle.get("reporting_repository") or {}, actor=actor)
         restore_id = f"gic-restore-{digest[:20]}"
         summary = {"workspace_id": workspace_id, "contracts_imported": imported, "contracts_unchanged": unchanged}
         self.connection.execute(
@@ -1153,4 +1161,11 @@ class SQLiteImpactRepository(AnalysisScenarioMixin, ReviewWorkflowMixin, Measure
             "analysis_uncertainty_models": count("analysis_uncertainty_models"),
             "analysis_runs": count("analysis_runs"),
             "analysis_sensitivity_runs": count("analysis_sensitivity_runs"),
+            "report_templates": count("report_templates"),
+            "report_documents": count("report_documents"),
+            "dashboard_definitions": count("dashboard_definitions"),
+            "dashboard_cards": count("dashboard_cards"),
+            "publication_snapshots": count("publication_snapshots"),
+            "export_bundles": count("export_bundles"),
+            "export_artifacts": count("export_artifacts"),
         }

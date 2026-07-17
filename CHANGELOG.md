@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.8.0 — Reporting, Publication, and Reproducible Export Studio
+
+- Added SQLite migration 9 and the v1.8.0 reporting repository.
+- Added governed report templates, structured report documents, Harvard/APA/plain citations, methodology appendices, accessible HTML, and Markdown exports.
+- Added dashboard definitions and cards with text alternatives.
+- Added publication snapshots bound to exact contract, evidence, registry, measurement, review, analysis, and report hashes.
+- Added deterministic ZIP exports, manifests, SHA-256 checksum files, artifact storage, and independent verification.
+- Added reporting schemas, examples, CLI commands, WordPress Reporting Studio, documentation, tests, and release gates.
+- Preserved canonical contract v1.1.0 and all v1.3.0–v1.7.0 repository semantics.
+
 ## 1.7.0 — Trends, Comparisons, Scenarios, and Uncertainty
 
 - Added SQLite migration 8 and the v1.7.0 analysis repository.

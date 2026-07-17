@@ -31,8 +31,8 @@ def approver_role(repo: SQLiteImpactRepository, workspace_id: str):
 def test_migration_7_materializes_roles_and_contract_revision(tmp_path):
     with SQLiteImpactRepository(tmp_path / "workflow.sqlite3") as repo:
         created, workspace_id, initiative_id, record_id = create(repo)
-        assert DATABASE_SCHEMA_VERSION == 8
-        assert repo.schema_version == 8
+        assert DATABASE_SCHEMA_VERSION == 9
+        assert repo.schema_version == 9
         summary = repo.repository_summary()
         assert summary["workflow_roles"] == 5
         assert summary["workflow_revisions"] == 1
@@ -203,8 +203,8 @@ def test_review_workflow_schema_and_workspace_restore(tmp_path):
         Draft202012Validator(schema, format_checker=FormatChecker()).validate(workflow)
         bundle = repo.export_workspace_bundle(workspace_id)
         Draft202012Validator(bundle_schema, format_checker=FormatChecker()).validate(bundle)
-        assert bundle["bundle_version"] == "1.7.0"
-        assert bundle["database_schema_version"] == 8
+        assert bundle["bundle_version"] == "1.8.0"
+        assert bundle["database_schema_version"] == 9
     with SQLiteImpactRepository(target_db) as restored:
         result = restored.restore_workspace_bundle(bundle)
         assert result["status"] == "restored"

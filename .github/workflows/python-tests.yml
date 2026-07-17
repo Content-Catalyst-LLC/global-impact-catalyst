@@ -13,21 +13,18 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
-      - name: Python, schema, migration, repository, evidence, registry, and WordPress contracts
-        run: python -m pytest -q
+      - name: Python, schemas, migrations, repositories, and WordPress contracts
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
       - name: Release contract
         run: python scripts/check_contracts.py
       - name: Browser contract parity
         run: node scripts/check_browser_parity.js
       - name: JavaScript syntax
         run: |
-          node --check wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-demo.js
-          node --check wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-workspace.js
-          node --check wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-evidence.js
-          node --check wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-registry.js
-      - name: PHP syntax and workspace/evidence/registry rendering
+          for asset in wordpress/global-impact-catalyst-demo/assets/*.js; do node --check "$asset"; done
+      - name: PHP syntax and all shortcode rendering
         run: |
           php -l wordpress/global-impact-catalyst-demo/global-impact-catalyst-demo.php
           php scripts/check_wordpress_instances.php
       - name: Portable smoke suite
-        run: python scripts/smoke_test.py
+        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python scripts/smoke_test.py
