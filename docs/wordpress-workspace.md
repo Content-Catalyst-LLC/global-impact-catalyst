@@ -50,3 +50,7 @@ The browser continues to use the exact v1.1.0 canonical calculation and validati
 ## v1.5.0 measurement interface
 
 `[global_impact_catalyst_measurement_portfolio]` adds authenticated observation, aggregate beneficiary, financial-record, outcome-portfolio, and guarded aggregation workflows. These records are included in v1.5.0 workspace bundles and remain separate from the public canonical-contract demo.
+
+## Integration Hub and public embeds
+
+`[global_impact_catalyst_integration_hub]` is authenticated and manages API clients, embeds, handoffs, and integration repository status. Public shortcodes expose only approved snapshot-bound views: `[global_impact_catalyst_public_profile]`, `[global_impact_catalyst_indicator_view]`, `[global_impact_catalyst_report_view]`, and `[global_impact_catalyst_compact_embed]`.

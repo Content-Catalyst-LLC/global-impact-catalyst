@@ -1,4 +1,4 @@
-"""Application service layer for Global Impact Catalyst v1.8.0."""
+"""Application service layer for Global Impact Catalyst v1.9.0."""
 from __future__ import annotations
 
 import copy
@@ -20,7 +20,7 @@ from python.global_impact_repository import (
     utc_now,
 )
 
-SERVICE_VERSION = "1.8.0"
+SERVICE_VERSION = "1.9.0"
 
 
 def compact_input_from_contract(contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -358,6 +358,37 @@ class ImpactApplicationService:
             path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(reporting, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         return reporting
+
+    def register_api_client(self, client: Dict[str, Any], *, workspace_id: Optional[str] = None, actor: str = "system", issue_key: bool = True) -> Dict[str, Any]:
+        return self.repository.register_api_client(client, workspace_id=workspace_id, actor=actor, issue_key=issue_key)
+
+    def issue_api_key(self, client_id: str, *, scopes: list[str], expires_at: Optional[str] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.issue_api_key(client_id, scopes=scopes, expires_at=expires_at, actor=actor)
+
+    def public_catalog(self, **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.public_catalog(**kwargs)
+
+    def public_publication(self, publication_id: str) -> Dict[str, Any]:
+        return self.repository.public_publication(publication_id)
+
+    def workspace_api_resource(self, *, api_key: str, workspace_id: str, resource: str, page: int = 1, page_size: int = 50) -> Dict[str, Any]:
+        return self.repository.workspace_api_resource(api_key=api_key, workspace_id=workspace_id, resource=resource, page=page, page_size=page_size)
+
+    def create_embed(self, embed: Dict[str, Any], *, workspace_id: str, actor: str = "system", expected_revision: Optional[int] = None) -> Dict[str, Any]:
+        return self.repository.create_embed(embed, workspace_id=workspace_id, actor=actor, expected_revision=expected_revision)
+
+    def render_embed(self, embed_id_or_slug: str) -> Dict[str, Any]:
+        return self.repository.render_embed(embed_id_or_slug)
+
+    def create_platform_handoff(self, destination: str, *, workspace_id: str, initiative_id: Optional[str] = None, idempotency_key: Optional[str] = None, actor: str = "system", metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        return self.repository.create_platform_handoff(destination, workspace_id=workspace_id, initiative_id=initiative_id, idempotency_key=idempotency_key, actor=actor, metadata=metadata)
+
+    def integration_repository(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
+        integration = self.repository.export_integration_repository(workspace_id)
+        if destination:
+            path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(integration, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return integration
 
     def export_workspace(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
         bundle = self.repository.export_workspace_bundle(workspace_id)

@@ -1,31 +1,32 @@
 # Global Impact Catalyst
 
-## v1.8.0 — Reporting, Publication, and Reproducible Export Studio
+## v1.9.0 — Public API, Embeds, and Sustainable Catalyst Handoffs
 
-Global Impact Catalyst is open public-interest infrastructure for defining, validating, saving, sourcing, measuring, reviewing, analyzing, reporting, and publishing governed impact records.
+Global Impact Catalyst is open public-interest infrastructure for defining, validating, saving, sourcing, measuring, reviewing, analyzing, reporting, publishing, and safely exchanging governed impact records.
 
-v1.8.0 adds:
+v1.9.0 adds:
 
-- versioned report templates;
-- accessible HTML and Markdown reports;
-- Harvard, APA, and plain citation records;
-- methodology and limitations appendices;
-- governed dashboards with text alternatives;
-- publication snapshots bound to exact repository hashes;
-- deterministic ZIP exports with fixed timestamps;
-- artifact manifests and SHA-256 checksums;
-- export verification;
-- reporting-repository export and lossless restore;
-- an authenticated WordPress Reporting Studio.
+- versioned public and workspace API envelopes;
+- scoped API clients and one-time key issuance;
+- SHA-256 key storage, revocation, rate limits, idempotency, and access auditing;
+- privacy-safe public publication profiles tied to approved publication snapshots;
+- JSON-LD interoperability mappings;
+- five governed embed types;
+- ten checksum-bound Sustainable Catalyst handoff destinations;
+- delivery receipts and integration events;
+- integration-repository export and lossless restore;
+- an authenticated WordPress Integration Hub and four public shortcodes.
 
-The canonical calculation contract remains v1.1.0. Reporting inherits the limitations and governance status of its source records. It does not constitute assurance, certification, audit, source authentication, causal proof, or a verified forecast.
+Only approved, current publication snapshots may enter unauthenticated public APIs or embeds. API availability and checksum integrity do not constitute assurance, certification, factual verification, regulatory compliance, audit findings, or causal proof.
 
 ## Compatibility identities
 
 ```text
-Package and WordPress plugin: 1.8.0
-Database schema:              9
-Workspace bundle:             1.8.0
+Package and WordPress plugin: 1.9.0
+Database schema:              10
+Workspace bundle:             1.9.0
+Integration repository:       1.9.0
+Public API:                    v1
 Reporting repository:         1.8.0
 Analysis repository:          1.7.0
 Review workflow:              1.6.0
@@ -50,9 +51,10 @@ SQLite application repository
         ├── observations, beneficiaries, finances, results, and outcome portfolios
         ├── assignments, comments, quality, decisions, revisions, and publications
         ├── trends, benchmarks, comparisons, scenarios, uncertainty, and sensitivity
-        └── reports, dashboards, snapshots, manifests, checksums, and export artifacts
+        ├── reports, dashboards, snapshots, manifests, checksums, and export artifacts
+        └── API clients, public views, embeds, handoffs, and integration events
                                       ↓
-       workspace bundle / SQLite backup / deterministic reproducible ZIP
+ workspace bundle / SQLite backup / reproducible ZIP / API / embed / platform handoff
 ```
 
 ## Python quick start
@@ -130,7 +132,7 @@ The canonical demo is public and stateless. Repository interfaces require an aut
 - `schemas/global_impact_analysis_repository.schema.json` — analysis v1.7.0
 - `schemas/global_impact_reporting_repository.schema.json` — reporting v1.8.0
 - `schemas/global_impact_reproducible_export.schema.json` — reproducible export manifest v1.8.0
-- `schemas/global_impact_workspace_bundle.schema.json` — complete workspace bundle v1.8.0
+- `schemas/global_impact_workspace_bundle.schema.json` — complete workspace bundle v1.9.0
 - `examples/example_global_impact_reporting_repository.json`
 - `examples/example_global_impact_reproducible_export_manifest.json`
 - `examples/example_global_impact_workspace_bundle.json`

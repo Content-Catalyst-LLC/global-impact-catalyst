@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.9.0 — Public API, Embeds, and Sustainable Catalyst Handoffs
+
+- Added SQLite migration 10 and the v1.9.0 integration repository.
+- Added scoped API clients, one-time plaintext key issuance, SHA-256 key storage, revocation, rate limiting, idempotency records, and access auditing.
+- Added privacy-safe public initiative and publication APIs restricted to approved, current publication snapshots.
+- Added paginated workspace API resources and JSON-LD interoperability metadata.
+- Added governed initiative-card, indicator-trend, methodology-panel, portfolio-summary, and report-view embeds.
+- Added checksum-bound handoffs to Catalyst Data, Catalyst Analytics R, Site Intelligence, Workbench, Research Lab, Knowledge Library, Research Librarian, Decision Studio, Platform Core, and Advisory.
+- Added delivery receipts, integration events, schemas, examples, CLI commands, documentation, tests, WordPress routes, Integration Hub, and public shortcodes.
+- Preserved canonical contract v1.1.0 and all v1.3.0–v1.8.0 repository semantics.
+
 ## 1.8.0 — Reporting, Publication, and Reproducible Export Studio
 
 - Added SQLite migration 9 and the v1.8.0 reporting repository.

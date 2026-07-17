@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.9.0/global_impact_platform_handoff.schema.json",
+  "title": "Global Impact Catalyst Sustainable Catalyst Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["@context", "handoff_type", "handoff_version", "destination", "created_at", "source_snapshot_hash", "data", "boundary"],
+  "properties": {
+    "@context": {"type": "object"},
+    "handoff_type": {"const": "global_impact_platform_handoff"},
+    "handoff_version": {"const": "1.9.0"},
+    "destination": {"enum": ["catalyst_data", "catalyst_analytics_r", "site_intelligence", "workbench", "research_lab", "knowledge_library", "research_librarian", "decision_studio", "platform_core", "advisory"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "source_snapshot_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "data": {"type": "object"},
+    "boundary": {"type": "string", "minLength": 20}
+  },
+  "x-global-impact-catalyst-version": "1.9.0"
+}

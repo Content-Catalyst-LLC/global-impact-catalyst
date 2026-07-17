@@ -1,7 +1,7 @@
 {
   "bundle_type": "global_impact_workspace_bundle",
-  "bundle_version": "1.8.0",
-  "database_schema_version": 9,
+  "bundle_version": "1.9.0",
+  "database_schema_version": 10,
   "exported_at": "2026-07-17T22:33:35.934803+00:00",
   "workspace": {
     "entity_type": "workspace",
@@ -2569,5 +2569,38 @@
       "revision": 1,
       "details": {}
     }
-  ]
+  ],
+  "integration_repository": {
+    "repository_type": "global_impact_integration_repository",
+    "repository_version": "1.9.0",
+    "api_version": "v1",
+    "workspace_id": "gic-workspace-bdc75d8b68333af2",
+    "generated_at": "2026-07-17T22:33:35.934803+00:00",
+    "jsonld_context": {
+      "@version": 1.1,
+      "gic": "https://sustainablecatalyst.com/ns/global-impact-catalyst/"
+    },
+    "api_clients": [],
+    "embeds": [],
+    "platform_handoffs": [],
+    "integration_events": [],
+    "api_access_log": [],
+    "integrity": {
+      "valid": true,
+      "api_client_count": 0,
+      "embed_count": 0,
+      "handoff_count": 0,
+      "event_count": 0,
+      "access_log_count": 0,
+      "broken_embed_ids": [],
+      "broken_handoff_ids": [],
+      "broken_event_ids": []
+    },
+    "privacy": {
+      "api_key_material_exported": false,
+      "public_data_requires_published_snapshot": true,
+      "raw_evidence_excerpts_public": false
+    },
+    "boundary": "Public records are approved publication views. They are not assurance, certification, audit findings, factual verification, or causal proof."
+  }
 }

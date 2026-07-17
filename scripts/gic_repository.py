@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line workspace, evidence, indicator-registry, and program-measurement, review-workflow, and analysis, reporting, and reproducible-export operations for v1.8.0."""
+"""Command-line workspace, evidence, indicator-registry, and program-measurement, review-workflow, and analysis, reporting, and reproducible-export operations for v1.9.0."""
 from __future__ import annotations
 import argparse,json,sys
 from pathlib import Path
@@ -14,7 +14,7 @@ def read_json(path:str): return json.loads(Path(path).read_text(encoding='utf-8'
 def emit(value): print(json.dumps(value,indent=2,ensure_ascii=False,default=lambda o:o.__dict__))
 
 def main()->int:
-    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, registry, measurement, review, analysis, reporting, and reproducible export CLI')
+    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, registry, measurement, review, analysis, reporting, API, embeds, handoffs, and reproducible export CLI')
     parser.add_argument('--database',default='outputs/global-impact-catalyst.sqlite3')
     sub=parser.add_subparsers(dest='command',required=True)
     sub.add_parser('init')
@@ -94,6 +94,16 @@ def main()->int:
     reproducible_export=sub.add_parser('reproducible-export'); reproducible_export.add_argument('--workspace-id',required=True); reproducible_export.add_argument('--initiative-id'); reproducible_export.add_argument('--report-id'); reproducible_export.add_argument('--publication-snapshot-id'); reproducible_export.add_argument('--output',required=True)
     verify_export=sub.add_parser('verify-export'); verify_export.add_argument('--input',required=True)
     reporting_repository=sub.add_parser('reporting-repository'); reporting_repository.add_argument('--workspace-id',required=True); reporting_repository.add_argument('--output')
+    add_api_client=sub.add_parser('add-api-client'); add_api_client.add_argument('--workspace-id'); add_api_client.add_argument('--input',required=True)
+    issue_api_key=sub.add_parser('issue-api-key'); issue_api_key.add_argument('--client-id',required=True); issue_api_key.add_argument('--scopes',required=True,help='Comma-separated scopes'); issue_api_key.add_argument('--expires-at')
+    public_catalog=sub.add_parser('public-catalog'); public_catalog.add_argument('--page',type=int,default=1); public_catalog.add_argument('--page-size',type=int,default=20); public_catalog.add_argument('--search',default=''); public_catalog.add_argument('--geography',default=''); public_catalog.add_argument('--indicator',default='')
+    public_publication=sub.add_parser('public-publication'); public_publication.add_argument('--publication-id',required=True)
+    workspace_api=sub.add_parser('workspace-api'); workspace_api.add_argument('--api-key',required=True); workspace_api.add_argument('--workspace-id',required=True); workspace_api.add_argument('--resource',required=True,choices=['workspace','initiatives','indicators','observations','sources','reviews','reports','exports']); workspace_api.add_argument('--page',type=int,default=1); workspace_api.add_argument('--page-size',type=int,default=50)
+    add_embed=sub.add_parser('add-embed'); add_embed.add_argument('--workspace-id',required=True); add_embed.add_argument('--input',required=True); add_embed.add_argument('--expected-revision',type=int)
+    render_embed=sub.add_parser('render-embed'); render_embed.add_argument('--embed',required=True)
+    handoff=sub.add_parser('platform-handoff'); handoff.add_argument('--destination',required=True); handoff.add_argument('--workspace-id',required=True); handoff.add_argument('--initiative-id'); handoff.add_argument('--idempotency-key')
+    handoffs=sub.add_parser('platform-handoffs'); handoffs.add_argument('--workspace-id',required=True); handoffs.add_argument('--destination'); handoffs.add_argument('--initiative-id')
+    integration_repository=sub.add_parser('integration-repository'); integration_repository.add_argument('--workspace-id',required=True); integration_repository.add_argument('--output')
     sub.add_parser('summary')
     args=parser.parse_args()
     with SQLiteImpactRepository(args.database) as repository:
@@ -181,6 +191,16 @@ def main()->int:
             emit({key:value for key,value in result.items() if key!='archive_bytes'})
         elif args.command=='verify-export': emit(repository.verify_reproducible_export(args.input))
         elif args.command=='reporting-repository': emit(service.reporting_repository(args.workspace_id,args.output))
+        elif args.command=='add-api-client': emit(service.register_api_client(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='issue-api-key': emit(service.issue_api_key(args.client_id,scopes=[x.strip() for x in args.scopes.split(',') if x.strip()],expires_at=args.expires_at,actor='cli'))
+        elif args.command=='public-catalog': emit(service.public_catalog(page=args.page,page_size=args.page_size,search=args.search,geography=args.geography,indicator=args.indicator))
+        elif args.command=='public-publication': emit(service.public_publication(args.publication_id))
+        elif args.command=='workspace-api': emit(service.workspace_api_resource(api_key=args.api_key,workspace_id=args.workspace_id,resource=args.resource,page=args.page,page_size=args.page_size))
+        elif args.command=='add-embed': emit(service.create_embed(read_json(args.input),workspace_id=args.workspace_id,expected_revision=args.expected_revision,actor='cli'))
+        elif args.command=='render-embed': emit(service.render_embed(args.embed))
+        elif args.command=='platform-handoff': emit(service.create_platform_handoff(args.destination,workspace_id=args.workspace_id,initiative_id=args.initiative_id,idempotency_key=args.idempotency_key,actor='cli'))
+        elif args.command=='platform-handoffs': emit(repository.list_platform_handoffs(args.workspace_id,destination=args.destination,initiative_id=args.initiative_id))
+        elif args.command=='integration-repository': emit(service.integration_repository(args.workspace_id,args.output))
         elif args.command=='summary': emit(repository.repository_summary())
     return 0
 if __name__=='__main__': raise SystemExit(main())

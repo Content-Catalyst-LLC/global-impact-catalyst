@@ -31,3 +31,7 @@ Migration 009 adds governed report templates, report documents, dashboard defini
 ## Verification
 
 The automated suite initializes prior database states, applies all nine migrations, reruns initialization, exercises each repository layer, creates deterministic exports, and performs workspace backup and lossless restore.
+
+## Migration 10 — Public API, embeds, and platform handoffs
+
+Creates API client/key, idempotency, rate-window, access-log, embed-definition, platform-handoff, and integration-event tables. Plaintext API keys are never persisted. The migration is repeatable and upgrades v1.8.0 schema 9 databases to schema 10.

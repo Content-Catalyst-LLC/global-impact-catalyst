@@ -13,6 +13,12 @@ function add_shortcode() {}
 function esc_attr($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
 function esc_url($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
 function esc_url_raw($value) { return $value; }
+function esc_html($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
+function shortcode_atts($pairs, $atts) { return array_merge($pairs, is_array($atts) ? $atts : array()); }
+function sanitize_text_field($value) { return trim(strip_tags((string) $value)); }
+function sanitize_title($value) { return strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', (string) $value), '-')); }
+function wp_generate_password($length=12) { return str_repeat('x', $length); }
+function wp_kses_post($value) { return (string) $value; }
 function wp_rand($min, $max) { static $counter = 1000; return $counter++; }
 function is_user_logged_in() { return true; }
 function current_user_can($capability) { return true; }
@@ -83,4 +89,8 @@ $reporting = gic_reporting_studio_shortcode();
 foreach (array('data-gic-reporting-studio','data-gic-reporting-load','data-gic-reporting-report','data-gic-reporting-dashboard','data-gic-reporting-results') as $needle) {
     if (strpos($reporting, $needle) === false) { fwrite(STDERR, "Reporting Studio control missing: {$needle}\n"); exit(1); }
 }
-echo "WordPress v1.8.0 workspace, evidence ledger, indicator registry, measurement portfolio, review workflow, analysis studio, reporting studio, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";
+$integration = gic_integration_hub_shortcode();
+foreach (array('data-gic-integration-hub','data-gic-integration-load','data-gic-integration-client','data-gic-integration-embed','data-gic-integration-handoff','data-gic-integration-results') as $needle) {
+    if (strpos($integration, $needle) === false) { fwrite(STDERR, "Integration Hub control missing: {$needle}\n"); exit(1); }
+}
+echo "WordPress v1.9.0 workspace, evidence ledger, indicator registry, measurement portfolio, review workflow, analysis studio, reporting studio, integration hub, public embeds, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";

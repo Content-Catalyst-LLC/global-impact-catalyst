@@ -1,4 +1,4 @@
-"""Persistent repository for Global Impact Catalyst v1.8.0.
+"""Persistent repository for Global Impact Catalyst v1.9.0.
 
 The repository stores canonical contracts as immutable calculation snapshots and
 maintains indexed entity projections for workspace operations. SQLite is the
@@ -22,8 +22,9 @@ from python.global_impact_measurement import MeasurementPortfolioMixin
 from python.global_impact_review import ReviewWorkflowMixin
 from python.global_impact_analysis import AnalysisScenarioMixin
 from python.global_impact_reporting import ReportingPublicationMixin
+from python.global_impact_integration import PublicAPIIntegrationMixin
 
-DATABASE_SCHEMA_VERSION = 9
+DATABASE_SCHEMA_VERSION = 10
 SUPPORTED_CONTRACT_VERSIONS = {"1.0.0", "1.0.1", "1.1.0", "1.2.0"}
 ENTITY_TYPES = {"workspace", "initiative", "goal", "indicator", "observation", "target", "source"}
 EVIDENCE_TYPES = {"excerpt", "quotation", "dataset_excerpt", "observation_note", "document_note", "table", "figure"}
@@ -235,9 +236,14 @@ MIGRATIONS: Sequence[tuple[int, str, str]] = (
         "reporting_publication_reproducible_exports",
         (Path(__file__).resolve().parents[1] / "migrations/009_reporting_publication_reproducible_exports.sql").read_text(encoding="utf-8"),
     ),
+    (
+        10,
+        "public_api_embeds_platform_handoffs",
+        (Path(__file__).resolve().parents[1] / "migrations/010_public_api_embeds_platform_handoffs.sql").read_text(encoding="utf-8"),
+    ),
 )
 
-class SQLiteImpactRepository(ReportingPublicationMixin, AnalysisScenarioMixin, ReviewWorkflowMixin, MeasurementPortfolioMixin, IndicatorRegistryMixin):
+class SQLiteImpactRepository(PublicAPIIntegrationMixin, ReportingPublicationMixin, AnalysisScenarioMixin, ReviewWorkflowMixin, MeasurementPortfolioMixin, IndicatorRegistryMixin):
     """SQLite reference repository with repeatable migrations and JSON projections."""
 
     def __init__(self, database: str | Path = ":memory:", *, auto_migrate: bool = True):
@@ -1044,7 +1050,7 @@ class SQLiteImpactRepository(ReportingPublicationMixin, AnalysisScenarioMixin, R
         portfolios = self.list_portfolios(workspace_id, include_archived=True)
         return {
             "bundle_type": "global_impact_workspace_bundle",
-            "bundle_version": "1.8.0",
+            "bundle_version": "1.9.0",
             "database_schema_version": self.schema_version,
             "exported_at": utc_now(),
             "workspace": workspace,
@@ -1056,6 +1062,7 @@ class SQLiteImpactRepository(ReportingPublicationMixin, AnalysisScenarioMixin, R
             "review_workflow": self.export_review_workflow(workspace_id),
             "analysis_repository": self.export_analysis_repository(workspace_id),
             "reporting_repository": self.export_reporting_repository(workspace_id),
+            "integration_repository": self.export_integration_repository(workspace_id),
             "audit": self.audit_records(workspace_id=workspace_id, limit=1000),
         }
 
@@ -1089,6 +1096,7 @@ class SQLiteImpactRepository(ReportingPublicationMixin, AnalysisScenarioMixin, R
         self._restore_review_workflow(bundle.get("review_workflow") or {}, actor=actor)
         self._restore_analysis_repository(bundle.get("analysis_repository") or {}, actor=actor)
         self._restore_reporting_repository(bundle.get("reporting_repository") or {}, actor=actor)
+        self._restore_integration_repository(bundle.get("integration_repository") or {}, actor=actor)
         restore_id = f"gic-restore-{digest[:20]}"
         summary = {"workspace_id": workspace_id, "contracts_imported": imported, "contracts_unchanged": unchanged}
         self.connection.execute(
@@ -1167,5 +1175,9 @@ class SQLiteImpactRepository(ReportingPublicationMixin, AnalysisScenarioMixin, R
             "dashboard_cards": count("dashboard_cards"),
             "publication_snapshots": count("publication_snapshots"),
             "export_bundles": count("export_bundles"),
+            "api_clients": count("api_clients"),
+            "embeds": count("embed_definitions"),
+            "platform_handoffs": count("platform_handoffs"),
+            "integration_events": count("integration_events"),
             "export_artifacts": count("export_artifacts"),
         }

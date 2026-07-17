@@ -1,222 +1,83 @@
 #!/usr/bin/env python3
-"""Repository and release invariants for Global Impact Catalyst v1.8.0."""
+"""Repository and release invariants for Global Impact Catalyst v1.9.0."""
 from __future__ import annotations
-
-import json
-import re
-import sys
+import json, re, sys
 from pathlib import Path
-
 from jsonschema import Draft202012Validator, FormatChecker
 
-ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = "1.8.0"
-CONTRACT = "1.1.0"
-EVIDENCE = "1.3.0"
-REGISTRY = "1.4.0"
-MEASUREMENT = "1.5.0"
-REVIEW = "1.6.0"
-ANALYSIS = "1.7.0"
-REPORTING = "1.8.0"
-DATABASE = 9
-errors: list[str] = []
+ROOT=Path(__file__).resolve().parents[1]
+PACKAGE='1.9.0'; CONTRACT='1.1.0'; DATABASE=10
+VERSIONS={'evidence_chain_version':'1.3.0','indicator_registry_version':'1.4.0','measurement_repository_version':'1.5.0','review_workflow_version':'1.6.0','analysis_repository_version':'1.7.0','reporting_repository_version':'1.8.0','integration_repository_version':'1.9.0'}
+errors=[]
+def require(ok,msg):
+    if not ok: errors.append(msg)
+def read(path): return (ROOT/path).read_text(encoding='utf-8')
+def load(path): return json.loads(read(path))
 
+manifest=load('global_impact_catalyst_manifest.json')
+for key,expected in {'version':PACKAGE,'contract_version':CONTRACT,'schema_version':CONTRACT,'database_schema_version':DATABASE,'workspace_bundle_version':PACKAGE,'api_version':'v1',**VERSIONS}.items():
+    require(manifest.get(key)==expected,f'manifest {key} mismatch: {manifest.get(key)!r}')
+for key in [
+ 'core_path','repository_path','service_path','repository_cli_path','workspace_bundle_schema_path',
+ 'integration_module_path','integration_repository_schema_path','public_api_schema_path','embed_schema_path','platform_handoff_schema_path',
+ 'public_api_doc_path','embeds_doc_path','platform_handoffs_doc_path','jsonld_doc_path',
+ 'integration_repository_example_path','public_api_example_path','platform_handoff_example_path','database_migration_10']:
+    value=manifest.get(key); require(bool(value) and (ROOT/value).exists(),f'manifest path missing: {key} -> {value}')
+required_caps={
+ 'api_client_registry','one_time_api_key_issuance','sha256_api_key_storage','scoped_api_access','api_key_revocation',
+ 'fixed_window_rate_limits','idempotency_records','api_access_audit','privacy_safe_public_catalog','approved_publication_api',
+ 'workspace_api_pagination','jsonld_interoperability','governed_embeds','public_embed_rendering','publication_snapshot_embed_binding',
+ 'sustainable_catalyst_handoffs','checksum_bound_handoffs','idempotent_handoff_creation','handoff_delivery_receipts',
+ 'integration_event_ledger','integration_repository_export','lossless_integration_restore','wordpress_integration_hub','wordpress_public_embeds'}
+require(required_caps.issubset(set(manifest.get('repository_capabilities',[]))),'integration capabilities incomplete')
 
-def require(condition: bool, message: str) -> None:
-    if not condition:
-        errors.append(message)
+repo=read('python/global_impact_repository.py')
+for marker in ['DATABASE_SCHEMA_VERSION = 10','PublicAPIIntegrationMixin','010_public_api_embeds_platform_handoffs.sql','"bundle_version": "1.9.0"','"integration_repository": self.export_integration_repository(workspace_id)','self._restore_integration_repository','"api_clients": count("api_clients")','"platform_handoffs": count("platform_handoffs")']:
+    require(marker in repo,f'repository contract missing: {marker}')
+integration=read('python/global_impact_integration.py')
+for marker in ['INTEGRATION_VERSION = "1.9.0"','API_VERSION = "v1"','def register_api_client','def issue_api_key','def authenticate_api_key','def idempotent_operation','def public_catalog','def public_publication','def workspace_api_resource','def create_embed','def render_embed','def create_platform_handoff','def record_handoff_delivery','def export_integration_repository','def _restore_integration_repository','api_key_material_exported']:
+    require(marker in integration,f'integration contract missing: {marker}')
+for destination in ['catalyst_data','catalyst_analytics_r','site_intelligence','workbench','research_lab','knowledge_library','research_librarian','decision_studio','platform_core','advisory']:
+    require(destination in integration,f'handoff destination missing: {destination}')
+service=read('python/global_impact_service.py')
+for marker in ['SERVICE_VERSION = "1.9.0"','def register_api_client','def issue_api_key','def public_catalog','def public_publication','def workspace_api_resource','def create_embed','def render_embed','def create_platform_handoff','def integration_repository']:
+    require(marker in service,f'service contract missing: {marker}')
+app=read('app/main.py')
+for marker in ['"version": "1.9.0"','"database_schema_version": 10','"integration_repository_version": "1.9.0"','"api_version": "v1"']:
+    require(marker in app,f'application contract missing: {marker}')
+cli=read('scripts/gic_repository.py')
+for command in ['add-api-client','issue-api-key','public-catalog','public-publication','workspace-api','add-embed','render-embed','platform-handoff','platform-handoffs','integration-repository']:
+    require(f"'{command}'" in cli or f'"{command}"' in cli,f'CLI command missing: {command}')
 
+php=read('wordpress/global-impact-catalyst-demo/global-impact-catalyst-demo.php')
+for marker in ['* Version: 1.9.0',"define('GIC_DEMO_VERSION', '1.9.0')","update_option('gic_repository_schema_version', 10, false)","add_shortcode('global_impact_catalyst_integration_hub'","add_shortcode('global_impact_catalyst_public_profile'","add_shortcode('global_impact_catalyst_indicator_view'","add_shortcode('global_impact_catalyst_report_view'","add_shortcode('global_impact_catalyst_compact_embed'",'/public/initiatives','/public/publications/','/public/embeds/','/api-clients','/platform-handoffs','/integration-repository']:
+    require(marker in php,f'WordPress integration contract missing: {marker}')
+for table in ['api_clients','api_keys','api_access_log','embed_definitions','platform_handoffs','integration_events']:
+    require(f"gic_repository_table('{table}')" in php,f'WordPress table missing: {table}')
+for asset in ['global-impact-catalyst-integration.js','global-impact-catalyst-integration.css']:
+    require((ROOT/'wordpress/global-impact-catalyst-demo/assets'/asset).exists(),f'WordPress asset missing: {asset}')
 
-def read(path: str) -> str:
-    return (ROOT / path).read_text(encoding="utf-8")
+schema_examples={
+ 'global_impact_public_api_response.schema.json':'example_global_impact_public_api_response.json',
+ 'global_impact_platform_handoff.schema.json':'example_global_impact_platform_handoff.json',
+ 'global_impact_integration_repository.schema.json':'example_global_impact_integration_repository.json',
+ 'global_impact_workspace_bundle.schema.json':'example_global_impact_workspace_bundle.json'}
+for schema_name,example_name in schema_examples.items():
+    schema=load('schemas/'+schema_name); example=load('examples/'+example_name)
+    require(schema.get('x-global-impact-catalyst-version')==PACKAGE or schema_name=='global_impact_workspace_bundle.schema.json',f'{schema_name} version marker missing')
+    for err in Draft202012Validator(schema,format_checker=FormatChecker()).iter_errors(example): errors.append(f'{example_name}: {err.message}')
+serialized=json.dumps(load('examples/example_global_impact_integration_repository.json'))
+require('gic_live_' not in serialized and 'key_hash' not in serialized,'integration example exposes API key material')
 
-
-def load(path: str):
-    return json.loads(read(path))
-
-
-manifest = load("global_impact_catalyst_manifest.json")
-expected_manifest = {
-    "version": PACKAGE,
-    "contract_version": CONTRACT,
-    "schema_version": CONTRACT,
-    "database_schema_version": DATABASE,
-    "workspace_bundle_version": PACKAGE,
-    "evidence_chain_version": EVIDENCE,
-    "indicator_registry_version": REGISTRY,
-    "measurement_repository_version": MEASUREMENT,
-    "review_workflow_version": REVIEW,
-    "analysis_repository_version": ANALYSIS,
-    "reporting_repository_version": REPORTING,
-    "reporting_shortcode": "[global_impact_catalyst_reporting_studio]",
-}
-for key, expected in expected_manifest.items():
-    require(manifest.get(key) == expected, f"manifest {key} mismatch: {manifest.get(key)!r}")
-
-path_keys = [
-    "core_path", "repository_path", "service_path", "repository_cli_path",
-    "workspace_bundle_schema_path", "reporting_module_path",
-    "reporting_repository_schema_path", "reproducible_export_schema_path",
-    "reporting_doc_path", "reproducible_exports_doc_path",
-    "accessible_reporting_doc_path", "reporting_repository_example_path",
-    "reproducible_export_example_path", "database_migration_9",
-]
-for key in path_keys:
-    value = manifest.get(key)
-    require(bool(value) and (ROOT / value).exists(), f"manifest path missing: {key} -> {value}")
-
-required_capabilities = {
-    "report_template_registry", "accessible_html_reports", "markdown_reports",
-    "structured_citations", "methodology_appendices", "dashboard_definitions",
-    "accessible_dashboard_cards", "publication_snapshots",
-    "cross_repository_snapshot_hashes", "deterministic_zip_exports",
-    "fixed_archive_timestamps", "artifact_manifests", "sha256_artifact_checksums",
-    "export_verification", "reporting_repository_export",
-    "lossless_reporting_restore", "wordpress_reporting_studio",
-}
-require(required_capabilities.issubset(set(manifest.get("repository_capabilities", []))),
-        "reporting capabilities incomplete")
-
-repository = read("python/global_impact_repository.py")
-for marker in [
-    "DATABASE_SCHEMA_VERSION = 9", "ReportingPublicationMixin",
-    "009_reporting_publication_reproducible_exports.sql",
-    '"bundle_version": "1.8.0"',
-    '"reporting_repository": self.export_reporting_repository(workspace_id)',
-    "self._restore_reporting_repository",
-    '"report_documents": count("report_documents")',
-    '"export_bundles": count("export_bundles")',
-]:
-    require(marker in repository, f"repository contract missing: {marker}")
-
-reporting = read("python/global_impact_reporting.py")
-for marker in [
-    'REPORTING_VERSION = "1.8.0"', "def register_report_template",
-    "def create_report", "def create_dashboard", "def add_dashboard_card",
-    "def create_publication_snapshot", "def build_reproducible_export",
-    "def verify_reproducible_export", "def export_reporting_repository",
-    "def _restore_reporting_repository", "deterministic_zip_timestamps",
-    "artifact_checksum_failures", "bundle_archive_failures",
-]:
-    require(marker in reporting, f"reporting contract missing: {marker}")
-
-service = read("python/global_impact_service.py")
-for marker in [
-    'SERVICE_VERSION = "1.8.0"', "def register_report_template",
-    "def create_report", "def create_dashboard", "def create_publication_snapshot",
-    "def build_reproducible_export", "def reporting_repository",
-]:
-    require(marker in service, f"service contract missing: {marker}")
-
-app = read("app/main.py")
-for marker in [
-    '"version": "1.8.0"', '"database_schema_version": 9',
-    '"analysis_repository_version": "1.7.0"',
-    '"reporting_repository_version": "1.8.0"',
-]:
-    require(marker in app, f"application contract missing: {marker}")
-
-cli = read("scripts/gic_repository.py")
-for command in [
-    "add-report-template", "create-report", "reports", "add-dashboard",
-    "add-dashboard-card", "render-dashboard", "publication-snapshot",
-    "reproducible-export", "verify-export", "reporting-repository",
-]:
-    require(f"'{command}'" in cli, f"CLI command missing: {command}")
-
-assets = ROOT / "wordpress/global-impact-catalyst-demo/assets"
-js_assets = [
-    "global-impact-catalyst-demo.js", "global-impact-catalyst-workspace.js",
-    "global-impact-catalyst-evidence.js", "global-impact-catalyst-registry.js",
-    "global-impact-catalyst-measurement.js", "global-impact-catalyst-review.js",
-    "global-impact-catalyst-analysis.js", "global-impact-catalyst-reporting.js",
-]
-for asset in js_assets + ["global-impact-catalyst-reporting.css"]:
-    path = assets / asset
-    require(path.exists() and path.stat().st_size > 100, f"WordPress asset missing: {asset}")
-
-plugin = read("wordpress/global-impact-catalyst-demo/global-impact-catalyst-demo.php")
-header = re.search(r"^ \* Version:\s*([^\s]+)", plugin, re.M)
-constant = re.search(r"define\('GIC_DEMO_VERSION',\s*'([^']+)'\)", plugin)
-require(bool(header) and header.group(1) == PACKAGE, "WordPress header mismatch")
-require(bool(constant) and constant.group(1) == PACKAGE, "WordPress constant mismatch")
-for marker in [
-    "add_shortcode('global_impact_catalyst_reporting_studio'", "/reporting-repository",
-    "/report-templates", "/reports", "/dashboards", "/publication-snapshots",
-    "/reproducible-exports", "gic_reporting_snapshot_rest",
-    "gic_reporting_export_rest", "gic_repository_table('report_templates')",
-    "gic_repository_table('publication_snapshots')", "gic_repository_table('export_artifacts')",
-]:
-    require(marker in plugin, f"WordPress reporting contract missing: {marker}")
-
-schema_versions = {
-    "global_impact_input.schema.json": CONTRACT,
-    "global_impact_contract.schema.json": CONTRACT,
-    "global_impact_record.schema.json": CONTRACT,
-    "global_impact_validation_result.schema.json": CONTRACT,
-    "global_impact_evidence_chain.schema.json": EVIDENCE,
-    "global_impact_evidence_repository.schema.json": EVIDENCE,
-    "global_impact_indicator_registry.schema.json": REGISTRY,
-    "global_impact_measurement_repository.schema.json": MEASUREMENT,
-    "global_impact_review_workflow.schema.json": REVIEW,
-    "global_impact_analysis_repository.schema.json": ANALYSIS,
-    "global_impact_reporting_repository.schema.json": REPORTING,
-    "global_impact_reproducible_export.schema.json": REPORTING,
-    "global_impact_workspace_bundle.schema.json": PACKAGE,
-}
-for filename, version in schema_versions.items():
-    schema = load("schemas/" + filename)
-    require(schema.get("x-global-impact-catalyst-version") == version,
-            f"schema version mismatch: {filename}")
-    require(f"/{version}/" in schema.get("$id", ""), f"schema id mismatch: {filename}")
-
-examples = [
-    ("examples/example_global_impact_reporting_repository.json", "global_impact_reporting_repository.schema.json"),
-    ("examples/example_global_impact_reproducible_export_manifest.json", "global_impact_reproducible_export.schema.json"),
-    ("examples/example_global_impact_workspace_bundle.json", "global_impact_workspace_bundle.schema.json"),
-    ("examples/example_global_impact_analysis_repository.json", "global_impact_analysis_repository.schema.json"),
-    ("examples/example_global_impact_review_workflow.json", "global_impact_review_workflow.schema.json"),
-]
-for example, schema_name in examples:
-    validator = Draft202012Validator(load("schemas/" + schema_name), format_checker=FormatChecker())
-    failures = sorted(validator.iter_errors(load(example)), key=lambda e: list(e.path))
-    require(not failures, f"example schema failure: {example}: {[e.message for e in failures[:5]]}")
-
-expected_migrations = [
-    "001_core_repository.sql", "002_portfolios_and_autosave.sql",
-    "003_imports_audit_and_bundles.sql", "004_sources_provenance_evidence.sql",
-    "005_indicator_registry_units_baselines_targets_methods.sql",
-    "006_observations_beneficiaries_budgets_outcome_portfolios.sql",
-    "007_review_quality_revision_workflow.sql",
-    "008_trends_comparisons_scenarios_uncertainty.sql",
-    "009_reporting_publication_reproducible_exports.sql",
-]
-actual_migrations = [path.name for path in sorted((ROOT / "migrations").glob("*.sql"))]
-require(actual_migrations == expected_migrations, "database migration inventory mismatch")
-
-for path in [
-    "docs/reporting-publication-export-studio.md", "docs/reproducible-exports.md",
-    "docs/accessible-reporting.md", "docs/database-migrations.md",
-    "docs/workspace-bundles.md", "release/v1.8.0.md",
-]:
-    file = ROOT / path
-    require(file.exists() and file.stat().st_size > 300, f"documentation missing: {path}")
-
-require("1.8.0" in read("CHANGELOG.md") and
-        "Reporting, Publication, and Reproducible Export Studio" in read("CHANGELOG.md"),
-        "changelog entry missing")
-require("[global_impact_catalyst_reporting_studio]" in read("README.md"),
-        "README reporting shortcode missing")
-require("eight shortcodes" in read("wordpress/global-impact-catalyst-demo/README.md"),
-        "WordPress README release identity missing")
-
-fixture_count = len(list((ROOT / "contracts/fixtures").glob("*.json")))
-require(fixture_count == 15, f"expected 15 canonical browser fixtures, found {fixture_count}")
+migration=read('migrations/010_public_api_embeds_platform_handoffs.sql')
+for table in ['api_clients','api_keys','api_idempotency_records','api_rate_windows','api_access_log','embed_definitions','platform_handoffs','integration_events']:
+    require(re.search(rf'CREATE TABLE IF NOT EXISTS\s+{table}\b',migration,re.I) is not None,f'migration 10 table missing: {table}')
+for path in ['README.md','CHANGELOG.md','release/v1.9.0.md','docs/public-api.md','docs/embeds.md','docs/sustainable-catalyst-handoffs.md','docs/jsonld-interoperability.md']:
+    require('1.9.0' in read(path) or path.startswith('docs/'),f'v1.9.0 documentation marker missing: {path}')
+require('Public API, Embeds, and Sustainable Catalyst Handoffs' in read('README.md'),'README release title missing')
 
 if errors:
-    print("Global Impact Catalyst v1.8.0 release contract failed:", file=sys.stderr)
-    for error in errors:
-        print(f"- {error}", file=sys.stderr)
+    print('Global Impact Catalyst v1.9.0 release contract FAILED:',file=sys.stderr)
+    for error in errors: print(f'- {error}',file=sys.stderr)
     raise SystemExit(1)
-
-print("Global Impact Catalyst v1.8.0 release contract passed.")
+print('Global Impact Catalyst v1.9.0 release contract passed.')

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.9.0/global_impact_public_api_response.schema.json",
+  "title": "Global Impact Catalyst Public API Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["@context", "api_version", "data", "meta", "boundary"],
+  "properties": {
+    "@context": {"type": "object"},
+    "api_version": {"const": "v1"},
+    "data": {},
+    "meta": {
+      "type": "object",
+      "required": ["api_version", "generated_at", "resource_type"],
+      "properties": {
+        "api_version": {"const": "v1"},
+        "generated_at": {"type": "string", "format": "date-time"},
+        "resource_type": {"type": "string", "minLength": 1},
+        "pagination": {
+          "type": "object",
+          "required": ["page", "page_size", "total", "page_count"],
+          "properties": {
+            "page": {"type": "integer", "minimum": 1},
+            "page_size": {"type": "integer", "minimum": 1, "maximum": 100},
+            "total": {"type": "integer", "minimum": 0},
+            "page_count": {"type": "integer", "minimum": 0}
+          },
+          "additionalProperties": false
+        },
+        "filters": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "boundary": {"type": "string", "minLength": 20}
+  },
+  "x-global-impact-catalyst-version": "1.9.0"
+}

@@ -28,7 +28,7 @@ def approve_and_publish(repo, workspace_id, initiative_id, record_id):
 def test_migration_9_and_template_concurrency(tmp_path):
     with SQLiteImpactRepository(tmp_path/'reporting.sqlite3') as repo:
         _,w,_,_=create(repo)
-        assert DATABASE_SCHEMA_VERSION==9 and repo.schema_version==9
+        assert DATABASE_SCHEMA_VERSION==10 and repo.schema_version==10
         template=repo.register_report_template({'name':'Public impact report','sections':['executive_summary','results','methodology','references'],'citation_style':'harvard'},workspace_id=w)
         assert template['revision']==1 and template['accessibility_profile']['wcag_target']=='2.2 AA'
         updated=repo.register_report_template({**template,'description':'Reviewed public template'},workspace_id=w,expected_revision=1)
@@ -94,7 +94,7 @@ def test_reporting_schema_and_workspace_restore(tmp_path):
         Draft202012Validator(json.loads((ROOT/'schemas/global_impact_workspace_bundle.schema.json').read_text()),format_checker=FormatChecker()).validate(bundle)
         assert reporting['integrity']['valid']
         assert reporting['integrity']['export_bundle_count']==1
-        assert bundle['bundle_version']=='1.8.0' and bundle['database_schema_version']==9
+        assert bundle['bundle_version']=='1.9.0' and bundle['database_schema_version']==10
     with SQLiteImpactRepository(tmp_path/'target.sqlite3') as target:
         assert target.restore_workspace_bundle(bundle)['status']=='restored'
         assert target.restore_workspace_bundle(bundle)['status']=='unchanged'

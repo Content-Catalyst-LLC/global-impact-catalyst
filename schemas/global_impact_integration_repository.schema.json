@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.9.0/global_impact_integration_repository.schema.json",
+  "title": "Global Impact Catalyst Integration Repository",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "repository_type",
+    "repository_version",
+    "api_version",
+    "workspace_id",
+    "generated_at",
+    "jsonld_context",
+    "api_clients",
+    "embeds",
+    "platform_handoffs",
+    "integration_events",
+    "api_access_log",
+    "integrity",
+    "privacy",
+    "boundary"
+  ],
+  "properties": {
+    "repository_type": {
+      "const": "global_impact_integration_repository"
+    },
+    "repository_version": {
+      "const": "1.9.0"
+    },
+    "api_version": {
+      "const": "v1"
+    },
+    "workspace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "jsonld_context": {
+      "type": "object"
+    },
+    "api_clients": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "embeds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "embed_id",
+          "publication_id",
+          "publication_snapshot_id",
+          "embed_type",
+          "content_hash"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "platform_handoffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "handoff_id",
+          "workspace_id",
+          "destination",
+          "handoff_version",
+          "source_snapshot_hash",
+          "payload_hash",
+          "payload",
+          "integrity"
+        ],
+        "properties": {
+          "handoff_id": {
+            "type": "string",
+            "pattern": "^gic-handoff-"
+          },
+          "workspace_id": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "handoff_version": {
+            "const": "1.9.0"
+          },
+          "source_snapshot_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "payload_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "@context",
+              "handoff_type",
+              "handoff_version",
+              "destination",
+              "created_at",
+              "source_snapshot_hash",
+              "data",
+              "boundary"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "@context": {
+                "type": "object"
+              },
+              "handoff_type": {
+                "const": "global_impact_platform_handoff"
+              },
+              "handoff_version": {
+                "const": "1.9.0"
+              },
+              "destination": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "source_snapshot_hash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "data": {
+                "type": "object"
+              },
+              "boundary": {
+                "type": "string",
+                "minLength": 20
+              }
+            }
+          },
+          "integrity": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "integration_events": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "api_access_log": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "required": [
+        "valid",
+        "api_client_count",
+        "embed_count",
+        "handoff_count",
+        "event_count",
+        "access_log_count",
+        "broken_embed_ids",
+        "broken_handoff_ids",
+        "broken_event_ids"
+      ],
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "api_client_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "embed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "handoff_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "event_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "access_log_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "broken_embed_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "broken_handoff_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "broken_event_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "privacy": {
+      "type": "object",
+      "required": [
+        "api_key_material_exported",
+        "public_data_requires_published_snapshot",
+        "raw_evidence_excerpts_public"
+      ],
+      "properties": {
+        "api_key_material_exported": {
+          "const": false
+        },
+        "public_data_requires_published_snapshot": {
+          "const": true
+        },
+        "raw_evidence_excerpts_public": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 20
+    }
+  },
+  "x-global-impact-catalyst-version": "1.9.0"
+}

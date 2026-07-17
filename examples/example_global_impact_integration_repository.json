@@ -1,0 +1,461 @@
+{
+  "repository_type": "global_impact_integration_repository",
+  "repository_version": "1.9.0",
+  "api_version": "v1",
+  "workspace_id": "gic-workspace-bdc75d8b68333af2",
+  "generated_at": "2026-07-17T23:05:23.665836+00:00",
+  "jsonld_context": {
+    "@version": 1.1,
+    "gic": "https://sustainablecatalyst.com/ns/global-impact-catalyst/",
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "sdg": "https://metadata.un.org/sdg/",
+    "id": "@id",
+    "type": "@type",
+    "name": "schema:name",
+    "description": "schema:description",
+    "datePublished": "schema:datePublished",
+    "measurementTechnique": "schema:measurementTechnique",
+    "variableMeasured": "schema:variableMeasured",
+    "isBasedOn": {
+      "@id": "schema:isBasedOn",
+      "@type": "@id"
+    },
+    "wasDerivedFrom": {
+      "@id": "prov:wasDerivedFrom",
+      "@type": "@id"
+    }
+  },
+  "api_clients": [
+    {
+      "client_id": "gic-api-client-6d38d5f5c859dd9141cb",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "name": "Platform Core Example",
+      "description": "",
+      "client_type": "service",
+      "lifecycle_status": "active",
+      "rate_limit_per_minute": 60,
+      "revision": 1,
+      "created_by": "example",
+      "created_at": "2026-07-17T23:05:23.657203+00:00",
+      "updated_at": "2026-07-17T23:05:23.657203+00:00",
+      "metadata": {},
+      "keys": [
+        {
+          "api_key_id": "gic-api-key-82faf507dfefd52352a9",
+          "scopes": [
+            "handoffs:write",
+            "workspace:read"
+          ],
+          "expires_at": null,
+          "revoked_at": null,
+          "last_used_at": null,
+          "created_at": "2026-07-17T23:05:23.657625+00:00"
+        }
+      ]
+    }
+  ],
+  "embeds": [
+    {
+      "embed_id": "gic-embed-32e53eb51683875e6353",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "publication_id": "gic-publication-ec04100f2b2b57e4c8dc",
+      "publication_snapshot_id": "gic-publication-snapshot-6aa5f90607ee15307436",
+      "embed_type": "initiative_card",
+      "title": "Approved impact profile",
+      "public_slug": "approved-impact-profile",
+      "content_hash": "cf4879049f1b9a13fee6b57552bad8c53b399d1f246dda376b7dc198475f9f0a",
+      "lifecycle_status": "active",
+      "revision": 1,
+      "created_by": "example",
+      "created_at": "2026-07-17T23:05:23.659123+00:00",
+      "updated_at": "2026-07-17T23:05:23.659123+00:00",
+      "configuration": {},
+      "accessibility": {
+        "heading_level": 2,
+        "landmark": "region",
+        "table_captions": true,
+        "text_alternatives": true
+      },
+      "metadata": {}
+    }
+  ],
+  "platform_handoffs": [
+    {
+      "handoff_id": "gic-handoff-59a85b9eee2fbe3b9d43",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "destination": "decision_studio",
+      "handoff_type": "global_impact_platform_handoff",
+      "handoff_version": "1.9.0",
+      "status": "ready",
+      "source_snapshot_hash": "58965c6ad80c978455cbbf475b5b73cafb46d423dfbfe2c88a1ce3f2a02cdecb",
+      "payload_hash": "47bb26e365389df8d3599cf7e8d32bf687eacdf0fa91dbe747bcca83271cf35c",
+      "idempotency_key": "example-decision-studio-001",
+      "created_by": "example",
+      "created_at": "2026-07-17T23:05:23.663357+00:00",
+      "delivered_at": null,
+      "payload": {
+        "@context": {
+          "@version": 1.1,
+          "datePublished": "schema:datePublished",
+          "dcterms": "http://purl.org/dc/terms/",
+          "description": "schema:description",
+          "gic": "https://sustainablecatalyst.com/ns/global-impact-catalyst/",
+          "id": "@id",
+          "isBasedOn": {
+            "@id": "schema:isBasedOn",
+            "@type": "@id"
+          },
+          "measurementTechnique": "schema:measurementTechnique",
+          "name": "schema:name",
+          "prov": "http://www.w3.org/ns/prov#",
+          "schema": "https://schema.org/",
+          "sdg": "https://metadata.un.org/sdg/",
+          "type": "@type",
+          "variableMeasured": "schema:variableMeasured",
+          "wasDerivedFrom": {
+            "@id": "prov:wasDerivedFrom",
+            "@type": "@id"
+          }
+        },
+        "boundary": "Handoff integrity preserves source identity and governance metadata; receiving systems must retain limitations and may not infer assurance or causal proof.",
+        "created_at": "2026-07-17T23:05:23.662489+00:00",
+        "data": {
+          "analysis": {
+            "analysis_runs": [],
+            "benchmarks": [],
+            "boundary": "Analysis records improve transparency but do not create assurance, certification, causality, or verified forecasts.",
+            "comparison_sets": [],
+            "generated_at": "2026-07-17T23:05:23.661012+00:00",
+            "integrity": {
+              "analysis_run_count": 0,
+              "benchmark_count": 0,
+              "comparison_member_count": 0,
+              "comparison_set_count": 0,
+              "orphan_comparison_member_ids": [],
+              "orphan_sensitivity_run_ids": [],
+              "scenario_count": 0,
+              "sensitivity_run_count": 0,
+              "uncertainty_model_count": 0,
+              "valid": true
+            },
+            "repository_type": "global_impact_analysis_repository",
+            "repository_version": "1.7.0",
+            "scenarios": [],
+            "sensitivity_runs": [],
+            "uncertainty_models": [],
+            "workspace_id": "gic-workspace-bdc75d8b68333af2"
+          },
+          "assumptions": [],
+          "contract_versions": [
+            "1.1.0"
+          ],
+          "decision_context": [
+            {
+              "goal": {
+                "created_at": "2026-07-17T23:00:00+00:00",
+                "entity_type": "goal",
+                "id": "gic-goal-ece2bacb67a2be38",
+                "initiative_id": "gic-initiative-09a657f60923ed45",
+                "sdg_theme": "Affordable and clean energy",
+                "statement": "Reduce household energy burden while improving residential efficiency.",
+                "updated_at": "2026-07-17T23:00:00+00:00"
+              },
+              "initiative": {
+                "created_at": "2026-07-17T23:00:00+00:00",
+                "entity_type": "initiative",
+                "id": "gic-initiative-09a657f60923ed45",
+                "name": "Community Energy Retrofit Pilot",
+                "updated_at": "2026-07-17T23:00:00+00:00",
+                "workspace_id": "gic-workspace-bdc75d8b68333af2"
+              },
+              "measurement": {
+                "baseline": {
+                  "created_at": "2026-07-17T23:00:00+00:00",
+                  "entity_type": "baseline",
+                  "id": "gic-baseline-bccde48f17ee3898",
+                  "indicator_id": "gic-indicator-2e7a8f93231487ce",
+                  "method_id": "gic-method-dfc0b951aac86076",
+                  "period": {
+                    "label": "2025 baseline"
+                  },
+                  "source_ids": [
+                    "gic-source-f2284ef9ae098b56"
+                  ],
+                  "unit": "USD",
+                  "updated_at": "2026-07-17T23:00:00+00:00",
+                  "value": 0.0
+                },
+                "observations": [
+                  {
+                    "created_at": "2026-07-17T23:00:00+00:00",
+                    "entity_type": "observation",
+                    "id": "gic-observation-cca59978f04bb0dd",
+                    "indicator_id": "gic-indicator-2e7a8f93231487ce",
+                    "method_id": "gic-method-dfc0b951aac86076",
+                    "period": {
+                      "label": "2026 Q2"
+                    },
+                    "source_ids": [
+                      "gic-source-f2284ef9ae098b56"
+                    ],
+                    "unit": "USD",
+                    "updated_at": "2026-07-17T23:00:00+00:00",
+                    "value": 18.0
+                  }
+                ],
+                "target": {
+                  "created_at": "2026-07-17T23:00:00+00:00",
+                  "direction": "higher_is_better",
+                  "entity_type": "target",
+                  "id": "gic-target-61bc37e9887a3252",
+                  "indicator_id": "gic-indicator-2e7a8f93231487ce",
+                  "period": {
+                    "label": "2027"
+                  },
+                  "unit": "USD",
+                  "updated_at": "2026-07-17T23:00:00+00:00",
+                  "value": 30.0
+                }
+              },
+              "outcomes": [
+                {
+                  "created_at": "2026-07-17T23:00:00+00:00",
+                  "entity_type": "outcome",
+                  "goal_id": "gic-goal-ece2bacb67a2be38",
+                  "id": "gic-outcome-5dfda192c94fd5fb",
+                  "statement": "Participating households experience lower monthly energy costs.",
+                  "updated_at": "2026-07-17T23:00:00+00:00"
+                }
+              ]
+            }
+          ],
+          "initiative_id": "gic-initiative-09a657f60923ed45",
+          "monitoring_plan": {
+            "observations": [
+              {
+                "created_at": "2026-07-17T23:00:00+00:00",
+                "data_state": "complete",
+                "denominator": {},
+                "dimensions": {},
+                "impact_result_id": "gic-outcome-5dfda192c94fd5fb",
+                "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+                "indicator_id": "gic-indicator-2e7a8f93231487ce",
+                "initiative_id": "gic-initiative-09a657f60923ed45",
+                "metadata": {
+                  "materialized_from_contract": true,
+                  "record_id": "gic-record-3bb3e632355d26c9"
+                },
+                "method_definition_id": "gic-method-dfc0b951aac86076",
+                "notes": "",
+                "observation_record_id": "gic-observation-cca59978f04bb0dd",
+                "period_end": null,
+                "period_label": "2026 Q2",
+                "period_start": null,
+                "received_at": "2026-07-17T23:00:00+00:00",
+                "revised_at": null,
+                "revision": 1,
+                "revision_of_observation_id": null,
+                "source_id": "gic-source-f2284ef9ae098b56",
+                "unit_id": "gic-unit-usd",
+                "updated_at": "2026-07-17T23:05:23.639498+00:00",
+                "value": 18.0,
+                "workspace_id": "gic-workspace-bdc75d8b68333af2"
+              }
+            ],
+            "targets": [
+              {
+                "created_at": "2026-07-17T23:05:23.638133+00:00",
+                "current_version": 1,
+                "direction": "higher_is_better",
+                "end_period": "2027",
+                "end_value": null,
+                "formula_expression": "",
+                "formula_language": "gic-expression-1.0",
+                "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+                "lifecycle_status": "active",
+                "lower_value": null,
+                "metadata": {
+                  "canonical_target_id": "gic-target-61bc37e9887a3252",
+                  "record_id": "gic-record-3bb3e632355d26c9"
+                },
+                "milestones": [],
+                "name": "Average monthly bill reduction target",
+                "relative_change_percent": null,
+                "revision": 1,
+                "start_period": null,
+                "start_value": null,
+                "target_model_id": "gic-target-model-9c6e0716c2085cf79608",
+                "target_type": "absolute",
+                "target_value": 30.0,
+                "trajectory_type": "linear",
+                "unit_id": "gic-unit-usd",
+                "updated_at": "2026-07-17T23:05:23.638312+00:00",
+                "upper_value": null,
+                "versions": [
+                  {
+                    "created_at": "2026-07-17T23:05:23.638282+00:00",
+                    "created_by": "owner",
+                    "model": {
+                      "direction": "higher_is_better",
+                      "end_period": "2027",
+                      "end_value": null,
+                      "formula_expression": "",
+                      "formula_language": "gic-expression-1.0",
+                      "formula_variables": [],
+                      "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+                      "lifecycle_status": "active",
+                      "lower_value": null,
+                      "metadata": {
+                        "canonical_target_id": "gic-target-61bc37e9887a3252",
+                        "record_id": "gic-record-3bb3e632355d26c9"
+                      },
+                      "milestones": [],
+                      "name": "Average monthly bill reduction target",
+                      "relative_change_percent": null,
+                      "start_period": null,
+                      "start_value": null,
+                      "target_model_id": "gic-target-model-9c6e0716c2085cf79608",
+                      "target_type": "absolute",
+                      "target_value": 30.0,
+                      "trajectory_type": "linear",
+                      "unit_id": "gic-unit-usd",
+                      "upper_value": null,
+                      "workspace_id": "gic-workspace-bdc75d8b68333af2"
+                    },
+                    "model_hash": "10a0c1c17dcd65f9feeac504afec5079876ba00781a0ccfc61358756dc7b02aa",
+                    "target_model_id": "gic-target-model-9c6e0716c2085cf79608",
+                    "target_model_version_id": "gic-target_model_version-6ce7e0a7e4b5422fbfae",
+                    "version_label": "1.1.0",
+                    "version_number": 1
+                  }
+                ],
+                "workspace_id": "gic-workspace-bdc75d8b68333af2"
+              }
+            ]
+          },
+          "quality": [
+            {
+              "assessment_id": "gic-quality-assessment-fabef4d5437408d73124",
+              "assessor_id": "approver@example.org",
+              "assignment_id": "gic-review-assignment-49c2256c7995ed514219",
+              "created_at": "2026-07-17T23:05:23.645603+00:00",
+              "dimensions": [
+                {
+                  "finding": "",
+                  "key": "evidence",
+                  "maximum_score": 100.0,
+                  "score": 92.0,
+                  "weight": 1.0
+                },
+                {
+                  "finding": "",
+                  "key": "method",
+                  "maximum_score": 100.0,
+                  "score": 88.0,
+                  "weight": 1.0
+                }
+              ],
+              "findings": [],
+              "grade": "excellent",
+              "initiative_id": "gic-initiative-09a657f60923ed45",
+              "limitations": "",
+              "maximum_score": 100.0,
+              "metadata": {},
+              "revision": 1,
+              "rubric_id": "gic-core-quality",
+              "rubric_version": "1.0",
+              "score": 90.0,
+              "status": "submitted",
+              "subject_id": "gic-record-3bb3e632355d26c9",
+              "subject_type": "contract",
+              "submitted_at": "2026-07-17T23:05:23.645603+00:00",
+              "updated_at": "2026-07-17T23:05:23.645603+00:00",
+              "workspace_id": "gic-workspace-bdc75d8b68333af2"
+            }
+          ],
+          "source_repository_hashes": {
+            "analysis": "51a660ef0ab7d2ad053f0d4e6dc4b2e6ce41a4f9400ced43858aff4898e0ef9b",
+            "contracts": "2fc1d02595a6eb3b9bbfefa8c0a3680eac8db971eba4d93f513dc06273dffa77",
+            "evidence": "6cae05a2b22e96efaa8eb16d5b75f8df0508b151af6051139e81e3a327e9c3bc",
+            "measurement": "8b95e469bb06a0ffdf7b65c4bae81aa0104f5f276a0c3fdac3491a9809349c4e",
+            "registry": "450ca4e54a69de630b72551c3f66b3e309aea8bae3ce70a894f5ae87235a5fd7",
+            "reporting": "7bca7e9e7c524644ea2060c2bd99ecce12151fed34ccc121eeb2eb8a64c24c1b",
+            "review": "1ff252f610cf26e0b6ee4af6568753271351089dafb679cf0c8884fa248c202b"
+          },
+          "workspace": {
+            "archived_at": null,
+            "created_at": "2026-07-17T23:00:00+00:00",
+            "document": {
+              "created_at": "2026-07-17T23:00:00+00:00",
+              "entity_type": "workspace",
+              "id": "gic-workspace-bdc75d8b68333af2",
+              "lifecycle_status": "needs_review",
+              "name": "Community Impact Portfolio",
+              "updated_at": "2026-07-17T23:00:00+00:00"
+            },
+            "entity_id": "gic-workspace-bdc75d8b68333af2",
+            "entity_type": "workspace",
+            "initiative_id": "gic-initiative-09a657f60923ed45",
+            "lifecycle_status": "needs_review",
+            "name": "Community Impact Portfolio",
+            "parent_id": null,
+            "revision": 1,
+            "updated_at": "2026-07-17T23:05:23.636182+00:00",
+            "workspace_id": "gic-workspace-bdc75d8b68333af2"
+          }
+        },
+        "destination": "decision_studio",
+        "handoff_type": "global_impact_platform_handoff",
+        "handoff_version": "1.9.0",
+        "source_snapshot_hash": "58965c6ad80c978455cbbf475b5b73cafb46d423dfbfe2c88a1ce3f2a02cdecb"
+      },
+      "delivery_receipt": {},
+      "metadata": {},
+      "integrity": {
+        "valid": true,
+        "actual_payload_hash": "47bb26e365389df8d3599cf7e8d32bf687eacdf0fa91dbe747bcca83271cf35c"
+      }
+    }
+  ],
+  "integration_events": [
+    {
+      "event_id": "gic-integration-event-d0c0efeeb7c59b3767af",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "event_type": "handoff.ready",
+      "event_version": "1.9.0",
+      "subject_type": "platform_handoff",
+      "subject_id": "gic-handoff-59a85b9eee2fbe3b9d43",
+      "payload_hash": "323eb424fb07af76b87e3e5275a0a106f5145e9e7e7895084c9e7f3fc1124b05",
+      "created_at": "2026-07-17T23:05:23.663551+00:00",
+      "payload": {
+        "destination": "decision_studio",
+        "handoff_id": "gic-handoff-59a85b9eee2fbe3b9d43",
+        "payload_hash": "47bb26e365389df8d3599cf7e8d32bf687eacdf0fa91dbe747bcca83271cf35c"
+      },
+      "metadata": {}
+    }
+  ],
+  "api_access_log": [],
+  "integrity": {
+    "valid": true,
+    "api_client_count": 1,
+    "embed_count": 1,
+    "handoff_count": 1,
+    "event_count": 1,
+    "access_log_count": 0,
+    "broken_embed_ids": [],
+    "broken_handoff_ids": [],
+    "broken_event_ids": []
+  },
+  "privacy": {
+    "api_key_material_exported": false,
+    "public_data_requires_published_snapshot": true,
+    "raw_evidence_excerpts_public": false
+  },
+  "boundary": "Public records are approved publication views. They are not ESG assurance, SDG certification, audit findings, regulatory filings, factual verification, or causal proof."
+}

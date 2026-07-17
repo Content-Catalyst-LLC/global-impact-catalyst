@@ -15,10 +15,12 @@ ANALYSIS_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-ca
 ANALYSIS_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-analysis.css').read_text()
 REPORTING_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-reporting.js').read_text()
 REPORTING_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-reporting.css').read_text()
+INTEGRATION_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-integration.js').read_text()
+INTEGRATION_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-integration.css').read_text()
 
 def test_plugin_version_shortcodes_and_instance_ids():
-    assert '* Version: 1.8.0' in PHP
-    assert "define('GIC_DEMO_VERSION', '1.8.0')" in PHP
+    assert '* Version: 1.9.0' in PHP
+    assert "define('GIC_DEMO_VERSION', '1.9.0')" in PHP
     assert "add_shortcode('global_impact_catalyst_demo'" in PHP
     assert "add_shortcode('global_impact_catalyst_workspace'" in PHP
     assert "add_shortcode('global_impact_catalyst_evidence_ledger'" in PHP
@@ -27,6 +29,11 @@ def test_plugin_version_shortcodes_and_instance_ids():
     assert "add_shortcode('global_impact_catalyst_review_workflow'" in PHP
     assert "add_shortcode('global_impact_catalyst_analysis_studio'" in PHP
     assert "add_shortcode('global_impact_catalyst_reporting_studio'" in PHP
+    assert "add_shortcode('global_impact_catalyst_integration_hub'" in PHP
+    assert "add_shortcode('global_impact_catalyst_public_profile'" in PHP
+    assert "add_shortcode('global_impact_catalyst_indicator_view'" in PHP
+    assert "add_shortcode('global_impact_catalyst_report_view'" in PHP
+    assert "add_shortcode('global_impact_catalyst_compact_embed'" in PHP
     assert 'static $instance = 0' in PHP and '$id_prefix' in PHP
 
 def test_plugin_exposes_contract_and_claim_fields():
@@ -147,3 +154,21 @@ def test_reporting_client_and_styles_support_accessible_publication_operations()
     for operation in ['reporting-repository?workspace_id=','report-templates','reports','dashboards','publication-snapshots','reproducible-exports','data-gic-reporting-results']:
         assert operation in REPORTING_JS or operation in PHP
     assert '.gic-reporting__grid' in REPORTING_CSS and '@media' in REPORTING_CSS
+
+
+def test_integration_tables_routes_shortcodes_and_assets_are_present():
+    for table in ['api_clients','api_keys','api_access_log','embed_definitions','platform_handoffs','integration_events']:
+        assert f"gic_repository_table('{table}')" in PHP
+    for behavior in ['gic_integration_public_profile','gic_integration_api_key_auth','gic_integration_workspace_resource_rest','gic_integration_api_client_rest','gic_integration_embed_rest','gic_integration_handoff_rest','gic_integration_repository_rest','gic_integration_register_routes','gic_integration_hub_shortcode']:
+        assert f'function {behavior}' in PHP
+    for route in ['/public/initiatives','/public/publications/','/public/embeds/','/workspace/','/api-clients','/embeds','/platform-handoffs','/integration-repository']:
+        assert route in PHP
+    for control in ['data-gic-integration-hub','data-gic-integration-load','data-gic-integration-client','data-gic-integration-embed','data-gic-integration-handoff','data-gic-integration-results']:
+        assert control in PHP
+    assert 'Connected platform service · v1.9.0' in PHP
+
+
+def test_integration_client_and_styles_support_scoped_operations():
+    for operation in ['integration-repository?workspace_id=','api-clients','embeds','platform-handoffs','data-gic-integration-results']:
+        assert operation in INTEGRATION_JS or operation in PHP
+    assert '.gic-integration__grid' in INTEGRATION_CSS and '@media' in INTEGRATION_CSS

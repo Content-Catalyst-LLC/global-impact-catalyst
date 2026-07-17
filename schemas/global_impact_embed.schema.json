@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.9.0/global_impact_embed.schema.json",
+  "title": "Global Impact Catalyst Governed Embed",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["embed_id", "workspace_id", "publication_id", "publication_snapshot_id", "embed_type", "title", "public_slug", "configuration", "accessibility", "content_hash", "lifecycle_status", "revision"],
+  "properties": {
+    "embed_id": {"type": "string", "pattern": "^gic-embed-"},
+    "workspace_id": {"type": "string", "minLength": 1},
+    "initiative_id": {"type": ["string", "null"]},
+    "publication_id": {"type": "string", "minLength": 1},
+    "publication_snapshot_id": {"type": "string", "minLength": 1},
+    "embed_type": {"enum": ["initiative_card", "indicator_trend", "methodology_panel", "portfolio_summary", "report_view"]},
+    "title": {"type": "string", "minLength": 1},
+    "public_slug": {"type": "string", "minLength": 1},
+    "configuration": {"type": "object"},
+    "accessibility": {"type": "object"},
+    "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "lifecycle_status": {"enum": ["active", "inactive", "archived"]},
+    "revision": {"type": "integer", "minimum": 1}
+  },
+  "x-global-impact-catalyst-version": "1.9.0"
+}

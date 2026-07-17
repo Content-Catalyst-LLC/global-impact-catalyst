@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.8.0."""
+"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.9.0."""
 from __future__ import annotations
 
 import json
@@ -41,6 +41,7 @@ def main() -> int:
             "global-impact-catalyst-evidence.js", "global-impact-catalyst-registry.js",
             "global-impact-catalyst-measurement.js", "global-impact-catalyst-review.js",
             "global-impact-catalyst-analysis.js", "global-impact-catalyst-reporting.js",
+            "global-impact-catalyst-integration.js",
         ):
             run("node", "--check", f"wordpress/global-impact-catalyst-demo/assets/{asset}")
     else:
@@ -56,7 +57,7 @@ def main() -> int:
     from python.global_impact_service import ImpactApplicationService
 
     payload = json.loads((ROOT / "data/sample_global_impact_input.json").read_text(encoding="utf-8"))
-    with tempfile.TemporaryDirectory(prefix="gic-v180-") as temp:
+    with tempfile.TemporaryDirectory(prefix="gic-v190-") as temp:
         directory = Path(temp)
         database = directory / "impact.sqlite3"
         restored_database = directory / "restored.sqlite3"
@@ -74,7 +75,7 @@ def main() -> int:
             initiative_id = created["repository"]["initiative_id"]
             indicator_id = contract["facts"]["indicator"]["id"]
             summary = repository.repository_summary()
-            assert summary["database_schema_version"] == 9
+            assert summary["database_schema_version"] == 10
             assert summary["contracts"] == 1
             assert summary["sources"] == 1
             assert summary["units"] >= 18
@@ -251,9 +252,41 @@ def main() -> int:
             validate(reporting, "global_impact_reporting_repository.schema.json")
             validate(export_result["manifest"], "global_impact_reproducible_export.schema.json")
 
+            api_client = service.register_api_client({
+                "name": "Release smoke platform client", "client_type": "service",
+                "scopes": ["workspace:read", "handoffs:write"], "rate_limit_per_minute": 20,
+            }, workspace_id=workspace_id, actor="release-smoke")
+            api_key = api_client["issued_key"]["api_key"]
+            workspace_api = service.workspace_api_resource(
+                api_key=api_key, workspace_id=workspace_id, resource="initiatives", page=1, page_size=10
+            )
+            assert workspace_api["api_version"] == "v1" and workspace_api["meta"]["pagination"]["total"] == 1
+            public = service.public_publication(publication["publication_id"])
+            assert public["data"]["snapshot"]["snapshot_hash"] == snapshot["snapshot_hash"]
+            validate(public, "global_impact_public_api_response.schema.json")
+            embed = service.create_embed({
+                "embed_type": "indicator_trend", "title": "Release impact trend",
+                "publication_id": publication["publication_id"],
+                "publication_snapshot_id": snapshot["snapshot_id"],
+                "public_slug": "release-impact-trend",
+            }, workspace_id=workspace_id, actor="release-smoke")
+            rendered_embed = service.render_embed(embed["public_slug"])
+            assert rendered_embed["snapshot_hash"] == snapshot["snapshot_hash"] and "aria-labelledby" in rendered_embed["html"]
+            validate(embed, "global_impact_embed.schema.json")
+            handoff = service.create_platform_handoff(
+                "decision_studio", workspace_id=workspace_id, initiative_id=initiative_id,
+                idempotency_key="release-smoke-decision-001", actor="release-smoke"
+            )
+            assert handoff["integrity"]["valid"] and handoff["handoff_version"] == "1.9.0"
+            validate(handoff["payload"], "global_impact_platform_handoff.schema.json")
+            integration = service.integration_repository(workspace_id)
+            assert integration["repository_version"] == "1.9.0" and integration["integrity"]["valid"]
+            assert integration["privacy"]["api_key_material_exported"] is False
+            validate(integration, "global_impact_integration_repository.schema.json")
+
             bundle = repository.export_workspace_bundle(workspace_id)
-            assert bundle["bundle_version"] == "1.8.0"
-            assert bundle["database_schema_version"] == 9
+            assert bundle["bundle_version"] == "1.9.0"
+            assert bundle["database_schema_version"] == 10
             validate(bundle, "global_impact_workspace_bundle.schema.json")
             repository.backup_database(backup)
 
@@ -273,8 +306,13 @@ def main() -> int:
             restored_reporting = restored.export_reporting_repository(workspace_id)
             assert restored_reporting["integrity"]["report_count"] == reporting["integrity"]["report_count"]
             assert restored_reporting["integrity"]["dashboard_count"] == reporting["integrity"]["dashboard_count"]
+            restored_integration = restored.export_integration_repository(workspace_id)
+            assert restored_integration["integrity"] == integration["integrity"]
+            assert restored_integration["platform_handoffs"][0]["payload_hash"] == integration["platform_handoffs"][0]["payload_hash"]
+            assert restored_integration["embeds"][0]["content_hash"] == integration["embeds"][0]["content_hash"]
+            assert restored_integration["privacy"]["api_key_material_exported"] is False
 
-    print("Global Impact Catalyst v1.8.0 portable release smoke tests passed.")
+    print("Global Impact Catalyst v1.9.0 portable release smoke tests passed.")
     return 0
 
 
