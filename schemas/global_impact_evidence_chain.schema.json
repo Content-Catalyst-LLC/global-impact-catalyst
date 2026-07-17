@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.3.0/global_impact_evidence_chain.schema.json",
+  "title": "Global Impact Catalyst Evidence Chain",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["chain_type", "chain_version", "workspace_id", "initiative_id", "generated_at", "sources", "evidence_items", "datasets", "provenance_edges", "claim_evidence_links", "integrity"],
+  "properties": {
+    "chain_type": {"const": "global_impact_evidence_chain"},
+    "chain_version": {"const": "1.3.0"},
+    "workspace_id": {"type": "string", "minLength": 1},
+    "initiative_id": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "sources": {"type": "array", "items": {"$ref": "#/$defs/source"}},
+    "evidence_items": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "datasets": {"type": "array", "items": {"$ref": "#/$defs/dataset"}},
+    "provenance_edges": {"type": "array", "items": {"$ref": "#/$defs/edge"}},
+    "claim_evidence_links": {"type": "array", "items": {"$ref": "#/$defs/claimLink"}},
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["valid", "source_count", "version_count", "evidence_count", "dataset_count", "edge_count", "claim_link_count", "missing_checksum_source_ids", "orphan_claim_evidence_links", "contradicting_link_count"],
+      "properties": {
+        "valid": {"type": "boolean"},
+        "source_count": {"type": "integer", "minimum": 0},
+        "version_count": {"type": "integer", "minimum": 0},
+        "evidence_count": {"type": "integer", "minimum": 0},
+        "dataset_count": {"type": "integer", "minimum": 0},
+        "edge_count": {"type": "integer", "minimum": 0},
+        "claim_link_count": {"type": "integer", "minimum": 0},
+        "missing_checksum_source_ids": {"type": "array", "items": {"type": "string"}},
+        "orphan_claim_evidence_links": {"type": "array", "items": {"type": "object"}},
+        "contradicting_link_count": {"type": "integer", "minimum": 0}
+      }
+    }
+  },
+  "$defs": {
+    "metadata": {"type": "object"},
+    "sourceVersion": {
+      "type": "object", "additionalProperties": true,
+      "required": ["source_version_id", "source_id", "version_number", "content_hash", "checksum_algorithm", "checksum_value", "captured_at", "captured_by", "metadata"],
+      "properties": {
+        "source_version_id": {"type": "string"}, "source_id": {"type": "string"}, "version_number": {"type": "integer", "minimum": 1},
+        "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "checksum_algorithm": {"const": "sha256"},
+        "checksum_value": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "captured_at": {"type": "string", "format": "date-time"},
+        "captured_by": {"type": "string"}, "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "source": {
+      "type": "object", "additionalProperties": true,
+      "required": ["source_id", "workspace_id", "title", "source_type", "license", "access_rights", "current_version", "revision", "created_at", "updated_at", "metadata", "versions"],
+      "properties": {
+        "source_id": {"type": "string"}, "workspace_id": {"type": "string"}, "initiative_id": {"type": ["string", "null"]},
+        "title": {"type": "string", "minLength": 1}, "source_type": {"type": "string"}, "license": {"type": "string"}, "access_rights": {"type": "string"},
+        "current_version": {"type": "integer", "minimum": 0}, "revision": {"type": "integer", "minimum": 1},
+        "created_at": {"type": "string", "format": "date-time"}, "updated_at": {"type": "string", "format": "date-time"},
+        "metadata": {"$ref": "#/$defs/metadata"}, "versions": {"type": "array", "items": {"$ref": "#/$defs/sourceVersion"}}
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": true,
+      "required": ["evidence_id", "source_id", "workspace_id", "evidence_type", "captured_at", "captured_by", "content_hash", "revision", "metadata"],
+      "properties": {
+        "evidence_id": {"type": "string"}, "source_id": {"type": "string"}, "workspace_id": {"type": "string"},
+        "evidence_type": {"enum": ["excerpt", "quotation", "dataset_excerpt", "observation_note", "document_note", "table", "figure"]},
+        "captured_at": {"type": "string", "format": "date-time"}, "captured_by": {"type": "string"},
+        "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "revision": {"type": "integer", "minimum": 1}, "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "dataset": {
+      "type": "object", "additionalProperties": true,
+      "required": ["dataset_id", "source_id", "workspace_id", "title", "license", "checksum_algorithm", "checksum_value", "created_at", "updated_at", "metadata"],
+      "properties": {
+        "dataset_id": {"type": "string"}, "source_id": {"type": "string"}, "workspace_id": {"type": "string"}, "title": {"type": "string", "minLength": 1},
+        "license": {"type": "string"}, "checksum_algorithm": {"const": "sha256"}, "checksum_value": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "created_at": {"type": "string", "format": "date-time"}, "updated_at": {"type": "string", "format": "date-time"}, "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "edge": {
+      "type": "object", "additionalProperties": true,
+      "required": ["edge_id", "workspace_id", "subject_type", "subject_id", "predicate", "object_type", "object_id", "occurred_at", "actor", "metadata"],
+      "properties": {
+        "edge_id": {"type": "string"}, "workspace_id": {"type": "string"}, "subject_type": {"type": "string"}, "subject_id": {"type": "string"},
+        "predicate": {"type": "string"}, "object_type": {"type": "string"}, "object_id": {"type": "string"}, "occurred_at": {"type": "string", "format": "date-time"},
+        "actor": {"type": "string"}, "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "claimLink": {
+      "type": "object", "additionalProperties": false,
+      "required": ["claim_id", "evidence_id", "relationship", "strength", "notes", "linked_at", "linked_by"],
+      "properties": {
+        "claim_id": {"type": "string"}, "evidence_id": {"type": "string"},
+        "relationship": {"enum": ["supports", "contradicts", "qualifies", "context"]},
+        "strength": {"enum": ["direct", "indirect", "contextual"]}, "notes": {"type": "string"},
+        "linked_at": {"type": "string", "format": "date-time"}, "linked_by": {"type": "string"}
+      }
+    }
+  },
+  "x-global-impact-catalyst-version": "1.3.0"
+}

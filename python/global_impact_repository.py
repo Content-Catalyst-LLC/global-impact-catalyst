@@ -1,4 +1,4 @@
-"""Persistent repository for Global Impact Catalyst v1.2.0.
+"""Persistent repository for Global Impact Catalyst v1.3.0.
 
 The repository stores canonical contracts as immutable calculation snapshots and
 maintains indexed entity projections for workspace operations. SQLite is the
@@ -17,9 +17,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence
 
-DATABASE_SCHEMA_VERSION = 3
+DATABASE_SCHEMA_VERSION = 4
 SUPPORTED_CONTRACT_VERSIONS = {"1.0.0", "1.0.1", "1.1.0", "1.2.0"}
 ENTITY_TYPES = {"workspace", "initiative", "goal", "indicator", "observation", "target", "source"}
+EVIDENCE_TYPES = {"excerpt", "quotation", "dataset_excerpt", "observation_note", "document_note", "table", "figure"}
+CLAIM_EVIDENCE_RELATIONSHIPS = {"supports", "contradicts", "qualifies", "context"}
+EVIDENCE_STRENGTHS = {"direct", "indirect", "contextual"}
+CHECKSUM_ALGORITHMS = {"sha256"}
 SAVE_STATES = {"draft", "saved"}
 
 
@@ -68,6 +72,18 @@ def canonical_json(data: Any) -> str:
 
 def content_hash(data: Any) -> str:
     return hashlib.sha256(canonical_json(data).encode("utf-8")).hexdigest()
+
+
+def repository_id(kind: str, *parts: Any) -> str:
+    material = "|".join(str(part) for part in parts)
+    return f"gic-{kind}-{hashlib.sha256(material.encode('utf-8')).hexdigest()[:20]}"
+
+
+def checksum_payload(payload: bytes | str, algorithm: str = "sha256") -> str:
+    if algorithm not in CHECKSUM_ALGORITHMS:
+        raise RepositoryError(f"unsupported checksum algorithm: {algorithm}")
+    raw = payload.encode("utf-8") if isinstance(payload, str) else payload
+    return hashlib.sha256(raw).hexdigest()
 
 
 MIGRATIONS: Sequence[tuple[int, str, str]] = (
@@ -183,8 +199,12 @@ MIGRATIONS: Sequence[tuple[int, str, str]] = (
         );
         """,
     ),
+    (
+        4,
+        "sources_provenance_evidence",
+        (Path(__file__).resolve().parents[1] / "migrations/004_sources_provenance_evidence.sql").read_text(encoding="utf-8"),
+    ),
 )
-
 
 class SQLiteImpactRepository:
     """SQLite reference repository with repeatable migrations and JSON projections."""
@@ -531,6 +551,7 @@ class SQLiteImpactRepository:
                     entity_type, projection, workspace_id=workspace_id, initiative_id=initiative_id,
                     parent_id=parent_id, actor=actor,
                 )
+            self._materialize_contract_evidence(contract, actor=actor)
             self.connection.execute("DELETE FROM draft_autosaves WHERE initiative_id=?", (initiative_id,))
             self._audit(action, "contract", record_id, workspace_id=workspace_id, initiative_id=initiative_id, revision=revision, actor=actor, details={"save_state": save_state, "content_hash": digest})
         return self.get_contract(record_id=record_id)
@@ -674,6 +695,277 @@ class SQLiteImpactRepository:
         self.connection.commit()
         return ImportResult(import_id, canonical_contract["record_id"], canonical_contract["facts"]["initiative"]["id"], import_status, original_hash, int(stored["revision"]))
 
+    @staticmethod
+    def _decode_row(row: sqlite3.Row | Dict[str, Any], *json_fields: str) -> Dict[str, Any]:
+        item = dict(row)
+        for field in json_fields:
+            if field in item:
+                item[field.removesuffix("_json")] = json.loads(item.pop(field) or "{}")
+        return item
+
+    def register_source(
+        self,
+        source: Dict[str, Any],
+        *,
+        workspace_id: str,
+        initiative_id: Optional[str] = None,
+        expected_revision: Optional[int] = None,
+        actor: str = "system",
+    ) -> Dict[str, Any]:
+        source_id = str(source.get("source_id") or source.get("id") or repository_id("source", workspace_id, initiative_id or "", source.get("title", ""), source.get("locator", "")))
+        title = str(source.get("title") or "").strip()
+        if not title:
+            raise RepositoryError("source title is required")
+        now = utc_now()
+        metadata = dict(source.get("metadata") or {})
+        values = {
+            "source_id": source_id, "workspace_id": workspace_id, "initiative_id": initiative_id,
+            "title": title, "source_type": str(source.get("source_type") or "document"),
+            "locator": str(source.get("locator") or ""), "creator": str(source.get("creator") or ""),
+            "publisher": str(source.get("publisher") or ""), "published_at": source.get("published_at"),
+            "retrieved_at": source.get("retrieved_at"), "url": str(source.get("url") or ""),
+            "doi": str(source.get("doi") or ""), "license": str(source.get("license") or "not_recorded"),
+            "access_rights": str(source.get("access_rights") or "not_recorded"),
+            "lifecycle_status": str(source.get("lifecycle_status") or "active"), "metadata_json": canonical_json(metadata),
+        }
+        with self.transaction():
+            current = self.connection.execute("SELECT * FROM source_records WHERE source_id=?", (source_id,)).fetchone()
+            if current:
+                actual = int(current["revision"])
+                if expected_revision is not None and expected_revision != actual:
+                    raise OptimisticConcurrencyError("source", source_id, expected_revision, actual)
+                revision = actual + 1
+                self.connection.execute(
+                    """UPDATE source_records SET workspace_id=?,initiative_id=?,title=?,source_type=?,locator=?,creator=?,publisher=?,published_at=?,retrieved_at=?,url=?,doi=?,license=?,access_rights=?,lifecycle_status=?,revision=?,updated_at=?,metadata_json=? WHERE source_id=?""",
+                    (values["workspace_id"], values["initiative_id"], values["title"], values["source_type"], values["locator"], values["creator"], values["publisher"], values["published_at"], values["retrieved_at"], values["url"], values["doi"], values["license"], values["access_rights"], values["lifecycle_status"], revision, now, values["metadata_json"], source_id),
+                )
+                action = "update_source"
+            else:
+                if expected_revision not in (None, 0):
+                    raise OptimisticConcurrencyError("source", source_id, int(expected_revision), 0)
+                revision = 1
+                self.connection.execute(
+                    """INSERT INTO source_records(source_id,workspace_id,initiative_id,title,source_type,locator,creator,publisher,published_at,retrieved_at,url,doi,license,access_rights,lifecycle_status,current_version,revision,created_at,updated_at,metadata_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    (source_id, values["workspace_id"], values["initiative_id"], values["title"], values["source_type"], values["locator"], values["creator"], values["publisher"], values["published_at"], values["retrieved_at"], values["url"], values["doi"], values["license"], values["access_rights"], values["lifecycle_status"], 0, revision, str(source.get("created_at") or now), now, values["metadata_json"]),
+                )
+                action = "create_source"
+            self._audit(action, "source", source_id, workspace_id=workspace_id, initiative_id=initiative_id, revision=revision, actor=actor)
+        return self.get_source(source_id)
+
+    def get_source(self, source_id: str) -> Dict[str, Any]:
+        row = self.connection.execute("SELECT * FROM source_records WHERE source_id=?", (source_id,)).fetchone()
+        if not row:
+            raise NotFoundError(f"source not found: {source_id}")
+        item = self._decode_row(row, "metadata_json")
+        item["versions"] = [self._decode_row(version, "metadata_json") for version in self.connection.execute("SELECT * FROM source_versions WHERE source_id=? ORDER BY version_number", (source_id,)).fetchall()]
+        return item
+
+    def list_sources(self, *, workspace_id: Optional[str] = None, initiative_id: Optional[str] = None, search: str = "", limit: int = 200) -> List[Dict[str, Any]]:
+        clauses = ["1=1"]
+        params: List[Any] = []
+        if workspace_id:
+            clauses.append("workspace_id=?"); params.append(workspace_id)
+        if initiative_id:
+            clauses.append("initiative_id=?"); params.append(initiative_id)
+        if search:
+            clauses.append("(LOWER(title) LIKE ? OR LOWER(locator) LIKE ? OR LOWER(doi) LIKE ?)")
+            like = f"%{search.casefold()}%"; params.extend([like, like, like])
+        params.append(max(1, min(limit, 500)))
+        return [self._decode_row(row, "metadata_json") for row in self.connection.execute(f"SELECT * FROM source_records WHERE {' AND '.join(clauses)} ORDER BY updated_at DESC LIMIT ?", params).fetchall()]
+
+    def add_source_version(
+        self,
+        source_id: str,
+        *,
+        version_label: str = "",
+        payload: bytes | str | None = None,
+        checksum_algorithm: str = "sha256",
+        checksum_value: str = "",
+        mime_type: str = "application/octet-stream",
+        size_bytes: Optional[int] = None,
+        captured_by: str = "system",
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        source = self.get_source(source_id)
+        if checksum_algorithm not in CHECKSUM_ALGORITHMS:
+            raise RepositoryError(f"unsupported checksum algorithm: {checksum_algorithm}")
+        calculated = checksum_payload(payload, checksum_algorithm) if payload is not None else ""
+        if checksum_value and calculated and checksum_value.lower() != calculated:
+            raise RepositoryError("provided checksum does not match source payload")
+        checksum = (checksum_value or calculated or content_hash({"source_id": source_id, "version_label": version_label, "metadata": metadata or {}})).lower()
+        existing = self.connection.execute("SELECT * FROM source_versions WHERE source_id=? AND checksum_algorithm=? AND checksum_value=?", (source_id, checksum_algorithm, checksum)).fetchone()
+        if existing:
+            return self._decode_row(existing, "metadata_json")
+        with self.transaction():
+            number = int(self.connection.execute("SELECT COALESCE(MAX(version_number),0)+1 AS number FROM source_versions WHERE source_id=?", (source_id,)).fetchone()["number"])
+            source_version_id = repository_id("source-version", source_id, number, checksum)
+            self.connection.execute(
+                """INSERT INTO source_versions(source_version_id,source_id,version_number,version_label,content_hash,checksum_algorithm,checksum_value,mime_type,size_bytes,captured_at,captured_by,metadata_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (source_version_id, source_id, number, version_label or str(number), calculated or checksum, checksum_algorithm, checksum, mime_type, size_bytes if size_bytes is not None else (len(payload) if isinstance(payload, bytes) else len(payload.encode("utf-8")) if isinstance(payload, str) else None), utc_now(), captured_by, canonical_json(metadata or {})),
+            )
+            self.connection.execute("UPDATE source_records SET current_version=?,updated_at=? WHERE source_id=?", (number, utc_now(), source_id))
+            self._audit("add_source_version", "source", source_id, workspace_id=source["workspace_id"], initiative_id=source["initiative_id"], revision=source["revision"], actor=captured_by, details={"source_version_id": source_version_id, "checksum": checksum})
+        return self._decode_row(self.connection.execute("SELECT * FROM source_versions WHERE source_version_id=?", (source_version_id,)).fetchone(), "metadata_json")
+
+    def capture_evidence(
+        self,
+        source_id: str,
+        *,
+        evidence_type: str = "excerpt",
+        title: str = "",
+        locator: str = "",
+        exact_quote: str = "",
+        paraphrase: str = "",
+        notes: str = "",
+        source_version_id: Optional[str] = None,
+        page_start: Optional[int] = None,
+        page_end: Optional[int] = None,
+        character_start: Optional[int] = None,
+        character_end: Optional[int] = None,
+        captured_by: str = "system",
+        metadata: Optional[Dict[str, Any]] = None,
+        evidence_id: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        if evidence_type not in EVIDENCE_TYPES:
+            raise RepositoryError(f"unsupported evidence type: {evidence_type}")
+        if not any(str(value).strip() for value in (exact_quote, paraphrase, notes)):
+            raise RepositoryError("evidence requires an exact quote, paraphrase, or note")
+        source = self.get_source(source_id)
+        if source_version_id is None and source.get("versions"):
+            source_version_id = source["versions"][-1]["source_version_id"]
+        payload = {"source_id": source_id, "source_version_id": source_version_id, "evidence_type": evidence_type, "locator": locator, "exact_quote": exact_quote, "paraphrase": paraphrase, "notes": notes, "page_start": page_start, "page_end": page_end, "character_start": character_start, "character_end": character_end}
+        digest = content_hash(payload)
+        evidence_id = evidence_id or repository_id("evidence", source_id, digest)
+        now = utc_now()
+        with self.transaction():
+            existing = self.connection.execute("SELECT revision FROM evidence_items WHERE evidence_id=?", (evidence_id,)).fetchone()
+            revision = int(existing["revision"]) + 1 if existing else 1
+            self.connection.execute(
+                """INSERT INTO evidence_items(evidence_id,source_id,source_version_id,workspace_id,initiative_id,evidence_type,title,locator,exact_quote,paraphrase,notes,page_start,page_end,character_start,character_end,captured_at,captured_by,content_hash,archived_at,revision,metadata_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(evidence_id) DO UPDATE SET source_version_id=excluded.source_version_id,evidence_type=excluded.evidence_type,title=excluded.title,locator=excluded.locator,exact_quote=excluded.exact_quote,paraphrase=excluded.paraphrase,notes=excluded.notes,page_start=excluded.page_start,page_end=excluded.page_end,character_start=excluded.character_start,character_end=excluded.character_end,captured_at=excluded.captured_at,captured_by=excluded.captured_by,content_hash=excluded.content_hash,revision=excluded.revision,metadata_json=excluded.metadata_json""",
+                (evidence_id, source_id, source_version_id, source["workspace_id"], source["initiative_id"], evidence_type, title, locator, exact_quote, paraphrase, notes, page_start, page_end, character_start, character_end, now, captured_by, digest, None, revision, canonical_json(metadata or {})),
+            )
+            self._audit("capture_evidence", "evidence", evidence_id, workspace_id=source["workspace_id"], initiative_id=source["initiative_id"], revision=revision, actor=captured_by, details={"source_id": source_id, "source_version_id": source_version_id})
+        return self.get_evidence(evidence_id)
+
+    def get_evidence(self, evidence_id: str) -> Dict[str, Any]:
+        row = self.connection.execute("SELECT * FROM evidence_items WHERE evidence_id=?", (evidence_id,)).fetchone()
+        if not row:
+            raise NotFoundError(f"evidence not found: {evidence_id}")
+        return self._decode_row(row, "metadata_json")
+
+    def register_dataset(self, source_id: str, dataset: Dict[str, Any], *, actor: str = "system") -> Dict[str, Any]:
+        source = self.get_source(source_id)
+        title = str(dataset.get("title") or "").strip()
+        if not title:
+            raise RepositoryError("dataset title is required")
+        checksum_algorithm = str(dataset.get("checksum_algorithm") or "sha256")
+        if checksum_algorithm not in CHECKSUM_ALGORITHMS:
+            raise RepositoryError(f"unsupported checksum algorithm: {checksum_algorithm}")
+        checksum = str(dataset.get("checksum_value") or content_hash(dataset)).lower()
+        dataset_id = str(dataset.get("dataset_id") or repository_id("dataset", source_id, title, dataset.get("version", ""), checksum))
+        now = utc_now()
+        values = (dataset_id, source_id, dataset.get("source_version_id"), source["workspace_id"], source["initiative_id"], title, str(dataset.get("version") or ""), str(dataset.get("description") or ""), str(dataset.get("landing_page") or ""), str(dataset.get("distribution_url") or ""), str(dataset.get("license") or source.get("license") or "not_recorded"), checksum_algorithm, checksum, str(dataset.get("schema_fingerprint") or ""), str(dataset.get("temporal_coverage") or ""), str(dataset.get("spatial_coverage") or ""), dataset.get("row_count"), dataset.get("column_count"), now, now, canonical_json(dataset.get("metadata") or {}))
+        with self.transaction():
+            self.connection.execute("""INSERT INTO datasets(dataset_id,source_id,source_version_id,workspace_id,initiative_id,title,version,description,landing_page,distribution_url,license,checksum_algorithm,checksum_value,schema_fingerprint,temporal_coverage,spatial_coverage,row_count,column_count,created_at,updated_at,metadata_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(dataset_id) DO UPDATE SET source_version_id=excluded.source_version_id,title=excluded.title,version=excluded.version,description=excluded.description,landing_page=excluded.landing_page,distribution_url=excluded.distribution_url,license=excluded.license,checksum_algorithm=excluded.checksum_algorithm,checksum_value=excluded.checksum_value,schema_fingerprint=excluded.schema_fingerprint,temporal_coverage=excluded.temporal_coverage,spatial_coverage=excluded.spatial_coverage,row_count=excluded.row_count,column_count=excluded.column_count,updated_at=excluded.updated_at,metadata_json=excluded.metadata_json""", values)
+            self._audit("register_dataset", "dataset", dataset_id, workspace_id=source["workspace_id"], initiative_id=source["initiative_id"], actor=actor, details={"source_id": source_id, "checksum": checksum})
+        return self._decode_row(self.connection.execute("SELECT * FROM datasets WHERE dataset_id=?", (dataset_id,)).fetchone(), "metadata_json")
+
+    def add_provenance_edge(self, *, workspace_id: str, initiative_id: Optional[str], subject_type: str, subject_id: str, predicate: str, object_type: str, object_id: str, process_name: str = "", method_id: Optional[str] = None, method_version: str = "", occurred_at: Optional[str] = None, actor: str = "system", metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        edge_id = repository_id("edge", subject_type, subject_id, predicate, object_type, object_id, method_id or "")
+        self.connection.execute("""INSERT INTO provenance_edges(edge_id,workspace_id,initiative_id,subject_type,subject_id,predicate,object_type,object_id,process_name,method_id,method_version,occurred_at,actor,metadata_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(edge_id) DO UPDATE SET process_name=excluded.process_name,method_version=excluded.method_version,occurred_at=excluded.occurred_at,actor=excluded.actor,metadata_json=excluded.metadata_json""", (edge_id, workspace_id, initiative_id, subject_type, subject_id, predicate, object_type, object_id, process_name, method_id, method_version, occurred_at or utc_now(), actor, canonical_json(metadata or {})))
+        return self._decode_row(self.connection.execute("SELECT * FROM provenance_edges WHERE edge_id=?", (edge_id,)).fetchone(), "metadata_json")
+
+    def link_claim_evidence(self, claim_id: str, evidence_id: str, *, relationship: str = "supports", strength: str = "direct", notes: str = "", linked_by: str = "system") -> Dict[str, Any]:
+        if relationship not in CLAIM_EVIDENCE_RELATIONSHIPS:
+            raise RepositoryError(f"unsupported claim-evidence relationship: {relationship}")
+        if strength not in EVIDENCE_STRENGTHS:
+            raise RepositoryError(f"unsupported evidence strength: {strength}")
+        evidence = self.get_evidence(evidence_id)
+        with self.transaction():
+            self.connection.execute("""INSERT INTO claim_evidence_links(claim_id,evidence_id,relationship,strength,notes,linked_at,linked_by) VALUES (?,?,?,?,?,?,?) ON CONFLICT(claim_id,evidence_id,relationship) DO UPDATE SET strength=excluded.strength,notes=excluded.notes,linked_at=excluded.linked_at,linked_by=excluded.linked_by""", (claim_id, evidence_id, relationship, strength, notes, utc_now(), linked_by))
+            self._audit("link_claim_evidence", "claim", claim_id, workspace_id=evidence["workspace_id"], initiative_id=evidence["initiative_id"], actor=linked_by, details={"evidence_id": evidence_id, "relationship": relationship, "strength": strength})
+        return dict(self.connection.execute("SELECT * FROM claim_evidence_links WHERE claim_id=? AND evidence_id=? AND relationship=?", (claim_id, evidence_id, relationship)).fetchone())
+
+    def _materialize_contract_evidence(self, contract: Dict[str, Any], *, actor: str) -> None:
+        facts = contract["facts"]
+        workspace_id = facts["workspace"]["id"]
+        initiative_id = facts["initiative"]["id"]
+        now = utc_now()
+        methods = {item["id"]: item for item in facts.get("methods", [])}
+        sources = {item["id"]: item for item in facts.get("sources", [])}
+        for source_id, source in sources.items():
+            existing = self.connection.execute("SELECT * FROM source_records WHERE source_id=?", (source_id,)).fetchone()
+            metadata = canonical_json({"canonical_entity": source})
+            if not existing:
+                self.connection.execute("""INSERT INTO source_records(source_id,workspace_id,initiative_id,title,source_type,locator,creator,publisher,published_at,retrieved_at,url,doi,license,access_rights,lifecycle_status,current_version,revision,created_at,updated_at,metadata_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", (source_id, workspace_id, initiative_id, str(source.get("title") or "Untitled source"), str(source.get("source_type") or "entered_source"), str(source.get("locator") or ""), "", "", None, None, "", "", "not_recorded", "not_recorded", "active", 0, 1, str(source.get("created_at") or now), now, metadata))
+            source_digest = content_hash(source)
+            version = self.connection.execute("SELECT * FROM source_versions WHERE source_id=? AND checksum_value=?", (source_id, source_digest)).fetchone()
+            if not version:
+                number = int(self.connection.execute("SELECT COALESCE(MAX(version_number),0)+1 AS number FROM source_versions WHERE source_id=?", (source_id,)).fetchone()["number"])
+                version_id = repository_id("source-version", source_id, number, source_digest)
+                self.connection.execute("""INSERT INTO source_versions(source_version_id,source_id,version_number,version_label,content_hash,checksum_algorithm,checksum_value,mime_type,size_bytes,captured_at,captured_by,metadata_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""", (version_id, source_id, number, f"contract-{contract.get('contract_version','')}", source_digest, "sha256", source_digest, "application/vnd.global-impact-catalyst.source+json", len(canonical_json(source).encode("utf-8")), now, actor, canonical_json({"record_id": contract["record_id"]})))
+                self.connection.execute("UPDATE source_records SET current_version=?,updated_at=? WHERE source_id=?", (number, now, source_id))
+        measurement = facts.get("measurement") or {}
+        measurement_records = [measurement.get("baseline"), *(measurement.get("observations") or [])]
+        for item in [record for record in measurement_records if record]:
+            for source_id in item.get("source_ids", []):
+                if source_id in sources:
+                    self.add_provenance_edge(workspace_id=workspace_id, initiative_id=initiative_id, subject_type="source", subject_id=source_id, predicate="supports", object_type=item["entity_type"], object_id=item["id"], process_name="canonical contract materialization", method_id=item.get("method_id"), method_version=str(methods.get(item.get("method_id"), {}).get("version") or ""), occurred_at=str(item.get("updated_at") or now), actor=actor)
+            if item.get("method_id"):
+                method = methods.get(item["method_id"], {})
+                self.add_provenance_edge(workspace_id=workspace_id, initiative_id=initiative_id, subject_type="method", subject_id=item["method_id"], predicate="produced", object_type=item["entity_type"], object_id=item["id"], process_name=str(method.get("name") or "measurement method"), method_id=item["method_id"], method_version=str(method.get("version") or ""), occurred_at=str(item.get("updated_at") or now), actor=actor)
+        for claim in contract.get("derived", {}).get("claims", []):
+            for reference in claim.get("evidence_refs", []):
+                ref_type = "entity"
+                for candidate in ("source", "method", "baseline", "observation", "target"):
+                    if reference.startswith(f"gic-{candidate}-"):
+                        ref_type = candidate; break
+                self.add_provenance_edge(workspace_id=workspace_id, initiative_id=initiative_id, subject_type=ref_type, subject_id=reference, predicate="informs_claim", object_type="claim", object_id=claim["id"], process_name="claim evidence declaration", occurred_at=str(claim.get("updated_at") or now), actor=actor)
+
+    def evidence_chain(self, initiative_id: str) -> Dict[str, Any]:
+        contract = self.get_contract(initiative_id=initiative_id)
+        workspace_id = contract["workspace_id"]
+        sources = [self.get_source(row["source_id"]) for row in self.connection.execute("SELECT source_id FROM source_records WHERE initiative_id=? ORDER BY title", (initiative_id,)).fetchall()]
+        evidence = [self._decode_row(row, "metadata_json") for row in self.connection.execute("SELECT * FROM evidence_items WHERE initiative_id=? ORDER BY captured_at", (initiative_id,)).fetchall()]
+        datasets = [self._decode_row(row, "metadata_json") for row in self.connection.execute("SELECT * FROM datasets WHERE initiative_id=? ORDER BY title", (initiative_id,)).fetchall()]
+        edges = [self._decode_row(row, "metadata_json") for row in self.connection.execute("SELECT * FROM provenance_edges WHERE initiative_id=? ORDER BY occurred_at,edge_id", (initiative_id,)).fetchall()]
+        evidence_ids = {item["evidence_id"] for item in evidence}
+        links = [dict(row) for row in self.connection.execute("SELECT l.* FROM claim_evidence_links l JOIN evidence_items e ON e.evidence_id=l.evidence_id WHERE e.initiative_id=? ORDER BY l.linked_at", (initiative_id,)).fetchall()]
+        claim_ids = {claim["id"] for claim in contract["contract"].get("derived", {}).get("claims", [])}
+        missing_checksums = [source["source_id"] for source in sources if not source.get("versions")]
+        orphan_links = [link for link in links if link["evidence_id"] not in evidence_ids or link["claim_id"] not in claim_ids]
+        contradictions = [link for link in links if link["relationship"] == "contradicts"]
+        return {"chain_type": "global_impact_evidence_chain", "chain_version": "1.3.0", "workspace_id": workspace_id, "initiative_id": initiative_id, "generated_at": utc_now(), "sources": sources, "evidence_items": evidence, "datasets": datasets, "provenance_edges": edges, "claim_evidence_links": links, "integrity": {"valid": not missing_checksums and not orphan_links, "source_count": len(sources), "version_count": sum(len(source.get("versions", [])) for source in sources), "evidence_count": len(evidence), "dataset_count": len(datasets), "edge_count": len(edges), "claim_link_count": len(links), "missing_checksum_source_ids": missing_checksums, "orphan_claim_evidence_links": orphan_links, "contradicting_link_count": len(contradictions)}}
+
+    def export_evidence_repository(self, workspace_id: str) -> Dict[str, Any]:
+        def rows(table: str, where: str = "workspace_id=?") -> List[Dict[str, Any]]:
+            return [self._decode_row(row, "metadata_json") for row in self.connection.execute(f"SELECT * FROM {table} WHERE {where} ORDER BY 1", (workspace_id,)).fetchall()]
+        sources = rows("source_records")
+        source_ids = [source["source_id"] for source in sources]
+        versions: List[Dict[str, Any]] = []
+        links: List[Dict[str, Any]] = []
+        if source_ids:
+            placeholders = ",".join("?" for _ in source_ids)
+            versions = [self._decode_row(row, "metadata_json") for row in self.connection.execute(f"SELECT * FROM source_versions WHERE source_id IN ({placeholders}) ORDER BY source_id,version_number", source_ids).fetchall()]
+            links = [dict(row) for row in self.connection.execute(f"SELECT l.* FROM claim_evidence_links l JOIN evidence_items e ON e.evidence_id=l.evidence_id WHERE e.workspace_id=? ORDER BY l.claim_id,l.evidence_id", (workspace_id,)).fetchall()]
+        return {"repository_type": "global_impact_evidence_repository", "repository_version": "1.3.0", "workspace_id": workspace_id, "sources": sources, "source_versions": versions, "evidence_items": rows("evidence_items"), "datasets": rows("datasets"), "provenance_edges": rows("provenance_edges"), "claim_evidence_links": links}
+
+    def _restore_evidence_repository(self, repository: Dict[str, Any]) -> None:
+        if not repository:
+            return
+        for source in repository.get("sources", []):
+            values = dict(source); metadata = values.pop("metadata", {})
+            columns = ["source_id","workspace_id","initiative_id","title","source_type","locator","creator","publisher","published_at","retrieved_at","url","doi","license","access_rights","lifecycle_status","current_version","revision","created_at","updated_at"]
+            self.connection.execute(f"INSERT OR REPLACE INTO source_records({','.join(columns)},metadata_json) VALUES ({','.join('?' for _ in range(len(columns)+1))})", [values.get(column) for column in columns] + [canonical_json(metadata)])
+        for table, key in (("source_versions", "source_versions"), ("evidence_items", "evidence_items"), ("datasets", "datasets"), ("provenance_edges", "provenance_edges")):
+            for item in repository.get(key, []):
+                values = dict(item); metadata = values.pop("metadata", {})
+                columns = list(values)
+                self.connection.execute(f"INSERT OR REPLACE INTO {table}({','.join(columns)},metadata_json) VALUES ({','.join('?' for _ in range(len(columns)+1))})", [values[column] for column in columns] + [canonical_json(metadata)])
+        for link in repository.get("claim_evidence_links", []):
+            columns = list(link)
+            self.connection.execute(f"INSERT OR REPLACE INTO claim_evidence_links({','.join(columns)}) VALUES ({','.join('?' for _ in columns)})", [link[column] for column in columns])
+
     def audit_records(
         self, *, workspace_id: Optional[str] = None, initiative_id: Optional[str] = None, limit: int = 200
     ) -> List[Dict[str, Any]]:
@@ -709,12 +1001,13 @@ class SQLiteImpactRepository:
         portfolios = self.list_portfolios(workspace_id, include_archived=True)
         return {
             "bundle_type": "global_impact_workspace_bundle",
-            "bundle_version": "1.2.0",
+            "bundle_version": "1.3.0",
             "database_schema_version": self.schema_version,
             "exported_at": utc_now(),
             "workspace": workspace,
             "contracts": contracts,
             "portfolios": portfolios,
+            "evidence_repository": self.export_evidence_repository(workspace_id),
             "audit": self.audit_records(workspace_id=workspace_id, limit=1000),
         }
 
@@ -742,6 +1035,7 @@ class SQLiteImpactRepository:
                 self.create_portfolio(portfolio["portfolio_id"], workspace_id, portfolio["name"], portfolio.get("description", ""), actor=actor)
             for initiative_id in portfolio.get("initiative_ids", []):
                 self.add_to_portfolio(portfolio["portfolio_id"], initiative_id, actor=actor)
+        self._restore_evidence_repository(bundle.get("evidence_repository") or {})
         restore_id = f"gic-restore-{digest[:20]}"
         summary = {"workspace_id": workspace_id, "contracts_imported": imported, "contracts_unchanged": unchanged}
         self.connection.execute(
@@ -775,4 +1069,10 @@ class SQLiteImpactRepository:
             "imports": count("import_records"),
             "autosaves": count("draft_autosaves"),
             "audit_records": count("audit_log"),
+            "sources": count("source_records"),
+            "source_versions": count("source_versions"),
+            "evidence_items": count("evidence_items"),
+            "datasets": count("datasets"),
+            "provenance_edges": count("provenance_edges"),
+            "claim_evidence_links": count("claim_evidence_links"),
         }

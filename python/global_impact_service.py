@@ -1,4 +1,4 @@
-"""Application service layer for Global Impact Catalyst v1.2.0."""
+"""Application service layer for Global Impact Catalyst v1.3.0."""
 from __future__ import annotations
 
 import copy
@@ -20,7 +20,7 @@ from python.global_impact_repository import (
     utc_now,
 )
 
-SERVICE_VERSION = "1.2.0"
+SERVICE_VERSION = "1.3.0"
 
 
 def compact_input_from_contract(contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -175,6 +175,30 @@ class ImpactApplicationService:
             "initiative", workspace_id=workspace_id, search=search,
             lifecycle_status=lifecycle_status, include_archived=include_archived,
         )
+
+
+    def register_source(self, source: Dict[str, Any], *, workspace_id: str, initiative_id: Optional[str] = None, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_source(source, workspace_id=workspace_id, initiative_id=initiative_id, expected_revision=expected_revision, actor=actor)
+
+    def add_source_version(self, source_id: str, **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.add_source_version(source_id, **kwargs)
+
+    def capture_evidence(self, source_id: str, **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.capture_evidence(source_id, **kwargs)
+
+    def register_dataset(self, source_id: str, dataset: Dict[str, Any], *, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_dataset(source_id, dataset, actor=actor)
+
+    def link_claim_evidence(self, claim_id: str, evidence_id: str, **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.link_claim_evidence(claim_id, evidence_id, **kwargs)
+
+    def evidence_chain(self, initiative_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
+        chain = self.repository.evidence_chain(initiative_id)
+        if destination:
+            path = Path(destination)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(chain, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return chain
 
     def export_workspace(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
         bundle = self.repository.export_workspace_bundle(workspace_id)

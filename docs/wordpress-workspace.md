@@ -27,3 +27,7 @@ The demo remains a stateless public contract builder. The workspace requires a s
 Activation creates prefixed contract, autosave, and audit tables. REST routes live under `global-impact-catalyst/v1`. Requests require WordPress REST nonces and editing capability. The plugin returns HTTP 409 when an expected revision is stale.
 
 The browser continues to use the exact v1.1.0 canonical calculation and validation engine. v1.2.0 adds persistence around that engine rather than changing its mathematical output.
+
+## Evidence ledger
+
+Use `[global_impact_catalyst_evidence_ledger]` for the authenticated v1.3.0 source and evidence interface. It shares the same REST namespace and capability boundary as the persistent workspace.

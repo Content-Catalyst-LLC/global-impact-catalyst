@@ -7,14 +7,18 @@ ROOT=Path(__file__).resolve().parents[1]
 def load(name): return json.loads((ROOT/'schemas'/name).read_text())
 def validator(name): return Draft202012Validator(load(name),format_checker=FormatChecker())
 
-def test_canonical_schemas_remain_v110_and_bundle_is_v120():
+def test_canonical_schemas_remain_v110_and_repository_schemas_are_v130():
     for name in ['global_impact_input.schema.json','global_impact_contract.schema.json','global_impact_record.schema.json','global_impact_validation_result.schema.json']:
         schema=load(name)
         assert schema['x-global-impact-catalyst-version']=='1.1.0'
         assert '/1.1.0/' in schema['$id']
     bundle=load('global_impact_workspace_bundle.schema.json')
-    assert bundle['x-global-impact-catalyst-version']=='1.2.0'
-    assert '/1.2.0/' in bundle['$id']
+    assert bundle['x-global-impact-catalyst-version']=='1.3.0'
+    assert '/1.3.0/' in bundle['$id']
+    for name in ['global_impact_evidence_chain.schema.json','global_impact_evidence_repository.schema.json']:
+        schema=load(name)
+        assert schema['x-global-impact-catalyst-version']=='1.3.0'
+        assert '/1.3.0/' in schema['$id']
 
 def test_all_canonical_fixture_outputs_validate():
     check=validator('global_impact_contract.schema.json')

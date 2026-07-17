@@ -35,4 +35,13 @@ foreach (array('data-gic-workspace','data-gic-workspace-list','data-gic-workspac
     if (strpos($workspace, $needle) === false) { fwrite(STDERR, "Workspace control missing: {$needle}\n"); exit(1); }
 }
 if (substr_count($workspace, 'data-gic-demo') !== 1) { fwrite(STDERR, "Workspace must preserve one canonical editor.\n"); exit(1); }
-echo "WordPress v1.2.0 workspace and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";
+$evidence = gic_evidence_ledger_shortcode();
+foreach (array('data-gic-evidence-ledger','data-gic-source-form','data-gic-evidence-form','data-gic-dataset-form','data-gic-claim-link-form','data-gic-evidence-load') as $needle) {
+    if (strpos($evidence, $needle) === false) { fwrite(STDERR, "Evidence ledger control missing: {$needle}\n"); exit(1); }
+}
+preg_match_all('/\sid="([^"]+)"/', $evidence, $evidence_ids);
+preg_match_all('/\sfor="([^"]+)"/', $evidence, $evidence_labels);
+foreach ($evidence_labels[1] as $target) {
+    if (!in_array($target, $evidence_ids[1], true)) { fwrite(STDERR, "Evidence label target is missing: {$target}\n"); exit(1); }
+}
+echo "WordPress v1.3.0 workspace, evidence ledger, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";

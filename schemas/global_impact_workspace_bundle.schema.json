@@ -1,19 +1,141 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.2.0/global_impact_workspace_bundle.schema.json",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.3.0/global_impact_workspace_bundle.schema.json",
   "title": "Global Impact Catalyst Workspace Bundle",
   "type": "object",
   "additionalProperties": false,
-  "required": ["bundle_type", "bundle_version", "database_schema_version", "exported_at", "workspace", "contracts", "portfolios", "audit"],
+  "required": [
+    "bundle_type",
+    "bundle_version",
+    "database_schema_version",
+    "exported_at",
+    "workspace",
+    "contracts",
+    "portfolios",
+    "evidence_repository",
+    "audit"
+  ],
   "properties": {
-    "bundle_type": {"const": "global_impact_workspace_bundle"},
-    "bundle_version": {"const": "1.2.0"},
-    "database_schema_version": {"type": "integer", "minimum": 1},
-    "exported_at": {"type": "string", "format": "date-time"},
-    "workspace": {"type": "object", "required": ["entity_type", "entity_id", "document"], "additionalProperties": true},
-    "contracts": {"type": "array", "items": {"type": "object", "required": ["record_id", "workspace_id", "initiative_id", "revision", "content_hash", "contract"], "additionalProperties": true}},
-    "portfolios": {"type": "array", "items": {"type": "object", "required": ["portfolio_id", "workspace_id", "name", "initiative_ids"], "additionalProperties": true}},
-    "audit": {"type": "array", "items": {"type": "object"}}
+    "bundle_type": {
+      "const": "global_impact_workspace_bundle"
+    },
+    "bundle_version": {
+      "const": "1.3.0"
+    },
+    "database_schema_version": {
+      "type": "integer",
+      "minimum": 4
+    },
+    "exported_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "workspace": {
+      "type": "object",
+      "required": [
+        "entity_type",
+        "entity_id",
+        "document"
+      ],
+      "additionalProperties": true
+    },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "workspace_id",
+          "initiative_id",
+          "revision",
+          "content_hash",
+          "contract"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "portfolios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "workspace_id",
+          "name",
+          "initiative_ids"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "evidence_repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_type",
+        "repository_version",
+        "workspace_id",
+        "sources",
+        "source_versions",
+        "evidence_items",
+        "datasets",
+        "provenance_edges",
+        "claim_evidence_links"
+      ],
+      "properties": {
+        "repository_type": {
+          "const": "global_impact_evidence_repository"
+        },
+        "repository_version": {
+          "const": "1.3.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "source_versions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "evidence_items": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "datasets": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "provenance_edges": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "claim_evidence_links": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "audit": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
   },
-  "x-global-impact-catalyst-version": "1.2.0"
+  "x-global-impact-catalyst-version": "1.3.0"
 }

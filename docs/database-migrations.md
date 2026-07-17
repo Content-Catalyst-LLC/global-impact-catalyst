@@ -19,3 +19,7 @@ The executable SQL is embedded in `python/global_impact_repository.py` so the st
 ## Verification
 
 `tests/test_repository.py` creates databases at versions 0, 1, 2, and 3, reruns migrations to prove idempotence, and upgrades each supported prior state to the current schema.
+
+## Migration 004 — Sources, provenance, and evidence
+
+Adds source records, immutable source versions, evidence items, datasets, provenance edges, and claim-evidence links. Existing v1.2.0 databases migrate in place without changing canonical contract snapshots.

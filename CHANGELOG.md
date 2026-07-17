@@ -2,6 +2,30 @@
 
 All notable changes to Global Impact Catalyst are documented in this file.
 
+## [1.3.0] - 2026-07-17
+
+### Added
+
+- Structured source registry with title, type, locator, URL, DOI, license, access-rights, lifecycle, and revision metadata.
+- Immutable source-version ledger with SHA-256 checksums, MIME type, byte size, capture actor, and capture timestamp.
+- Evidence capture for excerpts, quotations, paraphrases, notes, tables, figures, and dataset excerpts.
+- Dataset registry with version, license, checksum, schema fingerprint, spatial and temporal coverage, row count, and column count.
+- Directed provenance graph connecting sources and methods to baselines, observations, targets, and claims.
+- Explicit claim-evidence links for supporting, contradicting, qualifying, and contextual evidence.
+- Integrity summaries that report missing source versions, orphan claim links, and contradiction counts without suppressing adverse evidence.
+- v1.3.0 evidence-chain, evidence-repository, and workspace-bundle JSON Schemas and examples.
+- Workspace export and restore of sources, versions, evidence, datasets, provenance edges, and claim links.
+- Repository CLI commands for source registration, file version capture, evidence capture, dataset registration, claim linking, and evidence-chain export.
+- Authenticated WordPress evidence ledger, evidence REST routes, database tables, responsive UI, and additive shortcode.
+- Fourth repeatable SQLite migration and expanded release, schema, migration, integrity, WordPress, and recovery tests.
+
+### Compatibility
+
+- The canonical contract, input schema, validation schema, Python engine, browser engine, and fifteen cross-runtime fixtures remain v1.1.0.
+- The package, application, repository schema, evidence repository, workspace bundle, WordPress plugin, and evidence ledger are v1.3.0.
+- Existing v1.2.0 databases migrate in place; existing contracts automatically materialize source versions and provenance when saved or imported.
+- Existing `[global_impact_catalyst_demo]` and `[global_impact_catalyst_workspace]` shortcodes remain available. `[global_impact_catalyst_evidence_ledger]` is additive.
+
 ## [1.2.0] - 2026-07-17
 
 ### Added

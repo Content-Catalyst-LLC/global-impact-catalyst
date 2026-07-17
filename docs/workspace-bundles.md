@@ -20,3 +20,7 @@ Restore imports every contract through the same idempotent import path used by t
 ## Database backup
 
 Workspace bundles are application-level portable exports. `SQLiteImpactRepository.backup_database()` creates a transactionally consistent SQLite backup for infrastructure recovery. Both mechanisms are tested.
+
+## v1.3.0 evidence repository
+
+Workspace bundles now require `evidence_repository`, containing source records, source versions, evidence items, datasets, provenance edges, and claim-evidence links. Restore is idempotent and preserves stable identifiers and checksums.
