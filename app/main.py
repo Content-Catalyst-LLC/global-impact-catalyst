@@ -17,4 +17,4 @@ def build_demo_response(payload: dict) -> dict:
 
 
 def healthcheck() -> dict:
-    return {"status": "ok", "module": "global-impact-catalyst"}
+    return {"status": "ok", "module": "global-impact-catalyst", "version": "1.0.1"}

@@ -1,0 +1,81 @@
+{
+  "name": "11-absent-optionals",
+  "generated_at": "2026-07-17T16:00:00+00:00",
+  "input": {
+    "initiative": "Community Energy Retrofit Pilot",
+    "goal": "Reduce household energy burden while improving residential efficiency.",
+    "sdg_theme": "Affordable and clean energy",
+    "indicator": "Average monthly bill reduction",
+    "unit": "USD",
+    "baseline_value": 0,
+    "current_value": 18,
+    "target_value": 30,
+    "baseline_period": "2025 baseline",
+    "current_period": "2026 Q2",
+    "source": "Pilot utility-billing sample and participant survey summary",
+    "method_notes": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills.",
+    "confidence": "medium",
+    "review_status": "needs_review",
+    "beneficiaries": null,
+    "budget_usd": null,
+    "higher_is_better": true
+  },
+  "expected": {
+    "record_type": "global_impact_catalyst_record",
+    "generated_at": "2026-07-17T16:00:00+00:00",
+    "initiative": "Community Energy Retrofit Pilot",
+    "goal": "Reduce household energy burden while improving residential efficiency.",
+    "sdg_theme": "Affordable and clean energy",
+    "indicator": "Average monthly bill reduction",
+    "unit": "USD",
+    "baseline_period": "2025 baseline",
+    "current_period": "2026 Q2",
+    "baseline_value": 0.0,
+    "current_value": 18.0,
+    "target_value": 30.0,
+    "higher_is_better": true,
+    "source": "Pilot utility-billing sample and participant survey summary",
+    "method_notes": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills.",
+    "confidence": "medium",
+    "review_status": "needs_review",
+    "beneficiaries": null,
+    "budget_usd": null,
+    "metrics": {
+      "absolute_change": 18.0,
+      "percent_change_from_baseline": null,
+      "progress_to_target_percent": 60.0,
+      "remaining_gap": 12.0,
+      "status": "draft — partial progress",
+      "cost_per_beneficiary_usd": null,
+      "data_quality_score": 75,
+      "data_quality_components": {
+        "source_documented": 25,
+        "method_documented": 25,
+        "confidence_signal": 15,
+        "review_signal": 10
+      }
+    },
+    "interpretation_notes": [
+      "Average monthly bill reduction changed from 0 USD in 2025 baseline to 18 USD in 2026 Q2.",
+      "Progress should be interpreted against the indicator definition, data source, method notes, confidence level, and review status.",
+      "Estimated progress to target is 60.00%.",
+      "Review status indicates that this output is not final."
+    ],
+    "traceability_path": [
+      "goal",
+      "indicator",
+      "baseline",
+      "current measurement",
+      "target",
+      "source",
+      "method notes",
+      "confidence",
+      "review status"
+    ],
+    "boundaries": [
+      "This record is not an ESG assurance opinion or SDG certification.",
+      "Results depend on data quality, source reliability, indicator definition, and method choices.",
+      "Human review is required before formal reporting or external claims."
+    ]
+  }
+}

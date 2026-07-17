@@ -1,6 +1,6 @@
 {
   "record_type": "global_impact_catalyst_record",
-  "generated_at": "2026-07-01T18:49:33.247030+00:00",
+  "generated_at": "2026-07-17T16:00:00+00:00",
   "initiative": "Community Energy Retrofit Pilot",
   "goal": "Reduce household energy burden while improving residential efficiency.",
   "sdg_theme": "Affordable and clean energy",
@@ -25,11 +25,17 @@
     "remaining_gap": 12.0,
     "status": "draft \u2014 partial progress",
     "cost_per_beneficiary_usd": 297.62,
-    "data_quality_score": 75
+    "data_quality_score": 75,
+    "data_quality_components": {
+      "source_documented": 25,
+      "method_documented": 25,
+      "confidence_signal": 15,
+      "review_signal": 10
+    }
   },
   "interpretation_notes": [
     "Average monthly bill reduction changed from 0 USD in 2025 baseline to 18 USD in 2026 Q2.",
-    "Progress should be interpreted against the indicator definition, data source, method notes, and confidence level.",
+    "Progress should be interpreted against the indicator definition, data source, method notes, confidence level, and review status.",
     "Estimated progress to target is 60.00%.",
     "Review status indicates that this output is not final."
   ],

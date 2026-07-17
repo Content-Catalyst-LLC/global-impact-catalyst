@@ -1,15 +1,19 @@
-# Repository Architecture
+# Repository Architecture — v1.0.1
+
+Global Impact Catalyst keeps the runtime small while enforcing observable parity between Python and browser calculations.
 
 ```text
-app/                         Application-facing wrapper
-python/                      Core impact record generator
-schemas/                     JSON schema
-data/                        Sample input
-examples/                    Example generated outputs
-docs/                        Methodology and governance notes
-wordpress/global-impact-catalyst-demo/  WordPress shortcode plugin
-tests/                       Python tests
-outputs/                     Local generated outputs
+input JSON
+   ├── Python normalization and engine
+   └── JavaScript normalization and engine
+            ↓
+canonical golden fixtures
+            ↓
+versioned output schema
+            ↓
+JSON / Markdown / WordPress presentation
 ```
 
-The core logic is intentionally isolated in `python/global_impact_core.py` so it can be used by scripts, tests, app wrappers, and future UI layers without duplicating calculation logic.
+The two runtime implementations are tested against complete expected outputs. This avoids requiring Python inside WordPress while preventing ungoverned contract drift.
+
+Release integrity is checked by `scripts/check_contracts.py`; browser parity is checked by `scripts/check_browser_parity.js`; the portable suite is `scripts/smoke_test.py`.

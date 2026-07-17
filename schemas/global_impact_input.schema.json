@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/global-impact-catalyst/1.0.1/global-impact-input.schema.json",
+  "title": "Global Impact Catalyst Input",
+  "description": "Canonical v1.0.1 input contract for a single impact record.",
+  "x-global-impact-catalyst-version": "1.0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "initiative",
+    "goal",
+    "sdg_theme",
+    "indicator",
+    "unit",
+    "baseline_value",
+    "current_value",
+    "target_value",
+    "baseline_period",
+    "current_period",
+    "source",
+    "method_notes"
+  ],
+  "properties": {
+    "initiative": {"type": "string", "minLength": 1},
+    "goal": {"type": "string", "minLength": 1},
+    "sdg_theme": {"type": "string", "minLength": 1},
+    "indicator": {"type": "string", "minLength": 1},
+    "unit": {"type": "string", "minLength": 1},
+    "baseline_value": {"type": "number"},
+    "current_value": {"type": "number"},
+    "target_value": {"type": "number"},
+    "baseline_period": {"type": "string", "minLength": 1},
+    "current_period": {"type": "string", "minLength": 1},
+    "source": {"type": "string"},
+    "method_notes": {"type": "string"},
+    "confidence": {"type": "string", "enum": ["low", "medium", "high"], "default": "medium"},
+    "review_status": {"type": "string", "enum": ["draft", "needs_review", "reviewed", "published"], "default": "draft"},
+    "beneficiaries": {"type": ["integer", "null"], "minimum": 0, "default": null},
+    "budget_usd": {"type": ["number", "null"], "minimum": 0, "default": null},
+    "higher_is_better": {"type": "boolean", "default": true}
+  }
+}

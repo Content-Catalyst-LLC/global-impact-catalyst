@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Global Impact Catalyst Demo
  * Description: Browser-based Global Impact Catalyst demo for traceable impact measurement records. Shortcode: [global_impact_catalyst_demo]
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('GIC_DEMO_VERSION', '1.0.0');
+define('GIC_DEMO_VERSION', '1.0.1');
 define('GIC_DEMO_URL', plugin_dir_url(__FILE__));
 define('GIC_DEMO_PATH', plugin_dir_path(__FILE__));
 
@@ -34,6 +34,10 @@ function gic_demo_register_assets() {
 add_action('wp_enqueue_scripts', 'gic_demo_register_assets');
 
 function gic_demo_shortcode($atts = array()) {
+    static $instance = 0;
+    $instance++;
+    $id_prefix = 'gic-' . $instance . '-' . wp_rand(1000, 999999);
+
     wp_enqueue_style('global-impact-catalyst-demo');
     wp_enqueue_script('global-impact-catalyst-demo');
 
@@ -50,20 +54,21 @@ function gic_demo_shortcode($atts = array()) {
       </div>
 
       <div class="gic-demo__grid">
-        <form class="gic-demo__form" data-gic-form>
+        <form class="gic-demo__form" data-gic-form novalidate>
+          <div class="gic-demo__errors" data-gic-errors role="alert" tabindex="-1" hidden></div>
           <div class="gic-demo__field gic-demo__field--wide">
-            <label for="gic-initiative">Initiative or program</label>
-            <input id="gic-initiative" name="initiative" type="text" value="Community Energy Retrofit Pilot">
+            <label for="<?php echo esc_attr($id_prefix . '-initiative'); ?>">Initiative or program</label>
+            <input id="<?php echo esc_attr($id_prefix . '-initiative'); ?>" name="initiative" type="text" required value="Community Energy Retrofit Pilot">
           </div>
 
           <div class="gic-demo__field gic-demo__field--wide">
-            <label for="gic-goal">Impact goal</label>
-            <textarea id="gic-goal" name="goal" rows="3">Reduce household energy burden while improving residential efficiency.</textarea>
+            <label for="<?php echo esc_attr($id_prefix . '-goal'); ?>">Impact goal</label>
+            <textarea id="<?php echo esc_attr($id_prefix . '-goal'); ?>" name="goal" rows="3" required>Reduce household energy burden while improving residential efficiency.</textarea>
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-theme">SDG-style theme</label>
-            <select id="gic-theme" name="sdgTheme">
+            <label for="<?php echo esc_attr($id_prefix . '-theme'); ?>">SDG-style theme</label>
+            <select id="<?php echo esc_attr($id_prefix . '-theme'); ?>" name="sdgTheme" required>
               <option>Affordable and clean energy</option>
               <option>Climate action</option>
               <option>Sustainable cities and communities</option>
@@ -75,61 +80,61 @@ function gic_demo_shortcode($atts = array()) {
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-indicator">Indicator</label>
-            <input id="gic-indicator" name="indicator" type="text" value="Average monthly bill reduction">
+            <label for="<?php echo esc_attr($id_prefix . '-indicator'); ?>">Indicator</label>
+            <input id="<?php echo esc_attr($id_prefix . '-indicator'); ?>" name="indicator" type="text" required value="Average monthly bill reduction">
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-unit">Unit</label>
-            <input id="gic-unit" name="unit" type="text" value="USD">
+            <label for="<?php echo esc_attr($id_prefix . '-unit'); ?>">Unit</label>
+            <input id="<?php echo esc_attr($id_prefix . '-unit'); ?>" name="unit" type="text" required value="USD">
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-direction">Direction</label>
-            <select id="gic-direction" name="higherIsBetter">
+            <label for="<?php echo esc_attr($id_prefix . '-direction'); ?>">Direction</label>
+            <select id="<?php echo esc_attr($id_prefix . '-direction'); ?>" name="higherIsBetter" required>
               <option value="true" selected>Higher is better</option>
               <option value="false">Lower is better</option>
             </select>
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-baseline-period">Baseline period</label>
-            <input id="gic-baseline-period" name="baselinePeriod" type="text" value="2025 baseline">
+            <label for="<?php echo esc_attr($id_prefix . '-baseline-period'); ?>">Baseline period</label>
+            <input id="<?php echo esc_attr($id_prefix . '-baseline-period'); ?>" name="baselinePeriod" type="text" required value="2025 baseline">
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-current-period">Current period</label>
-            <input id="gic-current-period" name="currentPeriod" type="text" value="2026 Q2">
+            <label for="<?php echo esc_attr($id_prefix . '-current-period'); ?>">Current period</label>
+            <input id="<?php echo esc_attr($id_prefix . '-current-period'); ?>" name="currentPeriod" type="text" required value="2026 Q2">
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-baseline">Baseline value</label>
-            <input id="gic-baseline" name="baseline" type="number" step="0.01" value="0">
+            <label for="<?php echo esc_attr($id_prefix . '-baseline'); ?>">Baseline value</label>
+            <input id="<?php echo esc_attr($id_prefix . '-baseline'); ?>" name="baseline" type="number" required step="0.01" value="0">
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-current">Current value</label>
-            <input id="gic-current" name="current" type="number" step="0.01" value="18">
+            <label for="<?php echo esc_attr($id_prefix . '-current'); ?>">Current value</label>
+            <input id="<?php echo esc_attr($id_prefix . '-current'); ?>" name="current" type="number" required step="0.01" value="18">
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-target">Target value</label>
-            <input id="gic-target" name="target" type="number" step="0.01" value="30">
+            <label for="<?php echo esc_attr($id_prefix . '-target'); ?>">Target value</label>
+            <input id="<?php echo esc_attr($id_prefix . '-target'); ?>" name="target" type="number" required step="0.01" value="30">
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-beneficiaries">Beneficiaries</label>
-            <input id="gic-beneficiaries" name="beneficiaries" type="number" step="1" value="420">
+            <label for="<?php echo esc_attr($id_prefix . '-beneficiaries'); ?>">Beneficiaries</label>
+            <input id="<?php echo esc_attr($id_prefix . '-beneficiaries'); ?>" name="beneficiaries" type="number" step="1" min="0" value="420">
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-budget">Budget USD</label>
-            <input id="gic-budget" name="budget" type="number" step="1" value="125000">
+            <label for="<?php echo esc_attr($id_prefix . '-budget'); ?>">Budget USD</label>
+            <input id="<?php echo esc_attr($id_prefix . '-budget'); ?>" name="budget" type="number" step="0.01" min="0" value="125000">
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-confidence">Confidence</label>
-            <select id="gic-confidence" name="confidence">
+            <label for="<?php echo esc_attr($id_prefix . '-confidence'); ?>">Confidence</label>
+            <select id="<?php echo esc_attr($id_prefix . '-confidence'); ?>" name="confidence">
               <option value="low">Low</option>
               <option value="medium" selected>Medium</option>
               <option value="high">High</option>
@@ -137,8 +142,8 @@ function gic_demo_shortcode($atts = array()) {
           </div>
 
           <div class="gic-demo__field">
-            <label for="gic-review">Review status</label>
-            <select id="gic-review" name="reviewStatus">
+            <label for="<?php echo esc_attr($id_prefix . '-review'); ?>">Review status</label>
+            <select id="<?php echo esc_attr($id_prefix . '-review'); ?>" name="reviewStatus">
               <option value="draft">Draft</option>
               <option value="needs_review" selected>Needs review</option>
               <option value="reviewed">Reviewed</option>
@@ -147,13 +152,13 @@ function gic_demo_shortcode($atts = array()) {
           </div>
 
           <div class="gic-demo__field gic-demo__field--wide">
-            <label for="gic-source">Source</label>
-            <input id="gic-source" name="source" type="text" value="Pilot utility-billing sample and participant survey summary">
+            <label for="<?php echo esc_attr($id_prefix . '-source'); ?>">Source</label>
+            <input id="<?php echo esc_attr($id_prefix . '-source'); ?>" name="source" type="text" value="Pilot utility-billing sample and participant survey summary">
           </div>
 
           <div class="gic-demo__field gic-demo__field--wide">
-            <label for="gic-method">Method notes</label>
-            <textarea id="gic-method" name="method" rows="4">Current value is the observed average monthly bill reduction across participating households compared with baseline average bills. Results should be reviewed for seasonality and household-size differences.</textarea>
+            <label for="<?php echo esc_attr($id_prefix . '-method'); ?>">Method notes</label>
+            <textarea id="<?php echo esc_attr($id_prefix . '-method'); ?>" name="method" rows="4">Current value is the observed average monthly bill reduction across participating households compared with baseline average bills. Results should be reviewed for seasonality and household-size differences.</textarea>
           </div>
 
           <div class="gic-demo__actions">
@@ -163,19 +168,19 @@ function gic_demo_shortcode($atts = array()) {
           </div>
         </form>
 
-        <aside class="gic-demo__output" aria-live="polite">
+        <aside class="gic-demo__output" aria-live="polite" aria-atomic="false">
           <div class="gic-demo__scorecard">
             <div>
               <span>Progress to target</span>
-              <strong data-gic-progress>—</strong>
+              <strong data-gic-progress role="status">—</strong>
             </div>
             <div>
-              <span>Data quality</span>
-              <strong data-gic-quality>—</strong>
+              <span>Completeness / review</span>
+              <strong data-gic-quality role="status">—</strong>
             </div>
             <div>
               <span>Status</span>
-              <strong data-gic-status>—</strong>
+              <strong data-gic-status role="status">—</strong>
             </div>
           </div>
 

@@ -213,3 +213,22 @@
   .gic-demo__form { grid-template-columns: 1fr; padding: 20px; }
   .gic-demo__header, .gic-demo__output, .gic-demo__boundary { padding-left: 20px; padding-right: 20px; }
 }
+
+/* v1.0.1 validation and accessibility */
+.gic-demo__errors {
+  grid-column: 1 / -1;
+  padding: 0.85rem 1rem;
+  border: 2px solid currentColor;
+  border-radius: 0.5rem;
+  font-weight: 700;
+}
+
+.gic-demo__errors:focus {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
+.gic-demo [aria-invalid="true"] {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}

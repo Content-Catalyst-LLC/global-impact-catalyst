@@ -1,17 +1,15 @@
-# Review Checklist
+# Impact Record Review Checklist
 
-Before using a Global Impact Catalyst output in external reporting, review:
+Before treating a Global Impact Catalyst record as final or publishing an external claim, review:
 
-- Is the initiative clearly named?
-- Is the goal specific enough to evaluate?
-- Is the indicator defined clearly?
-- Are baseline and current periods comparable?
-- Is the source credible and documented?
-- Are units consistent?
-- Is the target realistic and explained?
-- Are method notes complete enough for review?
-- Is confidence level justified?
-- Has the review status been updated?
-- Are limitations visible in the final output?
-
-Outputs should remain draft until these checks have been completed.
+- Goal and indicator wording are specific and internally consistent.
+- Baseline, current observation, and target use comparable units and populations.
+- Indicator direction is correct.
+- Reporting periods are clearly identified.
+- Source is inspectable and appropriate for the claim.
+- Method notes explain transformations, exclusions, assumptions, and limitations.
+- Progress-to-target is not presented as causal attribution.
+- Beneficiary and budget values distinguish omitted data from explicit zero.
+- Confidence and review status reflect actual review work.
+- The completeness/review score is not described as evidence assurance.
+- Boundary statements remain attached to public exports.

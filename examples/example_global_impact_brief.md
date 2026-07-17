@@ -16,12 +16,20 @@
 - Percent change from baseline: n/a%
 - Progress to target: 60.0%
 - Remaining gap: 12 USD
-- Data quality score: 75/100
+- Data completeness/review signal: 75/100
 - Status: draft — partial progress
+
+## Data Completeness and Review Components
+- Source documented: 25/25
+- Method documented: 25/25
+- Confidence signal: 15/25
+- Review signal: 10/25
+
+The score above is a documentation and review heuristic. It is not an objective rating of evidence quality, assurance, or truth.
 
 ## Interpretation Notes
 - Average monthly bill reduction changed from 0 USD in 2025 baseline to 18 USD in 2026 Q2.
-- Progress should be interpreted against the indicator definition, data source, method notes, and confidence level.
+- Progress should be interpreted against the indicator definition, data source, method notes, confidence level, and review status.
 - Estimated progress to target is 60.00%.
 - Review status indicates that this output is not final.
 

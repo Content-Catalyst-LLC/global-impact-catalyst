@@ -1,118 +1,125 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/global-impact-catalyst-record.schema.json",
+  "$id": "https://sustainablecatalyst.com/schemas/global-impact-catalyst/1.0.1/global-impact-record.schema.json",
   "title": "Global Impact Catalyst Record",
+  "description": "Canonical v1.0.1 output contract for a single traceable impact record.",
+  "x-global-impact-catalyst-version": "1.0.1",
   "type": "object",
+  "additionalProperties": false,
   "required": [
     "record_type",
     "generated_at",
     "initiative",
     "goal",
+    "sdg_theme",
     "indicator",
     "unit",
+    "baseline_period",
+    "current_period",
     "baseline_value",
     "current_value",
     "target_value",
+    "higher_is_better",
     "source",
     "method_notes",
+    "confidence",
+    "review_status",
+    "beneficiaries",
+    "budget_usd",
     "metrics",
     "interpretation_notes",
     "traceability_path",
     "boundaries"
   ],
   "properties": {
-    "record_type": {
-      "const": "global_impact_catalyst_record"
-    },
-    "generated_at": {
-      "type": "string"
-    },
-    "initiative": {
-      "type": "string"
-    },
-    "goal": {
-      "type": "string"
-    },
-    "sdg_theme": {
-      "type": "string"
-    },
-    "indicator": {
-      "type": "string"
-    },
-    "unit": {
-      "type": "string"
-    },
-    "baseline_period": {
-      "type": "string"
-    },
-    "current_period": {
-      "type": "string"
-    },
-    "baseline_value": {
-      "type": "number"
-    },
-    "current_value": {
-      "type": "number"
-    },
-    "target_value": {
-      "type": "number"
-    },
-    "higher_is_better": {
-      "type": "boolean"
-    },
-    "source": {
-      "type": "string"
-    },
-    "method_notes": {
-      "type": "string"
-    },
-    "confidence": {
-      "enum": [
-        "low",
-        "medium",
-        "high"
-      ]
-    },
-    "review_status": {
-      "enum": [
-        "draft",
-        "needs_review",
-        "reviewed",
-        "published"
-      ]
-    },
-    "beneficiaries": {
-      "type": [
-        "integer",
-        "null"
-      ]
-    },
-    "budget_usd": {
-      "type": [
-        "number",
-        "null"
-      ]
-    },
+    "record_type": {"const": "global_impact_catalyst_record"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "initiative": {"type": "string"},
+    "goal": {"type": "string"},
+    "sdg_theme": {"type": "string"},
+    "indicator": {"type": "string"},
+    "unit": {"type": "string"},
+    "baseline_period": {"type": "string"},
+    "current_period": {"type": "string"},
+    "baseline_value": {"type": "number"},
+    "current_value": {"type": "number"},
+    "target_value": {"type": "number"},
+    "higher_is_better": {"type": "boolean"},
+    "source": {"type": "string"},
+    "method_notes": {"type": "string"},
+    "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+    "review_status": {"type": "string", "enum": ["draft", "needs_review", "reviewed", "published"]},
+    "beneficiaries": {"type": ["integer", "null"], "minimum": 0},
+    "budget_usd": {"type": ["number", "null"], "minimum": 0},
     "metrics": {
-      "type": "object"
-    },
-    "interpretation_notes": {
-      "type": "array",
-      "items": {
-        "type": "string"
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "absolute_change",
+        "percent_change_from_baseline",
+        "progress_to_target_percent",
+        "remaining_gap",
+        "status",
+        "cost_per_beneficiary_usd",
+        "data_quality_score",
+        "data_quality_components"
+      ],
+      "properties": {
+        "absolute_change": {"type": "number"},
+        "percent_change_from_baseline": {"type": ["number", "null"]},
+        "progress_to_target_percent": {"type": ["number", "null"]},
+        "remaining_gap": {"type": "number"},
+        "status": {
+          "type": "string",
+          "enum": [
+            "needs baseline/target review",
+            "draft — interpret cautiously",
+            "draft — target reached or exceeded",
+            "draft — near target",
+            "draft — partial progress",
+            "draft — early progress",
+            "draft — moving away from target",
+            "reviewed — interpret cautiously",
+            "reviewed — target reached or exceeded",
+            "reviewed — near target",
+            "reviewed — partial progress",
+            "reviewed — early progress",
+            "reviewed — moving away from target"
+          ]
+        },
+        "cost_per_beneficiary_usd": {"type": ["number", "null"], "minimum": 0},
+        "data_quality_score": {"type": "integer", "minimum": 0, "maximum": 100},
+        "data_quality_components": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source_documented", "method_documented", "confidence_signal", "review_signal"],
+          "properties": {
+            "source_documented": {"type": "integer", "enum": [0, 25]},
+            "method_documented": {"type": "integer", "enum": [0, 25]},
+            "confidence_signal": {"type": "integer", "enum": [5, 15, 25]},
+            "review_signal": {"type": "integer", "enum": [0, 10, 25]}
+          }
+        }
       }
     },
+    "interpretation_notes": {"type": "array", "minItems": 3, "items": {"type": "string"}},
     "traceability_path": {
       "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "prefixItems": [
+        {"const": "goal"},
+        {"const": "indicator"},
+        {"const": "baseline"},
+        {"const": "current measurement"},
+        {"const": "target"},
+        {"const": "source"},
+        {"const": "method notes"},
+        {"const": "confidence"},
+        {"const": "review status"}
+      ],
+      "items": false,
+      "minItems": 9,
+      "maxItems": 9
     },
-    "boundaries": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    }
+    "boundaries": {"type": "array", "minItems": 3, "items": {"type": "string"}}
   }
 }
