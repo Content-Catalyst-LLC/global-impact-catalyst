@@ -1,5 +1,5 @@
 {
-  "name": "04-equal-baseline-target",
+  "name": "05-period-order-error",
   "generated_at": "2026-07-17T18:00:00+00:00",
   "input": {
     "workspace": "Community Impact Portfolio",
@@ -10,10 +10,10 @@
     "indicator": "Average monthly bill reduction",
     "indicator_definition": "Mean reduction in monthly household utility bills relative to the baseline period.",
     "unit": "USD",
-    "baseline_value": 10,
-    "current_value": 10,
-    "target_value": 10,
-    "baseline_period": "2025 baseline",
+    "baseline_value": 0,
+    "current_value": 18,
+    "target_value": 30,
+    "baseline_period": "2027",
     "current_period": "2026 Q2",
     "target_period": "2027",
     "source": "Pilot utility-billing sample and participant survey summary",
@@ -37,7 +37,7 @@
     "contract_type": "global_impact_contract",
     "contract_version": "1.1.0",
     "schema_version": "1.1.0",
-    "record_id": "gic-record-6df2ae574b4b0d0a",
+    "record_id": "gic-record-558be95564b97f1c",
     "created_at": "2026-07-17T18:00:00+00:00",
     "updated_at": "2026-07-17T18:00:00+00:00",
     "lifecycle_status": "needs_review",
@@ -47,55 +47,55 @@
         "version": "1.1.0",
         "runtime": "cross-runtime"
       },
-      "input_fingerprint": "9c9382864bf3c5e9",
+      "input_fingerprint": "a6ca58c8009ed7f3",
       "source_contract_version": null,
       "migration": null
     },
     "facts": {
       "workspace": {
         "entity_type": "workspace",
-        "id": "gic-workspace-09afaa1d9edae570",
+        "id": "gic-workspace-a570383caa8b8925",
         "created_at": "2026-07-17T18:00:00+00:00",
         "updated_at": "2026-07-17T18:00:00+00:00",
         "name": "Community Impact Portfolio"
       },
       "initiative": {
         "entity_type": "initiative",
-        "id": "gic-initiative-abd9163c654727d3",
+        "id": "gic-initiative-f620ee21d092ed42",
         "created_at": "2026-07-17T18:00:00+00:00",
         "updated_at": "2026-07-17T18:00:00+00:00",
-        "workspace_id": "gic-workspace-09afaa1d9edae570",
+        "workspace_id": "gic-workspace-a570383caa8b8925",
         "name": "Community Energy Retrofit Pilot"
       },
       "goal": {
         "entity_type": "goal",
-        "id": "gic-goal-1128d6dd5eaf9822",
+        "id": "gic-goal-bd744f7c8465220f",
         "created_at": "2026-07-17T18:00:00+00:00",
         "updated_at": "2026-07-17T18:00:00+00:00",
-        "initiative_id": "gic-initiative-abd9163c654727d3",
+        "initiative_id": "gic-initiative-f620ee21d092ed42",
         "statement": "Reduce household energy burden while improving residential efficiency.",
         "sdg_theme": "Affordable and clean energy"
       },
       "outcomes": [
         {
           "entity_type": "outcome",
-          "id": "gic-outcome-224181101e12cfed",
+          "id": "gic-outcome-fbbb4c452f75a2ac",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
-          "goal_id": "gic-goal-1128d6dd5eaf9822",
+          "goal_id": "gic-goal-bd744f7c8465220f",
           "statement": "Participating households experience lower monthly energy costs."
         }
       ],
       "indicator": {
         "entity_type": "indicator",
-        "id": "gic-indicator-6a297e551ce23ae4",
+        "id": "gic-indicator-75c4b164d1903d59",
         "created_at": "2026-07-17T18:00:00+00:00",
         "updated_at": "2026-07-17T18:00:00+00:00",
-        "outcome_id": "gic-outcome-224181101e12cfed",
+        "outcome_id": "gic-outcome-fbbb4c452f75a2ac",
         "name": "Average monthly bill reduction",
         "definition_version": {
           "entity_type": "indicator_definition_version",
-          "id": "gic-indicator-definition-version-a7a56b82e45d6f89",
+          "id": "gic-indicator-definition-version-899baaeff0bb6448",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "version": "1.0",
@@ -107,27 +107,27 @@
       "measurement": {
         "baseline": {
           "entity_type": "baseline",
-          "id": "gic-baseline-5aa52d9901767882",
+          "id": "gic-baseline-318824b8e36cb7ef",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
-          "indicator_id": "gic-indicator-6a297e551ce23ae4",
-          "value": 10.0,
+          "indicator_id": "gic-indicator-75c4b164d1903d59",
+          "value": 0.0,
           "unit": "USD",
           "period": {
-            "label": "2025 baseline"
+            "label": "2027"
           },
           "source_ids": [
-            "gic-source-00811d5f519b4b1c"
+            "gic-source-1a33cc7ec499db01"
           ],
-          "method_id": "gic-method-1614a6e74cfb1ebc"
+          "method_id": "gic-method-6bba8d969742f6a1"
         },
         "target": {
           "entity_type": "target",
-          "id": "gic-target-2c9849efcf529350",
+          "id": "gic-target-feab252e2e3b6805",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
-          "indicator_id": "gic-indicator-6a297e551ce23ae4",
-          "value": 10.0,
+          "indicator_id": "gic-indicator-75c4b164d1903d59",
+          "value": 30.0,
           "unit": "USD",
           "period": {
             "label": "2027"
@@ -137,26 +137,26 @@
         "observations": [
           {
             "entity_type": "observation",
-            "id": "gic-observation-ab46bce22628601b",
+            "id": "gic-observation-cf92064fa9ec7a5a",
             "created_at": "2026-07-17T18:00:00+00:00",
             "updated_at": "2026-07-17T18:00:00+00:00",
-            "indicator_id": "gic-indicator-6a297e551ce23ae4",
-            "value": 10.0,
+            "indicator_id": "gic-indicator-75c4b164d1903d59",
+            "value": 18.0,
             "unit": "USD",
             "period": {
               "label": "2026 Q2"
             },
             "source_ids": [
-              "gic-source-00811d5f519b4b1c"
+              "gic-source-1a33cc7ec499db01"
             ],
-            "method_id": "gic-method-1614a6e74cfb1ebc"
+            "method_id": "gic-method-6bba8d969742f6a1"
           }
         ]
       },
       "sources": [
         {
           "entity_type": "source",
-          "id": "gic-source-00811d5f519b4b1c",
+          "id": "gic-source-1a33cc7ec499db01",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "title": "Pilot utility-billing sample and participant survey summary",
@@ -167,7 +167,7 @@
       "methods": [
         {
           "entity_type": "method",
-          "id": "gic-method-1614a6e74cfb1ebc",
+          "id": "gic-method-6bba8d969742f6a1",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "name": "Before-and-after billing comparison",
@@ -179,7 +179,7 @@
       "population_groups": [
         {
           "entity_type": "population_group",
-          "id": "gic-population-group-09cd302b158661d0",
+          "id": "gic-population-group-bdff780a746f3685",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "name": "Participating households",
@@ -189,7 +189,7 @@
       "geographies": [
         {
           "entity_type": "geography",
-          "id": "gic-geography-2489f56e099c53df",
+          "id": "gic-geography-8bb6a70b234f02fe",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "name": "Chicago, Illinois",
@@ -199,10 +199,10 @@
       "budget_records": [
         {
           "entity_type": "budget_record",
-          "id": "gic-budget-record-a38a5f7d3492645c",
+          "id": "gic-budget-record-ea07ac9c423b44c1",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
-          "initiative_id": "gic-initiative-abd9163c654727d3",
+          "initiative_id": "gic-initiative-f620ee21d092ed42",
           "amount": 125000.0,
           "currency": "USD",
           "period": {
@@ -213,11 +213,11 @@
     },
     "derived": {
       "metrics": {
-        "absolute_change": 0.0,
-        "percent_change_from_baseline": 0.0,
-        "progress_to_target_percent": null,
-        "remaining_gap": 0.0,
-        "status": "needs baseline/target review",
+        "absolute_change": 18.0,
+        "percent_change_from_baseline": null,
+        "progress_to_target_percent": 60.0,
+        "remaining_gap": 12.0,
+        "status": "draft — partial progress",
         "cost_per_beneficiary": {
           "value": 297.62,
           "currency": "USD"
@@ -239,59 +239,59 @@
       "interpretations": [
         {
           "entity_type": "interpretation",
-          "id": "gic-interpretation-4c344a478da18d5c",
+          "id": "gic-interpretation-890d6fa6a4157e39",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "interpretation_type": "metric_interpretation",
-          "text": "Average monthly bill reduction changed from 10 USD in 2025 baseline to 10 USD in 2026 Q2.",
+          "text": "Average monthly bill reduction changed from 0 USD in 2027 to 18 USD in 2026 Q2.",
           "evidence_refs": [
-            "gic-baseline-5aa52d9901767882",
-            "gic-observation-ab46bce22628601b",
-            "gic-target-2c9849efcf529350"
+            "gic-baseline-318824b8e36cb7ef",
+            "gic-observation-cf92064fa9ec7a5a",
+            "gic-target-feab252e2e3b6805"
           ]
         },
         {
           "entity_type": "interpretation",
-          "id": "gic-interpretation-4d344bda90a19215",
+          "id": "gic-interpretation-880d6e13a1157980",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "interpretation_type": "metric_interpretation",
           "text": "Progress must be interpreted against the indicator definition, source, method, population, geography, confidence, and review status.",
           "evidence_refs": [
-            "gic-baseline-5aa52d9901767882",
-            "gic-observation-ab46bce22628601b",
-            "gic-target-2c9849efcf529350"
+            "gic-baseline-318824b8e36cb7ef",
+            "gic-observation-cf92064fa9ec7a5a",
+            "gic-target-feab252e2e3b6805"
           ]
         },
         {
           "entity_type": "interpretation",
-          "id": "gic-interpretation-4e344d6d8fa19082",
+          "id": "gic-interpretation-870d6c80a2157b13",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "interpretation_type": "metric_interpretation",
-          "text": "Progress to target is unavailable because the baseline and target are not compatible.",
+          "text": "Estimated progress to target is 60.00%.",
           "evidence_refs": [
-            "gic-baseline-5aa52d9901767882",
-            "gic-observation-ab46bce22628601b",
-            "gic-target-2c9849efcf529350"
+            "gic-baseline-318824b8e36cb7ef",
+            "gic-observation-cf92064fa9ec7a5a",
+            "gic-target-feab252e2e3b6805"
           ]
         }
       ],
       "claims": [
         {
           "entity_type": "claim",
-          "id": "gic-claim-d92f8ebc64bc1e95",
+          "id": "gic-claim-237766a13b105024",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "claim_type": "progress_to_target_statement",
-          "statement": "Progress to target for Average monthly bill reduction could not be calculated from the entered baseline and target.",
+          "statement": "Estimated progress to target for Average monthly bill reduction is 60.00%.",
           "confidence": "medium",
           "evidence_refs": [
-            "gic-source-00811d5f519b4b1c",
-            "gic-method-1614a6e74cfb1ebc",
-            "gic-baseline-5aa52d9901767882",
-            "gic-observation-ab46bce22628601b",
-            "gic-target-2c9849efcf529350"
+            "gic-source-1a33cc7ec499db01",
+            "gic-method-6bba8d969742f6a1",
+            "gic-baseline-318824b8e36cb7ef",
+            "gic-observation-cf92064fa9ec7a5a",
+            "gic-target-feab252e2e3b6805"
           ],
           "design_metadata": {
             "design_type": "before_after",
@@ -310,7 +310,7 @@
       "reviews": [
         {
           "entity_type": "review",
-          "id": "gic-review-077c652646abd3f1",
+          "id": "gic-review-44e34793eeb81140",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "status": "needs_review",
@@ -322,7 +322,7 @@
       "revisions": [
         {
           "entity_type": "revision",
-          "id": "gic-revision-f608f69f5a8e7b58",
+          "id": "gic-revision-e0db083e2c73037d",
           "created_at": "2026-07-17T18:00:00+00:00",
           "updated_at": "2026-07-17T18:00:00+00:00",
           "revision_number": 1,
@@ -339,12 +339,12 @@
       "info_count": 0,
       "issues": [
         {
-          "issue_id": "gic-issue-f0a93f93f9a8b5fa",
+          "issue_id": "gic-issue-62209bfd87e71b94",
           "severity": "error",
-          "path": "$.facts.measurement.target.value",
-          "rule_id": "GIC-TARGET-001",
-          "message": "Baseline and target values are equal, so progress to target is undefined.",
-          "remediation": "Choose a target different from the baseline or omit the progress claim."
+          "path": "$.facts.measurement",
+          "rule_id": "GIC-PERIOD-001",
+          "message": "Baseline period occurs after the current observation period.",
+          "remediation": "Correct the period labels or reverse the measurement roles."
         }
       ]
     },

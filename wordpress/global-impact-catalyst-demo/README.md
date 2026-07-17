@@ -1,9 +1,9 @@
-# Global Impact Catalyst Demo v1.0.1
+# Global Impact Catalyst Demo v1.1.0
 
-Install the `global-impact-catalyst-demo` directory as a WordPress plugin and use:
+Upload this folder as a WordPress plugin and use:
 
 ```text
 [global_impact_catalyst_demo]
 ```
 
-v1.0.1 aligns the browser output with the Python golden fixtures, supports repeated shortcode instances without duplicate IDs, preserves optional null values, and adds accessible validation feedback.
+The demo builds and validates canonical impact contracts entirely in the browser. It does not transmit entered form data. JSON exports follow the same contract and golden fixtures as the Python engine.

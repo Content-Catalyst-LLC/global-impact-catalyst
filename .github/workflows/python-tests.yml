@@ -1,26 +1,20 @@
 name: Release Contracts
-
-on:
-  push:
-  pull_request:
-
+on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+        with: {python-version: '3.12'}
       - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+        with: {node-version: '22'}
       - name: Install development dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
-      - name: Python, schema, WordPress, and parity tests
-        run: python -m pytest
+      - name: Python, schema, migration, and WordPress contracts
+        run: python -m pytest -q
       - name: Release contract
         run: python scripts/check_contracts.py
       - name: Browser contract parity
@@ -31,10 +25,12 @@ jobs:
         run: |
           php -l wordpress/global-impact-catalyst-demo/global-impact-catalyst-demo.php
           php scripts/check_wordpress_instances.php
-      - name: Generate reproducible sample outputs
+      - name: Generate and validate reproducible contract
         run: |
           python python/global_impact_core.py \
             --input data/sample_global_impact_input.json \
-            --output outputs/sample_global_impact_record.json \
+            --output outputs/sample_global_impact_contract.json \
             --markdown outputs/sample_global_impact_brief.md \
-            --generated-at 2026-07-17T16:00:00+00:00
+            --generated-at 2026-07-17T18:00:00+00:00
+      - name: Portable smoke suite
+        run: python scripts/smoke_test.py

@@ -13,7 +13,7 @@
   "target_value": 30.0,
   "higher_is_better": true,
   "source": "Pilot utility-billing sample and participant survey summary",
-  "method_notes": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills. Results should be reviewed for seasonality and household-size differences.",
+  "method_notes": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills.",
   "confidence": "medium",
   "review_status": "needs_review",
   "beneficiaries": 420,
@@ -23,7 +23,7 @@
     "percent_change_from_baseline": null,
     "progress_to_target_percent": 60.0,
     "remaining_gap": 12.0,
-    "status": "draft \u2014 partial progress",
+    "status": "draft — partial progress",
     "cost_per_beneficiary_usd": 297.62,
     "data_quality_score": 75,
     "data_quality_components": {

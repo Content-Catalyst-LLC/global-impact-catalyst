@@ -1,25 +1,16 @@
-from app.main import build_demo_response, healthcheck
+from app.main import build_demo_response,healthcheck,validate_demo_payload
 
+PAYLOAD={'initiative':'Pilot','goal':'Improve outcomes','indicator':'Rate','unit':'%','baseline_value':10,'current_value':20,'target_value':30,'baseline_period':'2025','current_period':'2026','source':'Dataset','method_notes':'A documented method with enough detail for review.'}
 
-def test_healthcheck():
-    assert healthcheck()["status"] == "ok"
+def test_demo_response_is_canonical_contract():
+    response=build_demo_response(PAYLOAD,generated_at='2026-07-17T18:00:00+00:00')
+    assert response['contract_type']=='global_impact_contract'
+    assert response['contract_version']=='1.1.0'
 
+def test_validate_demo_payload_returns_structured_result():
+    result=validate_demo_payload({**PAYLOAD,'source':''})
+    assert result['valid'] is False
+    assert result['issues'][0]['rule_id']=='GIC-REQ-001'
 
-def test_build_demo_response():
-    payload = {
-        "initiative": "Community Energy Retrofit",
-        "goal": "Reduce household energy burden",
-        "sdg_theme": "Affordable and clean energy",
-        "indicator": "Average monthly bill reduction",
-        "unit": "USD",
-        "baseline_value": 0,
-        "current_value": 18,
-        "target_value": 30,
-        "baseline_period": "2025",
-        "current_period": "2026 Q2",
-        "source": "Pilot utility billing sample",
-        "method_notes": "Difference between baseline average bill and post-retrofit monthly bill sample.",
-    }
-    result = build_demo_response(payload)
-    assert result["record_type"] == "global_impact_catalyst_record"
-    assert result["metrics"]["progress_to_target_percent"] == 60.0
+def test_healthcheck_version():
+    assert healthcheck()=={'status':'ok','module':'global-impact-catalyst','version':'1.1.0','contract_version':'1.1.0'}

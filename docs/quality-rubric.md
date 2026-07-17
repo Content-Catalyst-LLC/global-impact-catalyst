@@ -1,16 +1,12 @@
-# Data Completeness and Review Rubric
+# Documentation and Review Signal
 
-Global Impact Catalyst v1.0.1 reports a 0–100 documentation and review signal. The value is deliberately simple and fully decomposed in `metrics.data_quality_components`.
+v1.1.0 retains the transparent 0–100 heuristic under `derived.metrics.data_quality_score`.
 
 | Component | Rule | Points |
 |---|---|---:|
-| Source documented | Nonblank source field | 25 |
-| Method documented | Trimmed method note has at least 20 characters | 25 |
+| Source documented | Nonblank source title | 25 |
+| Method documented | Description has at least 20 characters | 25 |
 | Confidence signal | Low / medium / high | 5 / 15 / 25 |
 | Review signal | Draft / needs review / reviewed or published | 0 / 10 / 25 |
 
-The total is the sum of these four components, capped at 100.
-
-## Interpretation boundary
-
-This signal measures the presence of documentation and selected review metadata. It does not inspect whether a source is accurate, whether a method is appropriate, whether observations are representative, whether attribution is causal, or whether a claim is true. It must not be presented as assurance, certification, audit scoring, or an objective evidence-quality grade.
+This score measures selected documentation and review metadata only. It does not assess truth, representativeness, bias, validity, causal identification, assurance, or compliance. Structured validation issues are more specific and must not be replaced by the score.

@@ -1,15 +1,16 @@
-# Impact Record Review Checklist
+# Impact Contract Review Checklist
 
-Before treating a Global Impact Catalyst record as final or publishing an external claim, review:
+Before marking a contract reviewed or published:
 
-- Goal and indicator wording are specific and internally consistent.
-- Baseline, current observation, and target use comparable units and populations.
-- Indicator direction is correct.
-- Reporting periods are clearly identified.
-- Source is inspectable and appropriate for the claim.
-- Method notes explain transformations, exclusions, assumptions, and limitations.
-- Progress-to-target is not presented as causal attribution.
-- Beneficiary and budget values distinguish omitted data from explicit zero.
-- Confidence and review status reflect actual review work.
-- The completeness/review score is not described as evidence assurance.
-- Boundary statements remain attached to public exports.
+- Initiative, goal, outcome, and indicator definition are specific and internally consistent.
+- Baseline, observations, and target use comparable units, populations, geographies, and periods.
+- Indicator direction and target compatibility are correct.
+- Source title and locator allow evidence retrieval.
+- Method version and description explain collection, transformations, exclusions, assumptions, and limitations.
+- Derived values can be reproduced from facts and calculation metadata.
+- Claim type matches the exact language being used.
+- Comparison, contribution, and causal metadata satisfy the relevant validation rules.
+- Causal language receives qualified independent review beyond automated eligibility checks.
+- Validation warnings are addressed or explicitly accepted.
+- Documentation/review score is not presented as evidence assurance.
+- Boundaries remain attached to public exports.

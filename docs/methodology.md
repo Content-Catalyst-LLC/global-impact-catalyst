@@ -1,28 +1,35 @@
 # Methodology
 
-Global Impact Catalyst is built around traceability rather than dashboard polish. The module asks a simple question: can an impact claim be connected to a goal, an indicator, a period, a source, a method, a measurement, and a review status?
+Global Impact Catalyst is built around traceability, reproducibility, and explicit claim boundaries.
 
-## Core path
+## Canonical path
 
 ```text
-goal → indicator → definition → source → baseline → measurement → method → interpretation → review
+workspace → initiative → goal → outcome → indicator definition
+→ baseline → observation → target → source → method
+→ derived metric → interpretation → claim → review → revision → publication
 ```
 
-## What the module does
+## Progress formula
 
-- Structures impact records.
-- Computes simple progress-to-target estimates.
-- Keeps method notes attached to measurements.
-- Makes confidence and review status explicit.
-- Exports JSON and Markdown records for later inspection.
+For higher-is-better indicators:
 
-## What the module does not do
+```text
+(current − baseline) / (target − baseline) × 100
+```
 
-- It does not certify SDG alignment.
-- It does not provide ESG assurance.
-- It does not guarantee outcomes.
-- It does not replace evaluation design, field research, legal review, accounting review, or professional judgment.
+For lower-is-better indicators:
 
-## Review posture
+```text
+(baseline − current) / (baseline − target) × 100
+```
 
-Every generated record should be read as a draft until the source, method, indicator definition, reporting period, and assumptions have been reviewed.
+The engine rounds exported numeric results using decimal half-up behavior. Progress may be below 0 or above 100. Equal baseline and target values make progress undefined and produce a validation error.
+
+## Facts and derivation
+
+Entered facts are never relabeled as calculated evidence. Derived values record the engine, version, rounding rule, and formula so they can be reproduced. Interpretation text and claim eligibility remain separate from both facts and metrics.
+
+## What validation does not do
+
+Validation checks structural and semantic consistency. It does not authenticate a source, assess sampling validity, judge methodological fitness, verify an observation, establish attribution, or satisfy assurance and regulatory standards.

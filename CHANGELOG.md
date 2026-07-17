@@ -2,6 +2,35 @@
 
 All notable changes to Global Impact Catalyst are documented in this file.
 
+## [1.1.0] - 2026-07-17
+
+### Added
+
+- Canonical entity-oriented impact contract with stable deterministic identifiers and timestamps.
+- Contract, schema, record, lifecycle, and provenance metadata.
+- Explicit `facts`, `derived`, `governance`, and `validation` layers.
+- Structured validation issues with severity, field path, rule ID, message, and remediation.
+- Semantic rules for required facts, period ordering, unit compatibility, indicator direction, baseline/target compatibility, source locators, and method detail.
+- Governed descriptive, progress, comparison, contribution, and causal claim types.
+- Evidence and design gates for stronger claim language.
+- Lossless migration from v1.0.x flat records with the original record retained in provenance.
+- Canonical contract, compatibility, authoring-input, and validation-result JSON Schemas.
+- Fifteen exact cross-runtime fixtures, expanded core tests, and migration tests.
+- Expanded WordPress contract builder with evidence, design, claim, and validation fields.
+- Contract reference, validation-rule catalog, claim governance, and migration documentation.
+
+### Changed
+
+- `build_impact_record` now remains as a compatibility alias but returns the canonical v1.1.0 contract.
+- JSON downloads now use the canonical contract rather than the v1.0.x flat record.
+- Markdown exports now distinguish entered facts, derived metrics, claim eligibility, validation, and boundaries.
+- The traceability path now covers governance and publication entities.
+
+### Compatibility
+
+- v1.0.x flat records remain readable through `migrate_legacy_record` and the CLI `--migrate` option.
+- The browser still exports `buildImpactRecord` as an alias to `buildImpactContract`.
+
 ## [1.0.1] - 2026-07-17
 
 ### Fixed

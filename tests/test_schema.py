@@ -1,42 +1,44 @@
 from __future__ import annotations
-
 import json
 from pathlib import Path
-
+import pytest
 from jsonschema import Draft202012Validator, FormatChecker
 
-from python.global_impact_core import build_impact_record, input_from_dict, record_to_dict
+ROOT=Path(__file__).resolve().parents[1]
 
-ROOT = Path(__file__).resolve().parents[1]
+def load(name): return json.loads((ROOT/'schemas'/name).read_text())
 
+def validator(name): return Draft202012Validator(load(name),format_checker=FormatChecker())
 
-def load(name: str):
-    return json.loads((ROOT / name).read_text())
+def test_schemas_are_v110_and_versioned():
+    for name in ['global_impact_input.schema.json','global_impact_contract.schema.json','global_impact_record.schema.json','global_impact_validation_result.schema.json']:
+        schema=load(name)
+        assert schema['x-global-impact-catalyst-version']=='1.1.0'
+        assert '/1.1.0/' in schema['$id']
 
+def test_all_canonical_fixture_outputs_validate():
+    check=validator('global_impact_contract.schema.json')
+    for path in sorted((ROOT/'contracts/fixtures').glob('*.json')):
+        expected=json.loads(path.read_text())['expected']
+        errors=list(check.iter_errors(expected))
+        assert not errors, f"{path.name}: {[e.message for e in errors]}"
 
-def test_schemas_are_valid():
-    Draft202012Validator.check_schema(load("schemas/global_impact_input.schema.json"))
-    Draft202012Validator.check_schema(load("schemas/global_impact_record.schema.json"))
+def test_validation_objects_validate_independently():
+    check=validator('global_impact_validation_result.schema.json')
+    for path in sorted((ROOT/'contracts/fixtures').glob('*.json')):
+        expected=json.loads(path.read_text())['expected']['validation']
+        assert not list(check.iter_errors(expected))
 
+def test_sample_authoring_input_validates():
+    sample=json.loads((ROOT/'data/sample_global_impact_input.json').read_text())
+    errors=list(validator('global_impact_input.schema.json').iter_errors(sample))
+    assert not errors, [e.message for e in errors]
 
-def test_sample_input_and_generated_output_validate():
-    input_schema = load("schemas/global_impact_input.schema.json")
-    output_schema = load("schemas/global_impact_record.schema.json")
-    sample = load("data/sample_global_impact_input.json")
-    Draft202012Validator(input_schema).validate(sample)
-    record = record_to_dict(build_impact_record(input_from_dict(sample), generated_at="2026-07-17T16:00:00+00:00"))
-    Draft202012Validator(output_schema, format_checker=FormatChecker()).validate(record)
+def test_contract_schema_rejects_flat_v101_record():
+    legacy=json.loads((ROOT/'contracts/legacy/legacy-v1.0.1-record.json').read_text())
+    assert list(validator('global_impact_contract.schema.json').iter_errors(legacy))
 
-
-def test_examples_validate():
-    output_schema = load("schemas/global_impact_record.schema.json")
-    example = load("examples/example_global_impact_record.json")
-    Draft202012Validator(output_schema, format_checker=FormatChecker()).validate(example)
-
-
-def test_all_fixture_outputs_validate():
-    output_schema = load("schemas/global_impact_record.schema.json")
-    validator = Draft202012Validator(output_schema, format_checker=FormatChecker())
-    for fixture_path in sorted((ROOT / "contracts/fixtures").glob("*.json")):
-        fixture = json.loads(fixture_path.read_text())
-        validator.validate(fixture["expected"])
+def test_contract_schema_rejects_unknown_fields():
+    fixture=json.loads(next((ROOT/'contracts/fixtures').glob('*.json')).read_text())['expected']
+    fixture['unexpected']=True
+    assert list(validator('global_impact_contract.schema.json').iter_errors(fixture))

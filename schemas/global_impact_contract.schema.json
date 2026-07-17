@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/global-impact-catalyst/1.1.0/global-impact-record.schema.json",
-  "title": "Global Impact Catalyst Canonical Record Compatibility Schema",
-  "description": "Compatibility filename for the v1.1.0 canonical impact contract schema.",
+  "$id": "https://sustainablecatalyst.com/schemas/global-impact-catalyst/1.1.0/global-impact-contract.schema.json",
+  "title": "Global Impact Catalyst Canonical Impact Contract",
+  "description": "Versioned entity-oriented impact contract separating entered facts, derived values, governance, provenance, and validation.",
   "x-global-impact-catalyst-version": "1.1.0",
   "type": "object",
   "additionalProperties": false,

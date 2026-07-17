@@ -1,31 +1,20 @@
 # Contributing
 
-Global Impact Catalyst is designed as a small, inspectable, evidence-oriented module. Contributions should preserve that character.
-
-## Preferred contribution types
-
-- Clearer methodology notes
-- Better sample records
-- More robust validation checks
-- Safer export formats
-- Documentation improvements
-- Tests for edge cases
-- Accessibility improvements for the WordPress demo
-
-## Standards
-
-Contributions should keep claims traceable. New examples should include source notes, method notes, assumptions, and interpretation limits. Avoid language that implies automatic certification, legal compliance, ESG assurance, or guaranteed impact.
-
-## Local validation
+Use Python 3.10+, Node 18+, and PHP 8+ when available.
 
 ```bash
-python -m pytest
-python python/global_impact_core.py --input data/sample_global_impact_input.json --output outputs/sample_global_impact_record.json --markdown outputs/sample_global_impact_brief.md
+python3 -m pip install -r requirements-dev.txt
+python3 -m pytest -q
+python3 scripts/check_contracts.py
+node scripts/check_browser_parity.js
+php scripts/check_wordpress_instances.php
+python3 scripts/smoke_test.py
 ```
 
-## Style
+When contract behavior changes, update both runtimes, regenerate fixtures with `python3 scripts/generate_fixtures.py`, update all schemas and documentation, and add a migration rule when existing records would otherwise lose meaning.
 
-- Prefer plain language over jargon.
-- Keep calculations transparent.
-- Keep examples educational and reviewable.
-- Do not add unnecessary dependencies.
+Generated output:
+
+```bash
+python3 python/global_impact_core.py --input data/sample_global_impact_input.json --output outputs/sample_global_impact_contract.json --markdown outputs/sample_global_impact_brief.md
+```

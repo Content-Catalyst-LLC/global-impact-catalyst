@@ -1,25 +1,9 @@
 # WordPress Demo Plugin
 
-Plugin folder:
+Plugin folder: `wordpress/global-impact-catalyst-demo/`
 
-```text
-wordpress/global-impact-catalyst-demo/
-```
+Shortcode: `[global_impact_catalyst_demo]`
 
-Shortcode:
+The client-side interface creates canonical v1.1.0 contracts without submitting visitor inputs to Sustainable Catalyst. It exposes context, outcome, indicator definition, measurement, source, method, design, review, and claim fields. The output presents contract identity, derived metrics, claim eligibility, validation issues, and downloadable JSON.
 
-```text
-[global_impact_catalyst_demo]
-```
-
-The demo is client-side. It does not submit visitor inputs to Sustainable Catalyst. It lets a visitor build an educational impact record in the browser and export JSON for review.
-
-## Suggested page placement
-
-Place the shortcode inside a scoped page wrapper such as:
-
-```html
-<div class="scgic-demo-shell">
-  [global_impact_catalyst_demo]
-</div>
-```
+Multiple shortcode instances are supported on one page through per-instance field IDs.

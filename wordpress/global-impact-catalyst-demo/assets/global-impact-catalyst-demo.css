@@ -232,3 +232,20 @@
   outline: 3px solid currentColor;
   outline-offset: 2px;
 }
+
+/* v1.1.0 canonical contract and validation additions */
+.gic-demo__section-title {
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+.gic-demo__section-title h3 { margin: 0; font-size: 1rem; }
+.gic-demo__contract-version { font-size: 0.8rem; opacity: 0.76; overflow-wrap: anywhere; }
+.gic-demo__contract-version code { font-size: 0.75rem; }
+.gic-demo__validation { margin-top: 1rem; padding: 0.9rem; border: 1px solid rgba(255, 180, 180, 0.45); border-radius: 8px; }
+.gic-demo__validation h4 { margin: 0 0 0.5rem; }
+.gic-demo__validation ul { margin: 0; padding-left: 1.2rem; }
+.gic-demo__validation li { margin: 0.45rem 0; }
+.gic-demo__validation li span { display: block; opacity: 0.8; }
+.gic-demo__validation li[data-severity="error"] strong { text-decoration: underline; }
+.gic-demo__valid { padding: 0.65rem 0.8rem; border: 1px solid rgba(190, 255, 205, 0.4); border-radius: 8px; }

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/global-impact-catalyst/1.1.0/global-impact-validation-result.schema.json",
+  "title": "Global Impact Catalyst Validation Result",
+  "x-global-impact-catalyst-version": "1.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "valid",
+    "error_count",
+    "warning_count",
+    "info_count",
+    "issues"
+  ],
+  "properties": {
+    "valid": {
+      "type": "boolean"
+    },
+    "error_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "warning_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "info_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "issue_id",
+          "severity",
+          "path",
+          "rule_id",
+          "message",
+          "remediation"
+        ],
+        "properties": {
+          "issue_id": {
+            "type": "string",
+            "pattern": "^gic-issue-[0-9a-f]{16}$"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "error",
+              "warning",
+              "info"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rule_id": {
+            "type": "string",
+            "pattern": "^GIC-[A-Z0-9-]+$"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "remediation": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

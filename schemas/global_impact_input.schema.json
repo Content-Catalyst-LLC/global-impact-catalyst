@@ -1,15 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/global-impact-catalyst/1.0.1/global-impact-input.schema.json",
-  "title": "Global Impact Catalyst Input",
-  "description": "Canonical v1.0.1 input contract for a single impact record.",
-  "x-global-impact-catalyst-version": "1.0.1",
+  "$id": "https://sustainablecatalyst.com/schemas/global-impact-catalyst/1.1.0/global-impact-input.schema.json",
+  "title": "Global Impact Catalyst Authoring Input",
+  "description": "Compact authoring input used to construct a canonical v1.1.0 impact contract.",
+  "x-global-impact-catalyst-version": "1.1.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "initiative",
     "goal",
-    "sdg_theme",
     "indicator",
     "unit",
     "baseline_value",
@@ -21,22 +20,169 @@
     "method_notes"
   ],
   "properties": {
-    "initiative": {"type": "string", "minLength": 1},
-    "goal": {"type": "string", "minLength": 1},
-    "sdg_theme": {"type": "string", "minLength": 1},
-    "indicator": {"type": "string", "minLength": 1},
-    "unit": {"type": "string", "minLength": 1},
-    "baseline_value": {"type": "number"},
-    "current_value": {"type": "number"},
-    "target_value": {"type": "number"},
-    "baseline_period": {"type": "string", "minLength": 1},
-    "current_period": {"type": "string", "minLength": 1},
-    "source": {"type": "string"},
-    "method_notes": {"type": "string"},
-    "confidence": {"type": "string", "enum": ["low", "medium", "high"], "default": "medium"},
-    "review_status": {"type": "string", "enum": ["draft", "needs_review", "reviewed", "published"], "default": "draft"},
-    "beneficiaries": {"type": ["integer", "null"], "minimum": 0, "default": null},
-    "budget_usd": {"type": ["number", "null"], "minimum": 0, "default": null},
-    "higher_is_better": {"type": "boolean", "default": true}
+    "workspace": {
+      "type": "string",
+      "default": "Default workspace"
+    },
+    "initiative": {
+      "type": "string"
+    },
+    "goal": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string"
+    },
+    "sdg_theme": {
+      "type": "string",
+      "default": "Sustainable development"
+    },
+    "indicator": {
+      "type": "string"
+    },
+    "indicator_definition": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "baseline_unit": {
+      "type": "string"
+    },
+    "current_unit": {
+      "type": "string"
+    },
+    "target_unit": {
+      "type": "string"
+    },
+    "baseline_value": {
+      "type": "number"
+    },
+    "current_value": {
+      "type": "number"
+    },
+    "target_value": {
+      "type": "number"
+    },
+    "baseline_period": {
+      "type": "string"
+    },
+    "current_period": {
+      "type": "string"
+    },
+    "target_period": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "source_locator": {
+      "type": "string"
+    },
+    "method_name": {
+      "type": "string"
+    },
+    "method_notes": {
+      "type": "string"
+    },
+    "method_version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "design_type": {
+      "type": "string",
+      "enum": [
+        "monitoring",
+        "before_after",
+        "comparison_group",
+        "quasi_experimental",
+        "randomized",
+        "qualitative",
+        "mixed_methods"
+      ],
+      "default": "before_after"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "review_status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "needs_review",
+        "reviewed",
+        "published"
+      ],
+      "default": "draft"
+    },
+    "beneficiaries": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "population_group": {
+      "type": "string"
+    },
+    "geography": {
+      "type": "string"
+    },
+    "budget_usd": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "budget_currency": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{3}$",
+      "default": "USD"
+    },
+    "higher_is_better": {
+      "type": "boolean",
+      "default": true
+    },
+    "claim_type": {
+      "type": "string",
+      "enum": [
+        "descriptive_observation",
+        "progress_to_target_statement",
+        "comparison",
+        "contribution_statement",
+        "causal_claim"
+      ],
+      "default": "progress_to_target_statement"
+    },
+    "claim_statement": {
+      "type": "string"
+    },
+    "comparison_basis": {
+      "type": "string"
+    },
+    "contribution_rationale": {
+      "type": "string"
+    },
+    "causal_design": {
+      "type": "string"
+    },
+    "record_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
   }
 }

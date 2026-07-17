@@ -1,81 +1,366 @@
 {
   "name": "03-zero-baseline",
-  "generated_at": "2026-07-17T16:00:00+00:00",
+  "generated_at": "2026-07-17T18:00:00+00:00",
   "input": {
+    "workspace": "Community Impact Portfolio",
     "initiative": "Community Energy Retrofit Pilot",
     "goal": "Reduce household energy burden while improving residential efficiency.",
+    "outcome": "Participating households experience lower monthly energy costs.",
     "sdg_theme": "Affordable and clean energy",
     "indicator": "Average monthly bill reduction",
+    "indicator_definition": "Mean reduction in monthly household utility bills relative to the baseline period.",
     "unit": "USD",
     "baseline_value": 0,
     "current_value": 5,
     "target_value": 10,
     "baseline_period": "2025 baseline",
     "current_period": "2026 Q2",
+    "target_period": "2027",
     "source": "Pilot utility-billing sample and participant survey summary",
-    "method_notes": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills.",
+    "source_locator": "Internal pilot evidence package GIC-ENERGY-2026-Q2",
+    "method_name": "Before-and-after billing comparison",
+    "method_version": "1.0",
+    "design_type": "before_after",
+    "method_notes": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills. Results should be reviewed for seasonality and household-size differences.",
     "confidence": "medium",
     "review_status": "needs_review",
     "beneficiaries": 420,
+    "population_group": "Participating households",
+    "geography": "Chicago, Illinois",
     "budget_usd": 125000,
-    "higher_is_better": true
+    "budget_currency": "USD",
+    "higher_is_better": true,
+    "claim_type": "progress_to_target_statement",
+    "claim_statement": ""
   },
   "expected": {
-    "record_type": "global_impact_catalyst_record",
-    "generated_at": "2026-07-17T16:00:00+00:00",
-    "initiative": "Community Energy Retrofit Pilot",
-    "goal": "Reduce household energy burden while improving residential efficiency.",
-    "sdg_theme": "Affordable and clean energy",
-    "indicator": "Average monthly bill reduction",
-    "unit": "USD",
-    "baseline_period": "2025 baseline",
-    "current_period": "2026 Q2",
-    "baseline_value": 0.0,
-    "current_value": 5.0,
-    "target_value": 10.0,
-    "higher_is_better": true,
-    "source": "Pilot utility-billing sample and participant survey summary",
-    "method_notes": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills.",
-    "confidence": "medium",
-    "review_status": "needs_review",
-    "beneficiaries": 420,
-    "budget_usd": 125000.0,
-    "metrics": {
-      "absolute_change": 5.0,
-      "percent_change_from_baseline": null,
-      "progress_to_target_percent": 50.0,
-      "remaining_gap": 5.0,
-      "status": "draft — partial progress",
-      "cost_per_beneficiary_usd": 297.62,
-      "data_quality_score": 75,
-      "data_quality_components": {
-        "source_documented": 25,
-        "method_documented": 25,
-        "confidence_signal": 15,
-        "review_signal": 10
-      }
+    "contract_type": "global_impact_contract",
+    "contract_version": "1.1.0",
+    "schema_version": "1.1.0",
+    "record_id": "gic-record-455a33fa7a7a737b",
+    "created_at": "2026-07-17T18:00:00+00:00",
+    "updated_at": "2026-07-17T18:00:00+00:00",
+    "lifecycle_status": "needs_review",
+    "provenance": {
+      "generated_by": {
+        "name": "global-impact-catalyst",
+        "version": "1.1.0",
+        "runtime": "cross-runtime"
+      },
+      "input_fingerprint": "5d6130cffcb8003c",
+      "source_contract_version": null,
+      "migration": null
     },
-    "interpretation_notes": [
-      "Average monthly bill reduction changed from 0 USD in 2025 baseline to 5 USD in 2026 Q2.",
-      "Progress should be interpreted against the indicator definition, data source, method notes, confidence level, and review status.",
-      "Estimated progress to target is 50.00%.",
-      "Review status indicates that this output is not final."
-    ],
+    "facts": {
+      "workspace": {
+        "entity_type": "workspace",
+        "id": "gic-workspace-b909e2e38a64e5b2",
+        "created_at": "2026-07-17T18:00:00+00:00",
+        "updated_at": "2026-07-17T18:00:00+00:00",
+        "name": "Community Impact Portfolio"
+      },
+      "initiative": {
+        "entity_type": "initiative",
+        "id": "gic-initiative-064d49a653a0f2fd",
+        "created_at": "2026-07-17T18:00:00+00:00",
+        "updated_at": "2026-07-17T18:00:00+00:00",
+        "workspace_id": "gic-workspace-b909e2e38a64e5b2",
+        "name": "Community Energy Retrofit Pilot"
+      },
+      "goal": {
+        "entity_type": "goal",
+        "id": "gic-goal-8aec67a38df050c0",
+        "created_at": "2026-07-17T18:00:00+00:00",
+        "updated_at": "2026-07-17T18:00:00+00:00",
+        "initiative_id": "gic-initiative-064d49a653a0f2fd",
+        "statement": "Reduce household energy burden while improving residential efficiency.",
+        "sdg_theme": "Affordable and clean energy"
+      },
+      "outcomes": [
+        {
+          "entity_type": "outcome",
+          "id": "gic-outcome-5cfeb3d26b07d273",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "goal_id": "gic-goal-8aec67a38df050c0",
+          "statement": "Participating households experience lower monthly energy costs."
+        }
+      ],
+      "indicator": {
+        "entity_type": "indicator",
+        "id": "gic-indicator-7da3f51b6aa4132e",
+        "created_at": "2026-07-17T18:00:00+00:00",
+        "updated_at": "2026-07-17T18:00:00+00:00",
+        "outcome_id": "gic-outcome-5cfeb3d26b07d273",
+        "name": "Average monthly bill reduction",
+        "definition_version": {
+          "entity_type": "indicator_definition_version",
+          "id": "gic-indicator-definition-version-05c4e220d8abc487",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "version": "1.0",
+          "name": "Mean reduction in monthly household utility bills relative to the baseline period.",
+          "unit": "USD",
+          "direction": "higher_is_better"
+        }
+      },
+      "measurement": {
+        "baseline": {
+          "entity_type": "baseline",
+          "id": "gic-baseline-273685175f95ef20",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "indicator_id": "gic-indicator-7da3f51b6aa4132e",
+          "value": 0.0,
+          "unit": "USD",
+          "period": {
+            "label": "2025 baseline"
+          },
+          "source_ids": [
+            "gic-source-f5ffa5b165a98a06"
+          ],
+          "method_id": "gic-method-32965359a76f5226"
+        },
+        "target": {
+          "entity_type": "target",
+          "id": "gic-target-168dd701d63d6a12",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "indicator_id": "gic-indicator-7da3f51b6aa4132e",
+          "value": 10.0,
+          "unit": "USD",
+          "period": {
+            "label": "2027"
+          },
+          "direction": "higher_is_better"
+        },
+        "observations": [
+          {
+            "entity_type": "observation",
+            "id": "gic-observation-db2bd3806e9cda05",
+            "created_at": "2026-07-17T18:00:00+00:00",
+            "updated_at": "2026-07-17T18:00:00+00:00",
+            "indicator_id": "gic-indicator-7da3f51b6aa4132e",
+            "value": 5.0,
+            "unit": "USD",
+            "period": {
+              "label": "2026 Q2"
+            },
+            "source_ids": [
+              "gic-source-f5ffa5b165a98a06"
+            ],
+            "method_id": "gic-method-32965359a76f5226"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "entity_type": "source",
+          "id": "gic-source-f5ffa5b165a98a06",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "title": "Pilot utility-billing sample and participant survey summary",
+          "locator": "Internal pilot evidence package GIC-ENERGY-2026-Q2",
+          "source_type": "entered_source"
+        }
+      ],
+      "methods": [
+        {
+          "entity_type": "method",
+          "id": "gic-method-32965359a76f5226",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "name": "Before-and-after billing comparison",
+          "version": "1.0",
+          "description": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills. Results should be reviewed for seasonality and household-size differences.",
+          "design_type": "before_after"
+        }
+      ],
+      "population_groups": [
+        {
+          "entity_type": "population_group",
+          "id": "gic-population-group-b42066551c713892",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "name": "Participating households",
+          "observed_count": 420
+        }
+      ],
+      "geographies": [
+        {
+          "entity_type": "geography",
+          "id": "gic-geography-da69edc4ff1adc31",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "name": "Chicago, Illinois",
+          "geography_type": "entered_label"
+        }
+      ],
+      "budget_records": [
+        {
+          "entity_type": "budget_record",
+          "id": "gic-budget-record-502195c3b5daa146",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "initiative_id": "gic-initiative-064d49a653a0f2fd",
+          "amount": 125000.0,
+          "currency": "USD",
+          "period": {
+            "label": "2026 Q2"
+          }
+        }
+      ]
+    },
+    "derived": {
+      "metrics": {
+        "absolute_change": 5.0,
+        "percent_change_from_baseline": null,
+        "progress_to_target_percent": 50.0,
+        "remaining_gap": 5.0,
+        "status": "draft — partial progress",
+        "cost_per_beneficiary": {
+          "value": 297.62,
+          "currency": "USD"
+        },
+        "data_quality_score": 75,
+        "data_quality_components": {
+          "source_documented": 25,
+          "method_documented": 25,
+          "confidence_signal": 15,
+          "review_signal": 10
+        },
+        "calculation_method": {
+          "engine": "global-impact-catalyst",
+          "engine_version": "1.1.0",
+          "rounding": "decimal half up",
+          "progress_formula": "direction-aware change from baseline divided by baseline-to-target distance"
+        }
+      },
+      "interpretations": [
+        {
+          "entity_type": "interpretation",
+          "id": "gic-interpretation-f3bc8df96b33f05e",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "interpretation_type": "metric_interpretation",
+          "text": "Average monthly bill reduction changed from 0 USD in 2025 baseline to 5 USD in 2026 Q2.",
+          "evidence_refs": [
+            "gic-baseline-273685175f95ef20",
+            "gic-observation-db2bd3806e9cda05",
+            "gic-target-168dd701d63d6a12"
+          ]
+        },
+        {
+          "entity_type": "interpretation",
+          "id": "gic-interpretation-f0bc89406a33eecb",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "interpretation_type": "metric_interpretation",
+          "text": "Progress must be interpreted against the indicator definition, source, method, population, geography, confidence, and review status.",
+          "evidence_refs": [
+            "gic-baseline-273685175f95ef20",
+            "gic-observation-db2bd3806e9cda05",
+            "gic-target-168dd701d63d6a12"
+          ]
+        },
+        {
+          "entity_type": "interpretation",
+          "id": "gic-interpretation-f1bc8ad36933ed38",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "interpretation_type": "metric_interpretation",
+          "text": "Estimated progress to target is 50.00%.",
+          "evidence_refs": [
+            "gic-baseline-273685175f95ef20",
+            "gic-observation-db2bd3806e9cda05",
+            "gic-target-168dd701d63d6a12"
+          ]
+        }
+      ],
+      "claims": [
+        {
+          "entity_type": "claim",
+          "id": "gic-claim-33a3c2262f00f05b",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "claim_type": "progress_to_target_statement",
+          "statement": "Estimated progress to target for Average monthly bill reduction is 50.00%.",
+          "confidence": "medium",
+          "evidence_refs": [
+            "gic-source-f5ffa5b165a98a06",
+            "gic-method-32965359a76f5226",
+            "gic-baseline-273685175f95ef20",
+            "gic-observation-db2bd3806e9cda05",
+            "gic-target-168dd701d63d6a12"
+          ],
+          "design_metadata": {
+            "design_type": "before_after",
+            "comparison_basis": "",
+            "contribution_rationale": "",
+            "causal_design": ""
+          },
+          "eligibility": {
+            "eligible": true,
+            "blocking_issue_ids": []
+          }
+        }
+      ]
+    },
+    "governance": {
+      "reviews": [
+        {
+          "entity_type": "review",
+          "id": "gic-review-3370713ce5f8764f",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "status": "needs_review",
+          "confidence": "medium",
+          "reviewer": "not_recorded",
+          "notes": ""
+        }
+      ],
+      "revisions": [
+        {
+          "entity_type": "revision",
+          "id": "gic-revision-ea1639f1758ab4da",
+          "created_at": "2026-07-17T18:00:00+00:00",
+          "updated_at": "2026-07-17T18:00:00+00:00",
+          "revision_number": 1,
+          "reason": "Initial canonical contract",
+          "parent_revision_id": null
+        }
+      ],
+      "publications": []
+    },
+    "validation": {
+      "valid": true,
+      "error_count": 0,
+      "warning_count": 0,
+      "info_count": 0,
+      "issues": []
+    },
     "traceability_path": [
+      "workspace",
+      "initiative",
       "goal",
-      "indicator",
+      "outcome",
+      "indicator definition",
       "baseline",
-      "current measurement",
+      "observation",
       "target",
       "source",
-      "method notes",
-      "confidence",
-      "review status"
+      "method",
+      "interpretation",
+      "claim",
+      "review",
+      "revision",
+      "publication"
     ],
     "boundaries": [
-      "This record is not an ESG assurance opinion or SDG certification.",
-      "Results depend on data quality, source reliability, indicator definition, and method choices.",
-      "Human review is required before formal reporting or external claims."
+      "This contract is not an ESG assurance opinion, SDG certification, regulatory filing, or audit finding.",
+      "Derived progress does not establish causality, contribution, attribution, or comparative superiority.",
+      "Claims depend on documented sources, method design, indicator definition, and human review.",
+      "Validation checks contract consistency; it does not automatically verify truth or source authenticity."
     ]
   }
 }

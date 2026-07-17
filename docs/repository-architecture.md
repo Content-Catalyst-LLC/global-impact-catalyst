@@ -1,19 +1,24 @@
-# Repository Architecture — v1.0.1
-
-Global Impact Catalyst keeps the runtime small while enforcing observable parity between Python and browser calculations.
+# Repository Architecture — v1.1.0
 
 ```text
-input JSON
-   ├── Python normalization and engine
-   └── JavaScript normalization and engine
-            ↓
-canonical golden fixtures
-            ↓
-versioned output schema
-            ↓
-JSON / Markdown / WordPress presentation
+compact input or legacy record
+        ├── Python normalizer / validator / contract builder
+        └── JavaScript normalizer / validator / contract builder
+                         ↓
+              exact golden fixtures
+                         ↓
+       canonical contract + validation schemas
+                         ↓
+ JSON / Markdown / WordPress presentation / migration
 ```
 
-The two runtime implementations are tested against complete expected outputs. This avoids requiring Python inside WordPress while preventing ungoverned contract drift.
+The two implementations share documented algorithms and complete expected outputs rather than importing one runtime into the other. Deterministic IDs and issue IDs make exact parity observable.
 
-Release integrity is checked by `scripts/check_contracts.py`; browser parity is checked by `scripts/check_browser_parity.js`; the portable suite is `scripts/smoke_test.py`.
+- `python/global_impact_core.py`: normalization, identity, metrics, validation, contract assembly, migration, Markdown, CLI
+- `schemas/`: compact authoring, canonical contract, compatibility, and validation-result schemas
+- `contracts/fixtures/`: exact runtime parity suite
+- `contracts/legacy/`: migration source fixture
+- `scripts/check_contracts.py`: repository and release invariants
+- `scripts/check_browser_parity.js`: exact JavaScript parity
+- `scripts/check_wordpress_instances.php`: rendered shortcode integrity
+- `scripts/smoke_test.py`: portable end-to-end release check
