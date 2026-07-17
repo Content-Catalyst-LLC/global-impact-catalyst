@@ -1,0 +1,49 @@
+{
+  "aggregation_type": "global_impact_outcome_portfolio_aggregation",
+  "aggregation_version": "1.5.0",
+  "outcome_portfolio_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
+  "workspace_id": "gic-workspace-bdc75d8b68333af2",
+  "generated_at": "2026-07-17T20:23:45.004632+00:00",
+  "period": {
+    "start": null,
+    "end": null,
+    "label": "2026 Q3"
+  },
+  "aggregation_method": "sum",
+  "target_unit_id": "gic-unit-usd",
+  "value": 21.5,
+  "included": [
+    {
+      "membership_id": "gic-outcome-membership-18d67f183b1b73184205",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "indicator_id": "gic-indicator-2e7a8f93231487ce",
+      "observation_record_id": "gic-observation-record-8528c165ea1091e429dd",
+      "period_label": "2026 Q3",
+      "source_value": 21.5,
+      "source_unit_id": "gic-unit-usd",
+      "converted_value": 21.5,
+      "target_unit_id": "gic-unit-usd",
+      "weight": 1.0,
+      "population_scope": "Participating Chicago households",
+      "overlap_group": "chicago-households-2026",
+      "denominator_definition": "Unique participating households",
+      "data_state": "complete"
+    }
+  ],
+  "excluded": [],
+  "warnings": [],
+  "rules": {
+    "period_policy": "exact",
+    "overlap_policy": "exclude_unknown_or_overlapping",
+    "missing_data_policy": "exclude_and_disclose",
+    "unit_conversion": "Only dimension-compatible units are converted through the governed unit registry.",
+    "population_overlap": "Population-sensitive sums disclose or exclude overlapping and unknown scopes according to portfolio policy."
+  },
+  "integrity": {
+    "valid": true,
+    "included_count": 1,
+    "excluded_count": 0
+  },
+  "boundary": "Portfolio aggregation combines compatible recorded observations; it does not prove attribution or eliminate double-counting risk beyond disclosed rules.",
+  "aggregation_run_id": "gic-portfolio-run-065944a972e47c2488bf"
+}

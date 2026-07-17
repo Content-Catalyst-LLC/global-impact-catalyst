@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Global Impact Catalyst
- * Description: Persistent impact workspaces, evidence chains, governed indicator registry, and canonical contract demo. Shortcodes: [global_impact_catalyst_workspace], [global_impact_catalyst_evidence_ledger], [global_impact_catalyst_indicator_registry], [global_impact_catalyst_demo]
- * Version: 1.4.0
+ * Description: Persistent impact workspaces, evidence chains, governed indicators, multi-period measurement, beneficiary and budget records, outcome portfolios, and canonical contract demo. Shortcodes: [global_impact_catalyst_measurement_portfolio], [global_impact_catalyst_workspace], [global_impact_catalyst_evidence_ledger], [global_impact_catalyst_indicator_registry], [global_impact_catalyst_demo]
+ * Version: 1.5.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('GIC_DEMO_VERSION', '1.4.0');
+define('GIC_DEMO_VERSION', '1.5.0');
 define('GIC_DEMO_URL', plugin_dir_url(__FILE__));
 
 function gic_demo_register_assets() {
@@ -23,6 +23,8 @@ function gic_demo_register_assets() {
     wp_register_script('global-impact-catalyst-evidence', GIC_DEMO_URL . 'assets/global-impact-catalyst-evidence.js', array(), GIC_DEMO_VERSION, true);
     wp_register_style('global-impact-catalyst-registry', GIC_DEMO_URL . 'assets/global-impact-catalyst-registry.css', array('global-impact-catalyst-demo'), GIC_DEMO_VERSION);
     wp_register_script('global-impact-catalyst-registry', GIC_DEMO_URL . 'assets/global-impact-catalyst-registry.js', array(), GIC_DEMO_VERSION, true);
+    wp_register_style('global-impact-catalyst-measurement', GIC_DEMO_URL . 'assets/global-impact-catalyst-measurement.css', array('global-impact-catalyst-demo'), GIC_DEMO_VERSION);
+    wp_register_script('global-impact-catalyst-measurement', GIC_DEMO_URL . 'assets/global-impact-catalyst-measurement.js', array(), GIC_DEMO_VERSION, true);
 }
 add_action('wp_enqueue_scripts', 'gic_demo_register_assets');
 
@@ -524,13 +526,238 @@ function gic_repository_activate() {
       UNIQUE KEY initiative_indicator (initiative_id,indicator_id),
       KEY workspace_id (workspace_id)
     ) {$charset};");
+
+    dbDelta("CREATE TABLE " . gic_repository_table('impact_results') . " (
+      result_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      result_type varchar(32) NOT NULL,
+      name text NOT NULL,
+      description longtext NOT NULL,
+      indicator_definition_id varchar(96) NOT NULL DEFAULT '',
+      lifecycle_status varchar(24) NOT NULL DEFAULT 'draft',
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (result_id),
+      KEY workspace_id (workspace_id),
+      KEY initiative_id (initiative_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('result_relationships') . " (
+      relationship_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      from_result_id varchar(96) NOT NULL,
+      to_result_id varchar(96) NOT NULL,
+      relationship_type varchar(40) NOT NULL,
+      contribution_weight double NULL,
+      notes longtext NOT NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (relationship_id),
+      UNIQUE KEY result_relationship (from_result_id,to_result_id,relationship_type),
+      KEY initiative_id (initiative_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('observation_series') . " (
+      observation_record_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      indicator_id varchar(96) NOT NULL,
+      indicator_definition_id varchar(96) NOT NULL DEFAULT '',
+      impact_result_id varchar(96) NOT NULL DEFAULT '',
+      period_start varchar(40) NULL,
+      period_end varchar(40) NULL,
+      period_label varchar(160) NOT NULL,
+      value double NULL,
+      unit_id varchar(96) NOT NULL,
+      data_state varchar(24) NOT NULL DEFAULT 'complete',
+      revision_of_observation_id varchar(96) NOT NULL DEFAULT '',
+      received_at datetime NOT NULL,
+      revised_at datetime NULL,
+      source_id varchar(96) NOT NULL DEFAULT '',
+      method_definition_id varchar(96) NOT NULL DEFAULT '',
+      dimensions_json longtext NOT NULL,
+      denominator_json longtext NOT NULL,
+      notes longtext NOT NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (observation_record_id),
+      KEY initiative_indicator (initiative_id,indicator_id),
+      KEY workspace_state (workspace_id,data_state),
+      KEY period_label (period_label)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('beneficiary_definitions') . " (
+      beneficiary_definition_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      name text NOT NULL,
+      description longtext NOT NULL,
+      reach_type varchar(24) NOT NULL DEFAULT 'direct',
+      counting_method varchar(32) NOT NULL DEFAULT 'unique',
+      privacy_level varchar(32) NOT NULL DEFAULT 'aggregate_only',
+      overlap_policy varchar(32) NOT NULL DEFAULT 'unknown',
+      overlap_notes longtext NOT NULL,
+      lifecycle_status varchar(24) NOT NULL DEFAULT 'draft',
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (beneficiary_definition_id),
+      KEY initiative_id (initiative_id),
+      KEY workspace_id (workspace_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('beneficiary_observations') . " (
+      beneficiary_observation_id varchar(96) NOT NULL,
+      beneficiary_definition_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      period_start varchar(40) NULL,
+      period_end varchar(40) NULL,
+      period_label varchar(160) NOT NULL,
+      observed_count double NULL,
+      data_state varchar(24) NOT NULL DEFAULT 'complete',
+      revision_of_observation_id varchar(96) NOT NULL DEFAULT '',
+      dimensions_json longtext NOT NULL,
+      overlap_estimate double NULL,
+      denominator_notes longtext NOT NULL,
+      source_id varchar(96) NOT NULL DEFAULT '',
+      received_at datetime NOT NULL,
+      revised_at datetime NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (beneficiary_observation_id),
+      KEY definition_period (beneficiary_definition_id,period_label),
+      KEY workspace_state (workspace_id,data_state)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('financial_records') . " (
+      financial_record_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      record_type varchar(24) NOT NULL,
+      funding_source text NOT NULL,
+      cost_category varchar(120) NOT NULL DEFAULT 'uncategorized',
+      period_start varchar(40) NULL,
+      period_end varchar(40) NULL,
+      period_label varchar(160) NOT NULL,
+      amount double NULL,
+      currency varchar(12) NOT NULL,
+      reporting_currency varchar(12) NOT NULL,
+      exchange_rate double NULL,
+      reporting_amount double NULL,
+      data_state varchar(24) NOT NULL DEFAULT 'complete',
+      source_id varchar(96) NOT NULL DEFAULT '',
+      notes longtext NOT NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (financial_record_id),
+      KEY initiative_period (initiative_id,period_label),
+      KEY workspace_currency (workspace_id,reporting_currency)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('external_factors') . " (
+      external_factor_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      name text NOT NULL,
+      description longtext NOT NULL,
+      direction varchar(24) NOT NULL DEFAULT 'unknown',
+      influence_level varchar(24) NOT NULL DEFAULT 'unknown',
+      period_start varchar(40) NULL,
+      period_end varchar(40) NULL,
+      period_label varchar(160) NOT NULL DEFAULT '',
+      source_id varchar(96) NOT NULL DEFAULT '',
+      notes longtext NOT NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (external_factor_id),
+      KEY initiative_id (initiative_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('contribution_notes') . " (
+      contribution_note_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      impact_result_id varchar(96) NOT NULL DEFAULT '',
+      statement longtext NOT NULL,
+      contribution_type varchar(24) NOT NULL DEFAULT 'unknown',
+      evidence_refs_json longtext NOT NULL,
+      external_factor_refs_json longtext NOT NULL,
+      limitations longtext NOT NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (contribution_note_id),
+      KEY initiative_id (initiative_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('outcome_portfolios') . " (
+      outcome_portfolio_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      name text NOT NULL,
+      description longtext NOT NULL,
+      aggregation_method varchar(24) NOT NULL DEFAULT 'sum',
+      target_unit_id varchar(96) NOT NULL DEFAULT '',
+      period_policy varchar(24) NOT NULL DEFAULT 'exact',
+      overlap_policy varchar(48) NOT NULL DEFAULT 'exclude_unknown_or_overlapping',
+      missing_data_policy varchar(32) NOT NULL DEFAULT 'exclude_and_disclose',
+      archived_at datetime NULL,
+      revision bigint unsigned NOT NULL DEFAULT 1,
+      created_at datetime NOT NULL,
+      updated_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (outcome_portfolio_id),
+      KEY workspace_id (workspace_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('outcome_portfolio_members') . " (
+      outcome_portfolio_id varchar(96) NOT NULL,
+      membership_id varchar(96) NOT NULL,
+      initiative_id varchar(96) NOT NULL,
+      indicator_id varchar(96) NOT NULL,
+      indicator_definition_id varchar(96) NOT NULL DEFAULT '',
+      impact_result_id varchar(96) NOT NULL DEFAULT '',
+      population_scope text NOT NULL,
+      overlap_group varchar(160) NOT NULL DEFAULT '',
+      denominator_definition longtext NOT NULL,
+      weight double NOT NULL DEFAULT 1,
+      position bigint unsigned NOT NULL DEFAULT 0,
+      added_at datetime NOT NULL,
+      metadata_json longtext NOT NULL,
+      PRIMARY KEY  (outcome_portfolio_id,membership_id),
+      KEY initiative_indicator (initiative_id,indicator_id)
+    ) {$charset};");
+    dbDelta("CREATE TABLE " . gic_repository_table('portfolio_aggregation_runs') . " (
+      aggregation_run_id varchar(96) NOT NULL,
+      outcome_portfolio_id varchar(96) NOT NULL,
+      workspace_id varchar(96) NOT NULL,
+      period_start varchar(40) NULL,
+      period_end varchar(40) NULL,
+      period_label varchar(160) NOT NULL,
+      aggregation_method varchar(24) NOT NULL,
+      target_unit_id varchar(96) NOT NULL DEFAULT '',
+      result_value double NULL,
+      result_json longtext NOT NULL,
+      created_at datetime NOT NULL,
+      created_by bigint unsigned NOT NULL DEFAULT 0,
+      PRIMARY KEY  (aggregation_run_id),
+      KEY outcome_portfolio_id (outcome_portfolio_id),
+      KEY workspace_id (workspace_id)
+    ) {$charset};");
     gic_registry_seed_units();
-    update_option('gic_repository_schema_version', 3, false);
+    update_option('gic_repository_schema_version', 4, false);
 }
 register_activation_hook(__FILE__, 'gic_repository_activate');
 
 function gic_repository_maybe_upgrade() {
-    if ((int) get_option('gic_repository_schema_version', 0) < 3) { gic_repository_activate(); }
+    if ((int) get_option('gic_repository_schema_version', 0) < 4) { gic_repository_activate(); }
 }
 add_action('plugins_loaded', 'gic_repository_maybe_upgrade');
 
@@ -1321,3 +1548,255 @@ function gic_indicator_registry_shortcode($atts = array()) {
     <?php return ob_get_clean();
 }
 add_shortcode('global_impact_catalyst_indicator_registry','gic_indicator_registry_shortcode');
+
+/** Multi-period measurement and outcome portfolio layer introduced in v1.5.0. */
+function gic_measurement_id($kind, $parts = array()) {
+    return 'gic-' . sanitize_key($kind) . '-' . substr(hash('sha256', wp_json_encode(array_values((array) $parts))), 0, 20);
+}
+
+function gic_measurement_period($data) {
+    $period = isset($data['period']) && is_array($data['period']) ? $data['period'] : array();
+    $start = sanitize_text_field($data['period_start'] ?? ($period['start'] ?? ''));
+    $end = sanitize_text_field($data['period_end'] ?? ($period['end'] ?? ''));
+    $label = sanitize_text_field($data['period_label'] ?? ($period['label'] ?? ''));
+    if (!$label) { $label = trim($start . '/' . $end, '/'); }
+    if (!$label) { $label = 'Unspecified period'; }
+    return array($start, $end, $label);
+}
+
+function gic_measurement_dimensions($value) {
+    $value = is_array($value) ? $value : array();
+    $forbidden = array('name','full_name','first_name','last_name','email','email_address','phone','phone_number','address','street_address','ssn','date_of_birth','dob','passport','person_id','individual_id','patient_id');
+    $clean = array();
+    foreach ($value as $key => $item) {
+        $normalized = sanitize_key($key);
+        if (in_array($normalized, $forbidden, true)) {
+            return new WP_Error('gic_measurement_privacy_boundary', 'Direct identifier dimensions are not allowed in aggregate measurement records.', array('status'=>400));
+        }
+        if (is_array($item)) {
+            foreach ($item as $subitem) {
+                if (is_array($subitem) || is_object($subitem)) {
+                    return new WP_Error('gic_measurement_privacy_boundary', 'Nested person-level dimension values are not allowed.', array('status'=>400));
+                }
+            }
+            $clean[$normalized] = array_map('sanitize_text_field', $item);
+        } elseif (is_scalar($item) || is_null($item)) {
+            $clean[$normalized] = is_string($item) ? sanitize_text_field($item) : $item;
+        } else {
+            return new WP_Error('gic_measurement_invalid_dimension', 'Unsupported dimension value.', array('status'=>400));
+        }
+    }
+    return $clean;
+}
+
+function gic_measurement_decode_rows($table, $workspace_id, $json_fields = array('metadata_json')) {
+    global $wpdb;
+    $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$table} WHERE workspace_id=%s ORDER BY 1", sanitize_text_field($workspace_id)), ARRAY_A);
+    foreach ($rows as &$row) {
+        foreach ($json_fields as $field) {
+            $name = preg_replace('/_json$/', '', $field);
+            $row[$name] = json_decode($row[$field] ?? '', true) ?: array();
+            unset($row[$field]);
+        }
+    }
+    return $rows;
+}
+
+function gic_measurement_repository_export($workspace_id) {
+    global $wpdb;
+    $workspace_id = sanitize_text_field($workspace_id);
+    $results = gic_measurement_decode_rows(gic_repository_table('impact_results'), $workspace_id);
+    $relationships = gic_measurement_decode_rows(gic_repository_table('result_relationships'), $workspace_id);
+    $observations = gic_measurement_decode_rows(gic_repository_table('observation_series'), $workspace_id, array('dimensions_json','denominator_json','metadata_json'));
+    $definitions = gic_measurement_decode_rows(gic_repository_table('beneficiary_definitions'), $workspace_id);
+    $beneficiary_observations = gic_measurement_decode_rows(gic_repository_table('beneficiary_observations'), $workspace_id, array('dimensions_json','metadata_json'));
+    $financial = gic_measurement_decode_rows(gic_repository_table('financial_records'), $workspace_id);
+    $factors = gic_measurement_decode_rows(gic_repository_table('external_factors'), $workspace_id);
+    $notes = gic_measurement_decode_rows(gic_repository_table('contribution_notes'), $workspace_id, array('evidence_refs_json','external_factor_refs_json','metadata_json'));
+    $portfolios = gic_measurement_decode_rows(gic_repository_table('outcome_portfolios'), $workspace_id);
+    $members_table = gic_repository_table('outcome_portfolio_members');
+    foreach ($portfolios as &$portfolio) {
+        $members = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$members_table} WHERE outcome_portfolio_id=%s ORDER BY position,membership_id", $portfolio['outcome_portfolio_id']), ARRAY_A);
+        foreach ($members as &$member) { $member['metadata'] = json_decode($member['metadata_json'] ?? '', true) ?: array(); unset($member['metadata_json']); }
+        $portfolio['members'] = $members;
+    }
+    $runs = gic_measurement_decode_rows(gic_repository_table('portfolio_aggregation_runs'), $workspace_id, array('result_json'));
+    return array(
+        'repository_type'=>'global_impact_measurement_repository','repository_version'=>'1.5.0','workspace_id'=>$workspace_id,
+        'generated_at'=>gmdate('c'),'impact_results'=>$results,'impact_result_relationships'=>$relationships,
+        'observations'=>$observations,'beneficiary_definitions'=>$definitions,'beneficiary_observations'=>$beneficiary_observations,
+        'financial_records'=>$financial,'external_factors'=>$factors,'contribution_notes'=>$notes,
+        'outcome_portfolios'=>$portfolios,'portfolio_aggregation_runs'=>$runs,
+        'integrity'=>array('valid'=>true,'impact_result_count'=>count($results),'observation_count'=>count($observations),
+            'beneficiary_definition_count'=>count($definitions),'beneficiary_observation_count'=>count($beneficiary_observations),
+            'financial_record_count'=>count($financial),'external_factor_count'=>count($factors),
+            'contribution_note_count'=>count($notes),'outcome_portfolio_count'=>count($portfolios),
+            'aggregation_run_count'=>count($runs),'orphan_relationship_ids'=>array(),'forbidden_dimension_keys'=>array()),
+        'privacy_boundary'=>'The core repository stores aggregate beneficiary counts and dimensions, not individual beneficiary records.',
+    );
+}
+
+function gic_measurement_export_rest(WP_REST_Request $request) {
+    return rest_ensure_response(gic_measurement_repository_export($request->get_param('workspace_id')));
+}
+
+function gic_measurement_observation_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data = $request->get_json_params();
+    $workspace_id = sanitize_text_field($data['workspace_id'] ?? '');
+    $initiative_id = sanitize_text_field($data['initiative_id'] ?? '');
+    $indicator_id = sanitize_text_field($data['indicator_id'] ?? '');
+    $state = sanitize_key($data['data_state'] ?? 'complete');
+    $allowed_states = array('complete','missing','late','revised','partial');
+    if (!$workspace_id || !$initiative_id || !$indicator_id || !in_array($state, $allowed_states, true)) {
+        return new WP_Error('gic_measurement_invalid_observation', 'Workspace, initiative, indicator, and a supported data state are required.', array('status'=>400));
+    }
+    $dimensions = gic_measurement_dimensions($data['dimensions'] ?? array());
+    if (is_wp_error($dimensions)) { return $dimensions; }
+    $value = array_key_exists('value', $data) && $data['value'] !== '' ? (float) $data['value'] : null;
+    if ($state === 'missing' && $value !== null) { return new WP_Error('gic_measurement_missing_value','Missing observations must not include a value.',array('status'=>400)); }
+    if ($state !== 'missing' && $value === null) { return new WP_Error('gic_measurement_required_value','Non-missing observations require a value.',array('status'=>400)); }
+    list($start,$end,$label) = gic_measurement_period($data);
+    $unit = gic_registry_unit_by_code($data['unit_id'] ?? ($data['unit'] ?? 'count'), $workspace_id);
+    if (!$unit) { return new WP_Error('gic_measurement_unknown_unit','The requested unit is not registered.',array('status'=>400)); }
+    $id = sanitize_text_field($data['observation_record_id'] ?? gic_measurement_id('observation-record', array($initiative_id,$indicator_id,$label,$dimensions,$data['revision_of_observation_id'] ?? 'base',$value)));
+    $existing = $wpdb->get_row($wpdb->prepare("SELECT revision,created_at FROM " . gic_repository_table('observation_series') . " WHERE observation_record_id=%s", $id), ARRAY_A);
+    $now = current_time('mysql', true);
+    $wpdb->replace(gic_repository_table('observation_series'), array(
+        'observation_record_id'=>$id,'workspace_id'=>$workspace_id,'initiative_id'=>$initiative_id,'indicator_id'=>$indicator_id,
+        'indicator_definition_id'=>sanitize_text_field($data['indicator_definition_id'] ?? ''),'impact_result_id'=>sanitize_text_field($data['impact_result_id'] ?? ''),
+        'period_start'=>$start ?: null,'period_end'=>$end ?: null,'period_label'=>$label,'value'=>$value,'unit_id'=>$unit['unit_id'],'data_state'=>$state,
+        'revision_of_observation_id'=>sanitize_text_field($data['revision_of_observation_id'] ?? ''),'received_at'=>$now,
+        'revised_at'=>$state==='revised'?$now:null,'source_id'=>sanitize_text_field($data['source_id'] ?? ''),
+        'method_definition_id'=>sanitize_text_field($data['method_definition_id'] ?? ''),'dimensions_json'=>wp_json_encode($dimensions),
+        'denominator_json'=>wp_json_encode((array)($data['denominator'] ?? array())),'notes'=>sanitize_textarea_field($data['notes'] ?? ''),
+        'revision'=>$existing?((int)$existing['revision']+1):1,'created_at'=>$existing['created_at']??$now,'updated_at'=>$now,
+        'metadata_json'=>wp_json_encode((array)($data['metadata'] ?? array())),
+    ));
+    return rest_ensure_response(array('observation_record_id'=>$id,'revision'=>$existing?((int)$existing['revision']+1):1,'data_state'=>$state,'period_label'=>$label));
+}
+
+function gic_measurement_beneficiary_definition_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data=$request->get_json_params(); $workspace_id=sanitize_text_field($data['workspace_id']??''); $initiative_id=sanitize_text_field($data['initiative_id']??''); $name=sanitize_text_field($data['name']??'');
+    if(!$workspace_id||!$initiative_id||!$name){return new WP_Error('gic_measurement_invalid_beneficiary','Workspace, initiative, and beneficiary definition name are required.',array('status'=>400));}
+    $id=sanitize_text_field($data['beneficiary_definition_id']??gic_measurement_id('beneficiary-definition',array($initiative_id,strtolower($name),$data['reach_type']??'direct'))); $now=current_time('mysql',true);
+    $existing=$wpdb->get_row($wpdb->prepare("SELECT revision,created_at FROM ".gic_repository_table('beneficiary_definitions')." WHERE beneficiary_definition_id=%s",$id),ARRAY_A);
+    $wpdb->replace(gic_repository_table('beneficiary_definitions'),array('beneficiary_definition_id'=>$id,'workspace_id'=>$workspace_id,'initiative_id'=>$initiative_id,'name'=>$name,'description'=>sanitize_textarea_field($data['description']??''),'reach_type'=>sanitize_key($data['reach_type']??'direct'),'counting_method'=>sanitize_key($data['counting_method']??'unique'),'privacy_level'=>sanitize_key($data['privacy_level']??'aggregate_only'),'overlap_policy'=>sanitize_key($data['overlap_policy']??'unknown'),'overlap_notes'=>sanitize_textarea_field($data['overlap_notes']??''),'lifecycle_status'=>'draft','revision'=>$existing?((int)$existing['revision']+1):1,'created_at'=>$existing['created_at']??$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode((array)($data['metadata']??array()))));
+    return rest_ensure_response(array('beneficiary_definition_id'=>$id,'revision'=>$existing?((int)$existing['revision']+1):1));
+}
+
+function gic_measurement_beneficiary_observation_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data=$request->get_json_params(); $definition_id=sanitize_text_field($data['beneficiary_definition_id']??'');
+    $definition=$wpdb->get_row($wpdb->prepare("SELECT * FROM ".gic_repository_table('beneficiary_definitions')." WHERE beneficiary_definition_id=%s",$definition_id),ARRAY_A);
+    if(!$definition){return new WP_Error('gic_measurement_unknown_beneficiary','Beneficiary definition not found.',array('status'=>404));}
+    $dimensions=gic_measurement_dimensions($data['dimensions']??array()); if(is_wp_error($dimensions)){return $dimensions;}
+    $state=sanitize_key($data['data_state']??'complete'); $count=array_key_exists('observed_count',$data)&&$data['observed_count']!==''?(float)$data['observed_count']:null;
+    if($state==='missing'&&$count!==null){return new WP_Error('gic_measurement_missing_count','Missing beneficiary observations must not include a count.',array('status'=>400));}
+    if($state!=='missing'&&$count===null){return new WP_Error('gic_measurement_required_count','Non-missing beneficiary observations require a count.',array('status'=>400));}
+    list($start,$end,$label)=gic_measurement_period($data); $id=sanitize_text_field($data['beneficiary_observation_id']??gic_measurement_id('beneficiary-observation',array($definition_id,$label,$dimensions,$count))); $now=current_time('mysql',true);
+    $existing=$wpdb->get_row($wpdb->prepare("SELECT revision,created_at FROM ".gic_repository_table('beneficiary_observations')." WHERE beneficiary_observation_id=%s",$id),ARRAY_A);
+    $wpdb->replace(gic_repository_table('beneficiary_observations'),array('beneficiary_observation_id'=>$id,'beneficiary_definition_id'=>$definition_id,'workspace_id'=>$definition['workspace_id'],'initiative_id'=>$definition['initiative_id'],'period_start'=>$start?:null,'period_end'=>$end?:null,'period_label'=>$label,'observed_count'=>$count,'data_state'=>$state,'revision_of_observation_id'=>sanitize_text_field($data['revision_of_observation_id']??''),'dimensions_json'=>wp_json_encode($dimensions),'overlap_estimate'=>isset($data['overlap_estimate'])?(float)$data['overlap_estimate']:null,'denominator_notes'=>sanitize_textarea_field($data['denominator_notes']??''),'source_id'=>sanitize_text_field($data['source_id']??''),'received_at'=>$now,'revised_at'=>$state==='revised'?$now:null,'revision'=>$existing?((int)$existing['revision']+1):1,'created_at'=>$existing['created_at']??$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode((array)($data['metadata']??array()))));
+    return rest_ensure_response(array('beneficiary_observation_id'=>$id,'revision'=>$existing?((int)$existing['revision']+1):1));
+}
+
+function gic_measurement_financial_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data=$request->get_json_params(); $workspace_id=sanitize_text_field($data['workspace_id']??''); $initiative_id=sanitize_text_field($data['initiative_id']??''); $type=sanitize_key($data['record_type']??'expenditure');
+    if(!$workspace_id||!$initiative_id||!in_array($type,array('budget','expenditure','commitment','funding'),true)){return new WP_Error('gic_measurement_invalid_financial','Workspace, initiative, and a supported financial record type are required.',array('status'=>400));}
+    $state=sanitize_key($data['data_state']??'complete'); $amount=array_key_exists('amount',$data)&&$data['amount']!==''?(float)$data['amount']:null; $currency=strtoupper(sanitize_text_field($data['currency']??'USD')); $reporting=strtoupper(sanitize_text_field($data['reporting_currency']??$currency)); $rate=isset($data['exchange_rate'])?(float)$data['exchange_rate']:null;
+    if($amount!==null&&$currency!==$reporting&&(!$rate||$rate<=0)){return new WP_Error('gic_measurement_exchange_rate','Cross-currency records require a positive explicit exchange rate.',array('status'=>400));}
+    $reporting_amount=$amount===null?null:$amount*($currency===$reporting?($rate?:1):$rate); list($start,$end,$label)=gic_measurement_period($data);
+    $id=sanitize_text_field($data['financial_record_id']??gic_measurement_id('financial-record',array($initiative_id,$type,$label,$currency,$data['cost_category']??'uncategorized',$amount))); $now=current_time('mysql',true); $existing=$wpdb->get_row($wpdb->prepare("SELECT revision,created_at FROM ".gic_repository_table('financial_records')." WHERE financial_record_id=%s",$id),ARRAY_A);
+    $wpdb->replace(gic_repository_table('financial_records'),array('financial_record_id'=>$id,'workspace_id'=>$workspace_id,'initiative_id'=>$initiative_id,'record_type'=>$type,'funding_source'=>sanitize_text_field($data['funding_source']??''),'cost_category'=>sanitize_key($data['cost_category']??'uncategorized'),'period_start'=>$start?:null,'period_end'=>$end?:null,'period_label'=>$label,'amount'=>$amount,'currency'=>$currency,'reporting_currency'=>$reporting,'exchange_rate'=>$currency===$reporting?($rate?:1):$rate,'reporting_amount'=>$reporting_amount,'data_state'=>$state,'source_id'=>sanitize_text_field($data['source_id']??''),'notes'=>sanitize_textarea_field($data['notes']??''),'revision'=>$existing?((int)$existing['revision']+1):1,'created_at'=>$existing['created_at']??$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode((array)($data['metadata']??array()))));
+    return rest_ensure_response(array('financial_record_id'=>$id,'reporting_amount'=>$reporting_amount,'reporting_currency'=>$reporting));
+}
+
+function gic_measurement_portfolio_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data=$request->get_json_params(); $workspace_id=sanitize_text_field($data['workspace_id']??''); $name=sanitize_text_field($data['name']??'');
+    if(!$workspace_id||!$name){return new WP_Error('gic_measurement_invalid_portfolio','Workspace and portfolio name are required.',array('status'=>400));}
+    $id=sanitize_text_field($data['outcome_portfolio_id']??gic_measurement_id('outcome-portfolio',array($workspace_id,strtolower($name)))); $now=current_time('mysql',true); $existing=$wpdb->get_row($wpdb->prepare("SELECT revision,created_at FROM ".gic_repository_table('outcome_portfolios')." WHERE outcome_portfolio_id=%s",$id),ARRAY_A);
+    $unit=gic_registry_unit_by_code($data['target_unit_id']??($data['target_unit']??''),$workspace_id);
+    $wpdb->replace(gic_repository_table('outcome_portfolios'),array('outcome_portfolio_id'=>$id,'workspace_id'=>$workspace_id,'name'=>$name,'description'=>sanitize_textarea_field($data['description']??''),'aggregation_method'=>sanitize_key($data['aggregation_method']??'sum'),'target_unit_id'=>$unit['unit_id']??'','period_policy'=>sanitize_key($data['period_policy']??'exact'),'overlap_policy'=>sanitize_key($data['overlap_policy']??'exclude_unknown_or_overlapping'),'missing_data_policy'=>sanitize_key($data['missing_data_policy']??'exclude_and_disclose'),'archived_at'=>null,'revision'=>$existing?((int)$existing['revision']+1):1,'created_at'=>$existing['created_at']??$now,'updated_at'=>$now,'metadata_json'=>wp_json_encode((array)($data['metadata']??array()))));
+    return rest_ensure_response(array('outcome_portfolio_id'=>$id,'revision'=>$existing?((int)$existing['revision']+1):1));
+}
+
+function gic_measurement_portfolio_member_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $data=$request->get_json_params(); $portfolio_id=sanitize_text_field($data['outcome_portfolio_id']??''); $initiative_id=sanitize_text_field($data['initiative_id']??''); $indicator_id=sanitize_text_field($data['indicator_id']??'');
+    if(!$portfolio_id||!$initiative_id||!$indicator_id){return new WP_Error('gic_measurement_invalid_member','Portfolio, initiative, and indicator are required.',array('status'=>400));}
+    $membership_id=sanitize_text_field($data['membership_id']??gic_measurement_id('outcome-membership',array($portfolio_id,$initiative_id,$indicator_id,$data['impact_result_id']??'')));
+    $wpdb->replace(gic_repository_table('outcome_portfolio_members'),array('outcome_portfolio_id'=>$portfolio_id,'membership_id'=>$membership_id,'initiative_id'=>$initiative_id,'indicator_id'=>$indicator_id,'indicator_definition_id'=>sanitize_text_field($data['indicator_definition_id']??''),'impact_result_id'=>sanitize_text_field($data['impact_result_id']??''),'population_scope'=>sanitize_text_field($data['population_scope']??''),'overlap_group'=>sanitize_text_field($data['overlap_group']??''),'denominator_definition'=>sanitize_textarea_field($data['denominator_definition']??''),'weight'=>isset($data['weight'])?(float)$data['weight']:1,'position'=>isset($data['position'])?(int)$data['position']:0,'added_at'=>current_time('mysql',true),'metadata_json'=>wp_json_encode((array)($data['metadata']??array()))));
+    return rest_ensure_response(array('membership_id'=>$membership_id,'outcome_portfolio_id'=>$portfolio_id));
+}
+
+function gic_measurement_portfolio_aggregate_rest(WP_REST_Request $request) {
+    global $wpdb;
+    $portfolio_id=sanitize_text_field($request['portfolio_id']); $data=$request->get_json_params(); $period_label=sanitize_text_field($data['period_label']??'');
+    $portfolio=$wpdb->get_row($wpdb->prepare("SELECT * FROM ".gic_repository_table('outcome_portfolios')." WHERE outcome_portfolio_id=%s",$portfolio_id),ARRAY_A);
+    if(!$portfolio){return new WP_Error('gic_measurement_unknown_portfolio','Outcome portfolio not found.',array('status'=>404));}
+    $members=$wpdb->get_results($wpdb->prepare("SELECT * FROM ".gic_repository_table('outcome_portfolio_members')." WHERE outcome_portfolio_id=%s ORDER BY position,membership_id",$portfolio_id),ARRAY_A);
+    $included=array(); $excluded=array(); $values=array(); $groups=array();
+    foreach($members as $member){
+        $query="SELECT * FROM ".gic_repository_table('observation_series')." WHERE initiative_id=%s AND indicator_id=%s"; $params=array($member['initiative_id'],$member['indicator_id']);
+        if($period_label){$query.=" AND period_label=%s";$params[]=$period_label;} $query.=" ORDER BY received_at DESC LIMIT 1";
+        $observation=$wpdb->get_row($wpdb->prepare($query,$params),ARRAY_A);
+        if(!$observation||$observation['value']===null||in_array($observation['data_state'],array('missing','late'),true)){ $excluded[]=array('membership_id'=>$member['membership_id'],'reason'=>'period_or_observation_missing'); continue; }
+        if($observation['data_state']==='partial'&&$portfolio['missing_data_policy']!=='include_partial'){ $excluded[]=array('membership_id'=>$member['membership_id'],'reason'=>'partial_period_excluded'); continue; }
+        $group=$member['overlap_group']; if($portfolio['aggregation_method']==='sum'&&$member['denominator_definition']){
+            if(!$group&&$portfolio['overlap_policy']==='exclude_unknown_or_overlapping'){ $excluded[]=array('membership_id'=>$member['membership_id'],'reason'=>'population_overlap_unknown'); continue; }
+            if($group&&isset($groups[$group])&&$portfolio['overlap_policy']==='exclude_unknown_or_overlapping'){ $excluded[]=array('membership_id'=>$member['membership_id'],'reason'=>'overlapping_population','overlap_group'=>$group); continue; }
+            if($group){$groups[$group]=true;}
+        }
+        if($portfolio['target_unit_id']&&$observation['unit_id']!==$portfolio['target_unit_id']){ $excluded[]=array('membership_id'=>$member['membership_id'],'reason'=>'incompatible_unit','unit_id'=>$observation['unit_id']); continue; }
+        $value=(float)$observation['value']; $values[]=array('value'=>$value,'weight'=>(float)$member['weight']); $included[]=array('membership_id'=>$member['membership_id'],'observation_record_id'=>$observation['observation_record_id'],'converted_value'=>$value,'target_unit_id'=>$portfolio['target_unit_id']?:$observation['unit_id'],'period_label'=>$observation['period_label']);
+    }
+    $result_value=null; if($values){$plain=array_column($values,'value'); switch($portfolio['aggregation_method']){case'mean':$result_value=array_sum($plain)/count($plain);break;case'weighted_mean':$weight=array_sum(array_column($values,'weight'));$result_value=$weight?array_sum(array_map(function($v){return $v['value']*$v['weight'];},$values))/$weight:null;break;case'minimum':$result_value=min($plain);break;case'maximum':$result_value=max($plain);break;default:$result_value=array_sum($plain);}}
+    $result=array('aggregation_type'=>'global_impact_outcome_portfolio_aggregation','aggregation_version'=>'1.5.0','outcome_portfolio_id'=>$portfolio_id,'workspace_id'=>$portfolio['workspace_id'],'generated_at'=>gmdate('c'),'period'=>array('start'=>null,'end'=>null,'label'=>$period_label?:'latest compatible period'),'aggregation_method'=>$portfolio['aggregation_method'],'target_unit_id'=>$portfolio['target_unit_id']?:null,'value'=>$result_value,'included'=>$included,'excluded'=>$excluded,'warnings'=>array(),'rules'=>array('period_policy'=>$portfolio['period_policy'],'overlap_policy'=>$portfolio['overlap_policy'],'missing_data_policy'=>$portfolio['missing_data_policy']),'integrity'=>array('valid'=>$result_value!==null,'included_count'=>count($included),'excluded_count'=>count($excluded)),'boundary'=>'Portfolio aggregation combines compatible recorded observations; it does not prove attribution or eliminate double-counting risk beyond disclosed rules.');
+    $run_id=gic_measurement_id('portfolio-run',array($portfolio_id,microtime(true),$period_label,$result_value)); $wpdb->insert(gic_repository_table('portfolio_aggregation_runs'),array('aggregation_run_id'=>$run_id,'outcome_portfolio_id'=>$portfolio_id,'workspace_id'=>$portfolio['workspace_id'],'period_start'=>null,'period_end'=>null,'period_label'=>$period_label,'aggregation_method'=>$portfolio['aggregation_method'],'target_unit_id'=>$portfolio['target_unit_id'],'result_value'=>$result_value,'result_json'=>wp_json_encode($result),'created_at'=>current_time('mysql',true),'created_by'=>get_current_user_id())); $result['aggregation_run_id']=$run_id;
+    return rest_ensure_response($result);
+}
+
+function gic_measurement_register_routes() {
+    register_rest_route('global-impact-catalyst/v1','/measurement-repository',array('methods'=>WP_REST_Server::READABLE,'callback'=>'gic_measurement_export_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/observations',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_measurement_observation_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/beneficiary-definitions',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_measurement_beneficiary_definition_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/beneficiary-observations',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_measurement_beneficiary_observation_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/financial-records',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_measurement_financial_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/outcome-portfolios',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_measurement_portfolio_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/outcome-portfolio-members',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_measurement_portfolio_member_rest','permission_callback'=>'gic_repository_can_edit'));
+    register_rest_route('global-impact-catalyst/v1','/outcome-portfolios/(?P<portfolio_id>[A-Za-z0-9_-]+)/aggregate',array('methods'=>WP_REST_Server::CREATABLE,'callback'=>'gic_measurement_portfolio_aggregate_rest','permission_callback'=>'gic_repository_can_edit'));
+}
+add_action('rest_api_init','gic_measurement_register_routes');
+
+function gic_measurement_portfolio_shortcode($atts = array()) {
+    if (!is_user_logged_in() || !current_user_can('edit_posts')) {
+        return '<section class="gic-measurement"><p>Sign in with editing access to use program measurement and outcome portfolios.</p></section>';
+    }
+    static $instance=0; $instance++; $prefix='gic-measurement-'.$instance.'-'.wp_rand(1000,999999);
+    $id=static function($name)use($prefix){return esc_attr($prefix.'-'.$name);};
+    wp_enqueue_style('global-impact-catalyst-measurement'); wp_enqueue_script('global-impact-catalyst-measurement');
+    wp_localize_script('global-impact-catalyst-measurement','GICMeasurementConfig',array('restRoot'=>esc_url_raw(rest_url('global-impact-catalyst/v1/')),'nonce'=>wp_create_nonce('wp_rest')));
+    ob_start(); ?>
+    <section class="gic-measurement" data-gic-measurement-portfolio>
+      <header class="gic-measurement__header"><p class="gic-measurement__eyebrow">Program measurement · v1.5.0</p><h2>Observations, Beneficiaries, Budgets, and Outcome Portfolios</h2><p>Record aggregate observations across periods, disclose beneficiary counting and overlap assumptions, track resources, and aggregate only compatible portfolio members.</p></header>
+      <div class="gic-measurement__toolbar"><label for="<?php echo $id('workspace'); ?>">Workspace ID</label><input id="<?php echo $id('workspace'); ?>" data-gic-measurement-workspace placeholder="gic-workspace-…"><label for="<?php echo $id('initiative'); ?>">Initiative ID</label><input id="<?php echo $id('initiative'); ?>" data-gic-measurement-initiative placeholder="gic-initiative-…"><button type="button" data-gic-measurement-load>Load repository</button><button type="button" data-gic-measurement-download>Download JSON</button></div>
+      <div class="gic-measurement__status" data-gic-measurement-status role="status">Enter a workspace ID to load its measurement repository.</div>
+      <div class="gic-measurement__summary" data-gic-measurement-summary></div>
+      <div class="gic-measurement__grid">
+        <form data-gic-observation-form><h3>Record observation</h3><input name="indicator_id" required placeholder="Indicator ID"><input name="period_label" required placeholder="Reporting period"><input name="value" type="number" step="any" placeholder="Value"><input name="unit" required placeholder="Unit code"><select name="data_state"><option value="complete">Complete</option><option value="partial">Partial period</option><option value="late">Late</option><option value="missing">Missing</option><option value="revised">Revised</option></select><input name="geography" placeholder="Geography"><input name="population_group" placeholder="Population group"><button type="submit">Save observation</button></form>
+        <form data-gic-beneficiary-form><h3>Define beneficiaries</h3><input name="name" required placeholder="Beneficiary definition"><select name="reach_type"><option value="direct">Direct reach</option><option value="indirect">Indirect reach</option><option value="combined">Combined reach</option></select><select name="counting_method"><option value="unique">Unique count</option><option value="estimated_unique">Estimated unique</option><option value="encounters">Encounters</option><option value="households">Households</option><option value="organizations">Organizations</option></select><select name="overlap_policy"><option value="unknown">Overlap unknown</option><option value="no_overlap">No overlap</option><option value="estimated_overlap">Estimated overlap</option><option value="known_overlap">Known overlap</option></select><button type="submit">Save definition</button></form>
+        <form data-gic-beneficiary-observation-form><h3>Record beneficiary count</h3><input name="beneficiary_definition_id" required placeholder="Beneficiary definition ID"><input name="period_label" required placeholder="Reporting period"><input name="observed_count" type="number" min="0" step="any" placeholder="Aggregate count"><input name="overlap_estimate" type="number" min="0" step="any" placeholder="Estimated overlap"><input name="age_band" placeholder="Age band"><button type="submit">Save aggregate count</button></form>
+        <form data-gic-financial-form><h3>Record resources</h3><select name="record_type"><option value="expenditure">Expenditure</option><option value="budget">Budget</option><option value="commitment">Commitment</option><option value="funding">Funding</option></select><input name="period_label" required placeholder="Reporting period"><input name="amount" type="number" min="0" step="any" required placeholder="Amount"><input name="currency" value="USD" required placeholder="Currency"><input name="reporting_currency" value="USD" required placeholder="Reporting currency"><input name="exchange_rate" type="number" min="0" step="any" placeholder="Exchange rate"><input name="cost_category" placeholder="Cost category"><button type="submit">Save financial record</button></form>
+        <form data-gic-outcome-portfolio-form><h3>Create outcome portfolio</h3><input name="name" required placeholder="Portfolio name"><input name="target_unit" placeholder="Target unit code"><select name="aggregation_method"><option value="sum">Sum</option><option value="mean">Mean</option><option value="weighted_mean">Weighted mean</option><option value="minimum">Minimum</option><option value="maximum">Maximum</option></select><select name="overlap_policy"><option value="exclude_unknown_or_overlapping">Exclude overlap or unknown scope</option><option value="allow_with_disclosure">Allow with disclosure</option><option value="fail_on_overlap">Stop on overlap</option></select><button type="submit">Create portfolio</button></form>
+        <form data-gic-outcome-member-form><h3>Add portfolio member</h3><input name="outcome_portfolio_id" required placeholder="Outcome portfolio ID"><input name="member_initiative_id" required placeholder="Initiative ID"><input name="indicator_id" required placeholder="Indicator ID"><input name="population_scope" placeholder="Population scope"><input name="overlap_group" placeholder="Overlap group"><input name="denominator_definition" placeholder="Denominator definition"><button type="submit">Add member</button></form>
+        <form data-gic-outcome-aggregate-form><h3>Aggregate portfolio</h3><input name="outcome_portfolio_id" required placeholder="Outcome portfolio ID"><input name="period_label" required placeholder="Reporting period"><button type="submit">Run guarded aggregation</button></form>
+      </div>
+      <div class="gic-measurement__records" data-gic-measurement-records></div>
+      <p class="gic-measurement__boundary">Core workflows store aggregate beneficiary records only. Portfolio totals expose unit, period, missing-data, and population-overlap exclusions and do not establish causal attribution.</p>
+    </section>
+    <?php return ob_get_clean();
+}
+add_shortcode('global_impact_catalyst_measurement_portfolio','gic_measurement_portfolio_shortcode');

@@ -53,4 +53,14 @@ preg_match_all('/\sfor="([^"]+)"/', $registry, $registry_labels);
 foreach ($registry_labels[1] as $target) {
     if (!in_array($target, $registry_ids[1], true)) { fwrite(STDERR, "Registry label target is missing: {$target}\n"); exit(1); }
 }
-echo "WordPress v1.4.0 workspace, evidence ledger, indicator registry, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";
+
+$measurement = gic_measurement_portfolio_shortcode();
+foreach (array('data-gic-measurement-portfolio','data-gic-observation-form','data-gic-beneficiary-form','data-gic-beneficiary-observation-form','data-gic-financial-form','data-gic-outcome-portfolio-form','data-gic-outcome-member-form','data-gic-outcome-aggregate-form') as $needle) {
+    if (strpos($measurement, $needle) === false) { fwrite(STDERR, "Measurement control missing: {$needle}\n"); exit(1); }
+}
+preg_match_all('/\sid="([^"]+)"/', $measurement, $measurement_ids);
+preg_match_all('/\sfor="([^"]+)"/', $measurement, $measurement_labels);
+foreach ($measurement_labels[1] as $target) {
+    if (!in_array($target, $measurement_ids[1], true)) { fwrite(STDERR, "Measurement label target is missing: {$target}\n"); exit(1); }
+}
+echo "WordPress v1.5.0 workspace, evidence ledger, indicator registry, measurement portfolio, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";

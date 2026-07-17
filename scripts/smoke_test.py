@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.5.0."""
 from __future__ import annotations
 
 import json
@@ -14,226 +15,187 @@ from jsonschema import Draft202012Validator, FormatChecker
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-SUBPROCESS_ENV = os.environ.copy()
-SUBPROCESS_ENV.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
 
 
-def run(*args: str, stdout=None) -> None:
-    subprocess.run(args, cwd=ROOT, check=True, env=SUBPROCESS_ENV, stdout=stdout)
+def run(*args: str, **kwargs) -> None:
+    env = dict(os.environ)
+    env.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
+    subprocess.run(args, cwd=ROOT, check=True, env=env, **kwargs)
 
 
 def validate(document: dict, schema_name: str) -> None:
     schema = json.loads((ROOT / "schemas" / schema_name).read_text(encoding="utf-8"))
     errors = list(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(document))
-    assert not errors, "\n".join(error.message for error in errors[:10])
+    if errors:
+        raise AssertionError(f"{schema_name}: {[error.message for error in errors]}")
 
 
 def main() -> int:
-    if os.environ.get("GIC_SKIP_PYTEST") == "1":
-        print("INFO: pytest suite skipped; running deterministic installed-repository gates.")
-    else:
-        run(sys.executable, "-m", "pytest", "-q")
+    run(sys.executable, "-m", "pytest", "-q")
     run(sys.executable, "scripts/check_contracts.py")
 
     if shutil.which("node"):
         run("node", "scripts/check_browser_parity.js")
         for asset in (
-            "global-impact-catalyst-demo.js",
-            "global-impact-catalyst-workspace.js",
-            "global-impact-catalyst-evidence.js",
-            "global-impact-catalyst-registry.js",
+            "global-impact-catalyst-demo.js", "global-impact-catalyst-workspace.js",
+            "global-impact-catalyst-evidence.js", "global-impact-catalyst-registry.js",
+            "global-impact-catalyst-measurement.js",
         ):
             run("node", "--check", f"wordpress/global-impact-catalyst-demo/assets/{asset}")
     else:
-        print("INFO: Node unavailable; browser checks skipped by portable smoke test.")
+        print("INFO: Node unavailable; browser checks skipped.")
 
     if shutil.which("php"):
         run("php", "-l", "wordpress/global-impact-catalyst-demo/global-impact-catalyst-demo.php")
         run("php", "scripts/check_wordpress_instances.php")
     else:
-        print("INFO: PHP unavailable; WordPress checks skipped by portable smoke test.")
+        print("INFO: PHP unavailable; WordPress checks skipped.")
 
-    with tempfile.TemporaryDirectory(prefix="gic-v140-") as temp:
+    from python.global_impact_repository import SQLiteImpactRepository
+    from python.global_impact_service import ImpactApplicationService
+
+    payload = json.loads((ROOT / "data/sample_global_impact_input.json").read_text(encoding="utf-8"))
+    with tempfile.TemporaryDirectory(prefix="gic-v150-") as temp:
         directory = Path(temp)
-        contract_path = directory / "contract.json"
-        brief_path = directory / "brief.md"
         database = directory / "impact.sqlite3"
         restored_database = directory / "restored.sqlite3"
-        bundle_path = directory / "workspace-bundle.json"
-        registry_path = directory / "indicator-registry.json"
         backup = directory / "impact-backup.sqlite3"
 
-        run(
-            sys.executable,
-            "python/global_impact_core.py",
-            "--input", "data/sample_global_impact_input.json",
-            "--output", str(contract_path),
-            "--markdown", str(brief_path),
-            "--generated-at", "2026-07-17T18:00:00+00:00",
-        )
-        contract = json.loads(contract_path.read_text(encoding="utf-8"))
-        assert contract["contract_version"] == "1.1.0"
-        assert contract["derived"]["metrics"]["progress_to_target_percent"] == 60.0
-        validate(contract, "global_impact_contract.schema.json")
-
-        run(sys.executable, "scripts/gic_repository.py", "--database", str(database), "init", stdout=subprocess.DEVNULL)
-        run(
-            sys.executable,
-            "scripts/gic_repository.py",
-            "--database", str(database),
-            "create",
-            "--input", "data/sample_global_impact_input.json",
-            "--generated-at", "2026-07-17T18:00:00+00:00",
-            stdout=subprocess.DEVNULL,
-        )
-
-        from python.global_impact_repository import SQLiteImpactRepository
-        from python.global_impact_service import ImpactApplicationService
-
         with SQLiteImpactRepository(database) as repository:
+            service = ImpactApplicationService(repository)
+            created = service.create_initiative(payload, generated_at="2026-07-17T18:00:00+00:00", actor="release-smoke")
+            contract = created["contract"]
+            validate(contract, "global_impact_contract.schema.json")
+            assert contract["contract_version"] == "1.1.0"
+            assert contract["derived"]["metrics"]["progress_to_target_percent"] == 60.0
+
+            workspace_id = created["repository"]["workspace_id"]
+            initiative_id = created["repository"]["initiative_id"]
+            indicator_id = contract["facts"]["indicator"]["id"]
             summary = repository.repository_summary()
-            assert summary["database_schema_version"] == 5
+            assert summary["database_schema_version"] == 6
             assert summary["contracts"] == 1
             assert summary["sources"] == 1
-            assert summary["source_versions"] == 1
-            assert summary["provenance_edges"] >= 9
             assert summary["units"] >= 18
-            assert summary["indicator_definitions"] == 1
-            assert summary["baseline_models"] == 1
-            assert summary["target_models"] == 1
-            assert summary["method_definitions"] == 1
-            assert summary["indicator_registry_bindings"] == 1
+            assert summary["impact_results"] == 1
+            assert summary["observation_series"] == 1
+            assert summary["beneficiary_definitions"] == 1
+            assert summary["financial_records"] == 1
 
-            workspace_id = repository.list_entities("workspace")[0]["entity_id"]
-            initiative_id = repository.list_entities("initiative")[0]["entity_id"]
-            stored = repository.get_contract(initiative_id=initiative_id)
-            source = repository.evidence_chain(initiative_id)["sources"][0]
+            q3 = service.record_observation({
+                "indicator_id": indicator_id, "period_label": "2026 Q3", "value": 21.5,
+                "unit_id": "USD", "data_state": "complete",
+                "dimensions": {"geography": "Chicago", "program_site": "North"},
+                "denominator": {"definition": "Participating households with complete billing records"},
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            service.record_observation({
+                "indicator_id": indicator_id, "period_label": "2026 Q4", "data_state": "missing",
+                "unit_id": "USD", "notes": "Awaiting extract",
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            service.record_observation({
+                "indicator_id": indicator_id, "period_label": "2026 Q3", "value": 22.0,
+                "unit_id": "USD", "data_state": "revised",
+                "revision_of_observation_id": q3["observation_record_id"],
+                "dimensions": {"geography": "Chicago", "program_site": "North"},
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            series = service.observation_series(initiative_id, indicator_id)
+            assert series["integrity"]["missing_count"] == 1
+            assert series["integrity"]["revised_count"] == 1
 
-            evidence = repository.capture_evidence(
-                source["source_id"],
-                evidence_type="quotation",
-                title="Portable release evidence",
-                locator="p. 14",
-                exact_quote="Average monthly bills declined by eighteen dollars.",
-                captured_by="release-smoke",
-            )
-            repository.register_dataset(
-                source["source_id"],
-                {
-                    "title": "Portable release dataset",
-                    "version": "1",
-                    "license": "restricted-internal",
-                    "checksum_value": "a" * 64,
-                    "schema_fingerprint": "b" * 64,
-                    "row_count": 420,
-                    "column_count": 18,
-                },
-                actor="release-smoke",
-            )
-            claim_id = stored["contract"]["derived"]["claims"][0]["id"]
-            repository.link_claim_evidence(
-                claim_id,
-                evidence["evidence_id"],
-                relationship="supports",
-                strength="direct",
-                linked_by="release-smoke",
-            )
+            beneficiary = service.register_beneficiary_definition({
+                "name": "Direct participating households", "reach_type": "direct",
+                "counting_method": "unique", "privacy_level": "aggregate_only",
+                "overlap_policy": "estimated_overlap",
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            service.record_beneficiary_observation(beneficiary["beneficiary_definition_id"], {
+                "period_label": "2026 Q3", "observed_count": 100, "overlap_estimate": 5,
+                "dimensions": {"geography": "Chicago", "delivery_channel": "in-person"},
+            }, actor="release-smoke")
+            beneficiary_summary = repository.beneficiary_summary(initiative_id, period_label="2026 Q3")
+            assert beneficiary_summary["adjusted_count"] == 95
+            validate(beneficiary_summary, "global_impact_beneficiary_summary.schema.json")
 
-            assert repository.convert_value(2, "MWh", "kWh") == 2000.0
-            assert repository.convert_value(25, "%", "ratio") == 0.25
-            custom_unit = repository.register_unit(
-                {"code": "person-day", "name": "Person day", "dimension": "labor"},
-                workspace_id=workspace_id,
-                actor="release-smoke",
+            service.record_financial_record({
+                "record_type": "expenditure", "funding_source": "City grant",
+                "cost_category": "installation", "period_label": "2026 Q3",
+                "amount": 10000, "currency": "USD", "reporting_currency": "USD",
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            service.record_financial_record({
+                "record_type": "expenditure", "funding_source": "Foundation",
+                "cost_category": "training", "period_label": "2026 Q3",
+                "amount": 1000, "currency": "EUR", "reporting_currency": "USD", "exchange_rate": 1.1,
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            cost = repository.calculate_cost_metric(
+                initiative_id, denominator_type="beneficiary",
+                denominator_id=beneficiary["beneficiary_definition_id"],
+                period_label="2026 Q3", reporting_currency="USD",
             )
-            assert custom_unit["revision"] == 1
+            assert cost["numerator"]["value"] == 11100
+            assert cost["denominator"]["value"] == 95
 
-            indicator = repository.register_indicator_definition(
-                {
-                    "name": "Energy saved",
-                    "description": "Metered avoided consumption.",
-                    "unit": "kWh",
-                    "direction": "higher_is_better",
-                    "aggregation_method": "sum",
-                    "version_label": "1.0",
-                },
-                workspace_id=workspace_id,
-                actor="release-smoke",
+            outcome = repository.list_impact_results(initiative_id=initiative_id, result_type="outcome")[0]
+            output = repository.register_impact_result({
+                "result_type": "output", "name": "Homes retrofitted",
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            repository.relate_impact_results(
+                output["result_id"], outcome["result_id"], relationship_type="contributes_to",
+                contribution_weight=0.7, actor="release-smoke",
             )
-            baseline = repository.register_baseline_model(
-                {"name": "Three-period average", "method_type": "period_average", "unit": "kWh", "minimum_observations": 3},
-                workspace_id=workspace_id,
-                actor="release-smoke",
-            )
-            target = repository.register_target_model(
-                {"name": "Linear energy path", "target_type": "trajectory", "start_value": 100, "end_value": 160, "trajectory_type": "linear", "unit": "kWh"},
-                workspace_id=workspace_id,
-                actor="release-smoke",
-            )
-            method = repository.register_method_definition(
-                {
-                    "name": "Metered energy comparison",
-                    "method_kind": "measurement",
-                    "design_type": "before_after",
-                    "description": "Compares normalized meter periods.",
-                    "input_requirements": ["meter readings"],
-                    "quality_profile": {"reproducibility": "documented"},
-                    "limitations": ["weather adjustment remains material"],
-                },
-                workspace_id=workspace_id,
-                actor="release-smoke",
-            )
-            assert indicator["current_version"] == 1
-            assert repository.compute_baseline(baseline["baseline_model_id"], [100, 120, 140])["value"] == 120
-            assert repository.evaluate_target(target["target_model_id"], progress_fraction=0.5)["value"] == 130
-            assert method["current_version"] == 1
+            factor = repository.add_external_factor({
+                "name": "Mild seasonal temperatures", "direction": "positive",
+                "influence_level": "medium", "period_label": "2026 Q3",
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
+            repository.add_contribution_note({
+                "impact_result_id": outcome["result_id"],
+                "statement": "The program plausibly contributed to lower bills.",
+                "contribution_type": "direct", "external_factor_refs": [factor["external_factor_id"]],
+                "limitations": "Weather and tariffs also influenced the observation.",
+            }, workspace_id=workspace_id, initiative_id=initiative_id, actor="release-smoke")
 
-            chain = repository.evidence_chain(initiative_id)
-            assert chain["integrity"]["valid"]
-            assert chain["integrity"]["evidence_count"] == 1
-            assert chain["integrity"]["dataset_count"] == 1
-            assert chain["integrity"]["claim_link_count"] == 1
-            validate(chain, "global_impact_evidence_chain.schema.json")
+            portfolio = service.create_outcome_portfolio({
+                "name": "Household cost outcomes", "aggregation_method": "sum", "target_unit": "USD",
+                "period_policy": "exact", "overlap_policy": "exclude_unknown_or_overlapping",
+                "missing_data_policy": "exclude_and_disclose",
+            }, workspace_id=workspace_id, actor="release-smoke")
+            repository.add_outcome_portfolio_member(portfolio["outcome_portfolio_id"], {
+                "initiative_id": initiative_id, "indicator_id": indicator_id,
+                "impact_result_id": outcome["result_id"], "population_scope": "Chicago households",
+                "overlap_group": "chicago-households-2026", "denominator_definition": "Unique households",
+            }, actor="release-smoke")
+            aggregation = service.aggregate_outcome_portfolio(
+                portfolio["outcome_portfolio_id"], period_label="2026 Q3", actor="release-smoke"
+            )
+            assert aggregation["value"] == 22.0
+            validate(aggregation, "global_impact_outcome_portfolio_aggregation.schema.json")
 
-            evidence_export = repository.export_evidence_repository(workspace_id)
-            validate(evidence_export, "global_impact_evidence_repository.schema.json")
+            measurement = service.measurement_repository(workspace_id)
+            assert measurement["repository_version"] == "1.5.0"
+            assert measurement["integrity"]["valid"]
+            validate(measurement, "global_impact_measurement_repository.schema.json")
 
             registry = repository.export_indicator_registry(workspace_id)
-            registry_path.write_text(json.dumps(registry, indent=2), encoding="utf-8")
             assert registry["registry_version"] == "1.4.0"
-            assert registry["integrity"]["valid"]
-            assert registry["integrity"]["unit_count"] >= 19
-            assert registry["integrity"]["indicator_definition_count"] >= 2
             validate(registry, "global_impact_indicator_registry.schema.json")
+            evidence = repository.export_evidence_repository(workspace_id)
+            assert evidence["repository_version"] == "1.3.0"
+            validate(evidence, "global_impact_evidence_repository.schema.json")
 
             bundle = repository.export_workspace_bundle(workspace_id)
-            bundle_path.write_text(json.dumps(bundle, indent=2), encoding="utf-8")
-            assert bundle["bundle_version"] == "1.4.0"
-            assert bundle["database_schema_version"] == 5
+            assert bundle["bundle_version"] == "1.5.0"
+            assert bundle["database_schema_version"] == 6
             validate(bundle, "global_impact_workspace_bundle.schema.json")
             repository.backup_database(backup)
 
         assert backup.exists() and backup.stat().st_size > 0
-
-        with SQLiteImpactRepository(restored_database) as repository:
-            result = repository.restore_workspace_bundle(json.loads(bundle_path.read_text(encoding="utf-8")))
+        with SQLiteImpactRepository(restored_database) as restored:
+            result = restored.restore_workspace_bundle(bundle)
             assert result["status"] == "restored"
-            restored_registry = repository.export_indicator_registry(workspace_id)
-            assert restored_registry["integrity"] == registry["integrity"]
-            restored_chain = repository.evidence_chain(initiative_id)
-            assert restored_chain["integrity"]["valid"]
-            repeated = repository.restore_workspace_bundle(json.loads(bundle_path.read_text(encoding="utf-8")))
-            assert repeated["status"] == "unchanged"
+            assert restored.restore_workspace_bundle(bundle)["status"] == "unchanged"
+            restored_measurement = restored.export_measurement_repository(workspace_id)
+            assert restored_measurement["integrity"] == measurement["integrity"]
+            assert restored.repository_summary()["portfolio_aggregation_runs"] == 1
 
-        legacy = json.loads((ROOT / "contracts/legacy/legacy-v1.0.1-record.json").read_text(encoding="utf-8"))
-        with SQLiteImpactRepository(database) as repository:
-            service = ImpactApplicationService(repository)
-            imported = service.import_document(legacy, generated_at="2026-07-17T18:00:00+00:00")
-            repeated = service.import_document(legacy, generated_at="2026-07-17T18:00:00+00:00")
-            assert imported.status == "imported"
-            assert repeated.status == "unchanged"
-
-    print("Global Impact Catalyst v1.4.0 portable release smoke tests passed.")
+    print("Global Impact Catalyst v1.5.0 portable release smoke tests passed.")
     return 0
 
 

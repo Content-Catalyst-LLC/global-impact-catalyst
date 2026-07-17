@@ -2,6 +2,30 @@
 
 All notable changes to Global Impact Catalyst are documented in this file.
 
+## [1.5.0] - 2026-07-17
+
+### Added
+
+- Multi-period observations with complete, missing, late, revised, and partial data states.
+- Aggregate disaggregation dimensions, denominator definitions, source and method references, and revision lineage.
+- Aggregate-only beneficiary definitions and observations for direct, indirect, and combined reach.
+- Counting methods, overlap policies, overlap estimates, and privacy-safe reach summaries.
+- Budget, expenditure, commitment, and funding records with funding sources, cost categories, reporting currencies, and explicit exchange rates.
+- Cost-per-output, cost-per-outcome, and cost-per-beneficiary calculations with disclosed numerator and denominator records.
+- Output, outcome, and long-term-impact records with typed relationships.
+- External-factor records and contribution notes with evidence references and limitations.
+- Guarded outcome portfolios with unit, period, missing-data, and population-overlap policies.
+- v1.5.0 measurement-repository, beneficiary-summary, outcome-portfolio-aggregation, and workspace-bundle JSON Schemas and examples.
+- SQLite migration 6, Python service and CLI operations, and authenticated WordPress measurement interface.
+- Workspace export and lossless restore of observations, beneficiaries, finances, result relationships, contribution context, portfolios, memberships, and aggregation runs.
+
+### Compatibility
+
+- The canonical contract and exact browser/Python calculation fixtures remain v1.1.0.
+- Evidence formats remain v1.3.0 and the indicator registry remains v1.4.0.
+- The package, application, database schema, measurement repository, workspace bundle, and WordPress plugin are v1.5.0.
+- Existing v1.4.0 databases migrate in place. Existing shortcodes remain available; `[global_impact_catalyst_measurement_portfolio]` is additive.
+
 ## [1.4.0] - 2026-07-17
 
 ### Added

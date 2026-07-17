@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.5.0/global_impact_outcome_portfolio_aggregation.schema.json",
+  "title": "Global Impact Catalyst Outcome Portfolio Aggregation",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["aggregation_type", "aggregation_version", "outcome_portfolio_id", "workspace_id", "generated_at", "period", "aggregation_method", "target_unit_id", "value", "included", "excluded", "warnings", "rules", "integrity", "boundary"],
+  "properties": {
+    "aggregation_type": {"const": "global_impact_outcome_portfolio_aggregation"},
+    "aggregation_version": {"const": "1.5.0"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "aggregation_method": {"enum": ["sum", "mean", "weighted_mean", "minimum", "maximum"]},
+    "target_unit_id": {"type": ["string", "null"]},
+    "value": {"type": ["number", "null"]},
+    "included": {"type": "array", "items": {"type": "object"}},
+    "excluded": {"type": "array", "items": {"type": "object", "required": ["reason"], "additionalProperties": true}},
+    "warnings": {"type": "array", "items": {"type": "string"}},
+    "rules": {"type": "object"},
+    "integrity": {"type": "object", "required": ["valid", "included_count", "excluded_count"]},
+    "boundary": {"type": "string", "minLength": 1}
+  },
+  "x-global-impact-catalyst-version": "1.5.0"
+}

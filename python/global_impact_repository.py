@@ -1,4 +1,4 @@
-"""Persistent repository for Global Impact Catalyst v1.4.0.
+"""Persistent repository for Global Impact Catalyst v1.5.0.
 
 The repository stores canonical contracts as immutable calculation snapshots and
 maintains indexed entity projections for workspace operations. SQLite is the
@@ -18,8 +18,9 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence
 
 from python.global_impact_registry import IndicatorRegistryMixin
+from python.global_impact_measurement import MeasurementPortfolioMixin
 
-DATABASE_SCHEMA_VERSION = 5
+DATABASE_SCHEMA_VERSION = 6
 SUPPORTED_CONTRACT_VERSIONS = {"1.0.0", "1.0.1", "1.1.0", "1.2.0"}
 ENTITY_TYPES = {"workspace", "initiative", "goal", "indicator", "observation", "target", "source"}
 EVIDENCE_TYPES = {"excerpt", "quotation", "dataset_excerpt", "observation_note", "document_note", "table", "figure"}
@@ -211,9 +212,14 @@ MIGRATIONS: Sequence[tuple[int, str, str]] = (
         "indicator_registry_units_baselines_targets_methods",
         (Path(__file__).resolve().parents[1] / "migrations/005_indicator_registry_units_baselines_targets_methods.sql").read_text(encoding="utf-8"),
     ),
+    (
+        6,
+        "observations_beneficiaries_budgets_outcome_portfolios",
+        (Path(__file__).resolve().parents[1] / "migrations/006_observations_beneficiaries_budgets_outcome_portfolios.sql").read_text(encoding="utf-8"),
+    ),
 )
 
-class SQLiteImpactRepository(IndicatorRegistryMixin):
+class SQLiteImpactRepository(MeasurementPortfolioMixin, IndicatorRegistryMixin):
     """SQLite reference repository with repeatable migrations and JSON projections."""
 
     def __init__(self, database: str | Path = ":memory:", *, auto_migrate: bool = True):
@@ -565,6 +571,7 @@ class SQLiteImpactRepository(IndicatorRegistryMixin):
                 )
             self._materialize_contract_evidence(contract, actor=actor)
             self._materialize_contract_registry(contract, actor=actor)
+            self._materialize_contract_measurement(contract, actor=actor)
             self.connection.execute("DELETE FROM draft_autosaves WHERE initiative_id=?", (initiative_id,))
             self._audit(action, "contract", record_id, workspace_id=workspace_id, initiative_id=initiative_id, revision=revision, actor=actor, details={"save_state": save_state, "content_hash": digest})
         return self.get_contract(record_id=record_id)
@@ -1014,7 +1021,7 @@ class SQLiteImpactRepository(IndicatorRegistryMixin):
         portfolios = self.list_portfolios(workspace_id, include_archived=True)
         return {
             "bundle_type": "global_impact_workspace_bundle",
-            "bundle_version": "1.4.0",
+            "bundle_version": "1.5.0",
             "database_schema_version": self.schema_version,
             "exported_at": utc_now(),
             "workspace": workspace,
@@ -1022,6 +1029,7 @@ class SQLiteImpactRepository(IndicatorRegistryMixin):
             "portfolios": portfolios,
             "evidence_repository": self.export_evidence_repository(workspace_id),
             "indicator_registry": self.export_indicator_registry(workspace_id),
+            "measurement_repository": self.export_measurement_repository(workspace_id),
             "audit": self.audit_records(workspace_id=workspace_id, limit=1000),
         }
 
@@ -1051,6 +1059,7 @@ class SQLiteImpactRepository(IndicatorRegistryMixin):
                 self.add_to_portfolio(portfolio["portfolio_id"], initiative_id, actor=actor)
         self._restore_evidence_repository(bundle.get("evidence_repository") or {})
         self._restore_indicator_registry(bundle.get("indicator_registry") or {}, actor=actor)
+        self._restore_measurement_repository(bundle.get("measurement_repository") or {}, actor=actor)
         restore_id = f"gic-restore-{digest[:20]}"
         summary = {"workspace_id": workspace_id, "contracts_imported": imported, "contracts_unchanged": unchanged}
         self.connection.execute(
@@ -1097,4 +1106,14 @@ class SQLiteImpactRepository(IndicatorRegistryMixin):
             "target_models": count("target_models"),
             "method_definitions": count("method_definitions"),
             "indicator_registry_bindings": count("indicator_registry_bindings"),
+            "impact_results": count("impact_results"),
+            "impact_result_relationships": count("impact_result_relationships"),
+            "observation_series": count("observation_series"),
+            "beneficiary_definitions": count("beneficiary_definitions"),
+            "beneficiary_observations": count("beneficiary_observations"),
+            "financial_records": count("financial_records"),
+            "external_factors": count("external_factors"),
+            "contribution_notes": count("contribution_notes"),
+            "outcome_portfolios": count("outcome_portfolios"),
+            "portfolio_aggregation_runs": count("portfolio_aggregation_runs"),
         }

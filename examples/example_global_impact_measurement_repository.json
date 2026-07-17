@@ -1,0 +1,384 @@
+{
+  "repository_type": "global_impact_measurement_repository",
+  "repository_version": "1.5.0",
+  "workspace_id": "gic-workspace-bdc75d8b68333af2",
+  "generated_at": "2026-07-17T20:23:45.006839+00:00",
+  "impact_results": [
+    {
+      "result_id": "gic-outcome-5dfda192c94fd5fb",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "result_type": "outcome",
+      "name": "Participating households experience lower monthly energy costs.",
+      "description": "Participating households experience lower monthly energy costs.",
+      "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+      "lifecycle_status": "needs_review",
+      "revision": 1,
+      "created_at": "2026-07-17T18:00:00+00:00",
+      "updated_at": "2026-07-17T20:23:44.992476+00:00",
+      "metadata": {
+        "canonical_entity_type": "outcome",
+        "record_id": "gic-record-3bb3e632355d26c9"
+      }
+    }
+  ],
+  "impact_result_relationships": [],
+  "observations": [
+    {
+      "observation_record_id": "gic-observation-cca59978f04bb0dd",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "indicator_id": "gic-indicator-2e7a8f93231487ce",
+      "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+      "impact_result_id": "gic-outcome-5dfda192c94fd5fb",
+      "period_start": null,
+      "period_end": null,
+      "period_label": "2026 Q2",
+      "value": 18.0,
+      "unit_id": "gic-unit-usd",
+      "data_state": "complete",
+      "revision_of_observation_id": null,
+      "received_at": "2026-07-17T18:00:00+00:00",
+      "revised_at": null,
+      "source_id": "gic-source-f2284ef9ae098b56",
+      "method_definition_id": "gic-method-dfc0b951aac86076",
+      "notes": "",
+      "revision": 1,
+      "created_at": "2026-07-17T18:00:00+00:00",
+      "updated_at": "2026-07-17T20:23:44.992706+00:00",
+      "dimensions": {},
+      "denominator": {},
+      "metadata": {
+        "materialized_from_contract": true,
+        "record_id": "gic-record-3bb3e632355d26c9"
+      }
+    },
+    {
+      "observation_record_id": "gic-observation-record-8528c165ea1091e429dd",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "indicator_id": "gic-indicator-2e7a8f93231487ce",
+      "indicator_definition_id": null,
+      "impact_result_id": null,
+      "period_start": "2026-07-01",
+      "period_end": "2026-09-30",
+      "period_label": "2026 Q3",
+      "value": 21.5,
+      "unit_id": "gic-unit-usd",
+      "data_state": "complete",
+      "revision_of_observation_id": null,
+      "received_at": "2026-07-17T20:23:44.997595+00:00",
+      "revised_at": null,
+      "source_id": null,
+      "method_definition_id": null,
+      "notes": "Quarterly utility extract.",
+      "revision": 1,
+      "created_at": "2026-07-17T20:23:44.997595+00:00",
+      "updated_at": "2026-07-17T20:23:44.997595+00:00",
+      "dimensions": {
+        "geography": "Chicago",
+        "program_site": "North"
+      },
+      "denominator": {
+        "definition": "Participating households with complete billing records"
+      },
+      "metadata": {}
+    }
+  ],
+  "beneficiary_definitions": [
+    {
+      "beneficiary_definition_id": "gic-beneficiary-definition-26b083627636277ced0c",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "name": "Direct participating households",
+      "description": "",
+      "reach_type": "direct",
+      "counting_method": "unique",
+      "privacy_level": "aggregate_only",
+      "overlap_policy": "estimated_overlap",
+      "overlap_notes": "Cross-program overlap estimated from aggregate enrollment counts.",
+      "lifecycle_status": "draft",
+      "revision": 1,
+      "created_at": "2026-07-17T20:23:44.998479+00:00",
+      "updated_at": "2026-07-17T20:23:44.998479+00:00",
+      "metadata": {}
+    },
+    {
+      "beneficiary_definition_id": "gic-population-group-93f2cf0dceae00d2",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "name": "Participating households",
+      "description": "",
+      "reach_type": "direct",
+      "counting_method": "estimated_unique",
+      "privacy_level": "aggregate_only",
+      "overlap_policy": "unknown",
+      "overlap_notes": "Canonical compact input does not record overlap assumptions.",
+      "lifecycle_status": "needs_review",
+      "revision": 1,
+      "created_at": "2026-07-17T20:23:44.993268+00:00",
+      "updated_at": "2026-07-17T20:23:44.993268+00:00",
+      "metadata": {
+        "materialized_from_contract": true,
+        "record_id": "gic-record-3bb3e632355d26c9"
+      }
+    }
+  ],
+  "beneficiary_observations": [
+    {
+      "beneficiary_observation_id": "gic-beneficiary-observation-da81d3c84de7da4b324e",
+      "beneficiary_definition_id": "gic-population-group-93f2cf0dceae00d2",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "period_start": null,
+      "period_end": null,
+      "period_label": "2026 Q2",
+      "observed_count": 420.0,
+      "data_state": "complete",
+      "revision_of_observation_id": null,
+      "overlap_estimate": null,
+      "denominator_notes": "Aggregate count materialized from canonical contract.",
+      "source_id": null,
+      "received_at": "2026-07-17T18:00:00+00:00",
+      "revised_at": null,
+      "revision": 1,
+      "created_at": "2026-07-17T18:00:00+00:00",
+      "updated_at": "2026-07-17T20:23:44.993566+00:00",
+      "dimensions": {
+        "population_group": "Participating households"
+      },
+      "metadata": {
+        "materialized_from_contract": true,
+        "record_id": "gic-record-3bb3e632355d26c9"
+      }
+    },
+    {
+      "beneficiary_observation_id": "gic-beneficiary-observation-f09b1729e188c5003c21",
+      "beneficiary_definition_id": "gic-beneficiary-definition-26b083627636277ced0c",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "period_start": null,
+      "period_end": null,
+      "period_label": "2026 Q3",
+      "observed_count": 100.0,
+      "data_state": "complete",
+      "revision_of_observation_id": null,
+      "overlap_estimate": 5.0,
+      "denominator_notes": "",
+      "source_id": null,
+      "received_at": "2026-07-17T20:23:44.998947+00:00",
+      "revised_at": null,
+      "revision": 1,
+      "created_at": "2026-07-17T20:23:44.998947+00:00",
+      "updated_at": "2026-07-17T20:23:44.998947+00:00",
+      "dimensions": {
+        "delivery_channel": "in-person",
+        "geography": "Chicago"
+      },
+      "metadata": {}
+    }
+  ],
+  "financial_records": [
+    {
+      "financial_record_id": "gic-budget-record-1e5347eb6026c816",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "record_type": "budget",
+      "funding_source": "",
+      "cost_category": "uncategorized",
+      "period_start": null,
+      "period_end": null,
+      "period_label": "2026 Q2",
+      "amount": 125000.0,
+      "currency": "USD",
+      "reporting_currency": "USD",
+      "exchange_rate": 1.0,
+      "reporting_amount": 125000.0,
+      "data_state": "complete",
+      "source_id": null,
+      "notes": "",
+      "revision": 1,
+      "created_at": "2026-07-17T18:00:00+00:00",
+      "updated_at": "2026-07-17T20:23:44.993884+00:00",
+      "metadata": {
+        "materialized_from_contract": true,
+        "record_id": "gic-record-3bb3e632355d26c9"
+      }
+    },
+    {
+      "financial_record_id": "gic-financial-record-c5b34e13611904dd5b6e",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "record_type": "expenditure",
+      "funding_source": "City sustainability grant",
+      "cost_category": "retrofit installation",
+      "period_start": null,
+      "period_end": null,
+      "period_label": "2026 Q3",
+      "amount": 11100.0,
+      "currency": "USD",
+      "reporting_currency": "USD",
+      "exchange_rate": 1.0,
+      "reporting_amount": 11100.0,
+      "data_state": "complete",
+      "source_id": null,
+      "notes": "",
+      "revision": 1,
+      "created_at": "2026-07-17T20:23:44.999334+00:00",
+      "updated_at": "2026-07-17T20:23:44.999334+00:00",
+      "metadata": {}
+    }
+  ],
+  "external_factors": [
+    {
+      "external_factor_id": "gic-external-factor-bc2b3191ea495b3f7b80",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "name": "Mild seasonal temperatures",
+      "description": "",
+      "direction": "positive",
+      "influence_level": "medium",
+      "period_start": null,
+      "period_end": null,
+      "period_label": "2026 Q3",
+      "source_id": null,
+      "notes": "",
+      "revision": 1,
+      "created_at": "2026-07-17T20:23:44.999834+00:00",
+      "updated_at": "2026-07-17T20:23:44.999834+00:00",
+      "metadata": {}
+    }
+  ],
+  "contribution_notes": [
+    {
+      "contribution_note_id": "gic-contribution-note-f318b10f56550eef03e3",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "impact_result_id": "gic-outcome-5dfda192c94fd5fb",
+      "statement": "The retrofit program plausibly contributed to lower household energy costs.",
+      "contribution_type": "direct",
+      "limitations": "Weather and tariff changes also influenced observed bills.",
+      "revision": 1,
+      "created_at": "2026-07-17T20:23:45.000341+00:00",
+      "updated_at": "2026-07-17T20:23:45.000341+00:00",
+      "evidence_refs": [],
+      "external_factor_refs": [
+        "gic-external-factor-bc2b3191ea495b3f7b80"
+      ],
+      "metadata": {}
+    }
+  ],
+  "outcome_portfolios": [
+    {
+      "outcome_portfolio_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "name": "Household cost outcomes",
+      "description": "Compatible household cost observations across initiatives.",
+      "aggregation_method": "sum",
+      "target_unit_id": "gic-unit-usd",
+      "period_policy": "exact",
+      "overlap_policy": "exclude_unknown_or_overlapping",
+      "missing_data_policy": "exclude_and_disclose",
+      "archived_at": null,
+      "revision": 1,
+      "created_at": "2026-07-17T20:23:45.001678+00:00",
+      "updated_at": "2026-07-17T20:23:45.001678+00:00",
+      "metadata": {},
+      "members": [
+        {
+          "outcome_portfolio_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
+          "membership_id": "gic-outcome-membership-18d67f183b1b73184205",
+          "initiative_id": "gic-initiative-09a657f60923ed45",
+          "indicator_id": "gic-indicator-2e7a8f93231487ce",
+          "indicator_definition_id": null,
+          "impact_result_id": "gic-outcome-5dfda192c94fd5fb",
+          "population_scope": "Participating Chicago households",
+          "overlap_group": "chicago-households-2026",
+          "denominator_definition": "Unique participating households",
+          "weight": 1.0,
+          "position": 0,
+          "added_at": "2026-07-17T20:23:45.003329+00:00",
+          "metadata": {}
+        }
+      ]
+    }
+  ],
+  "portfolio_aggregation_runs": [
+    {
+      "aggregation_run_id": "gic-portfolio-run-065944a972e47c2488bf",
+      "outcome_portfolio_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "period_start": null,
+      "period_end": null,
+      "period_label": "2026 Q3",
+      "aggregation_method": "sum",
+      "target_unit_id": "gic-unit-usd",
+      "result_value": 21.5,
+      "created_at": "2026-07-17T20:23:45.004632+00:00",
+      "created_by": "example-builder",
+      "result": {
+        "aggregation_method": "sum",
+        "aggregation_type": "global_impact_outcome_portfolio_aggregation",
+        "aggregation_version": "1.5.0",
+        "boundary": "Portfolio aggregation combines compatible recorded observations; it does not prove attribution or eliminate double-counting risk beyond disclosed rules.",
+        "excluded": [],
+        "generated_at": "2026-07-17T20:23:45.004632+00:00",
+        "included": [
+          {
+            "converted_value": 21.5,
+            "data_state": "complete",
+            "denominator_definition": "Unique participating households",
+            "indicator_id": "gic-indicator-2e7a8f93231487ce",
+            "initiative_id": "gic-initiative-09a657f60923ed45",
+            "membership_id": "gic-outcome-membership-18d67f183b1b73184205",
+            "observation_record_id": "gic-observation-record-8528c165ea1091e429dd",
+            "overlap_group": "chicago-households-2026",
+            "period_label": "2026 Q3",
+            "population_scope": "Participating Chicago households",
+            "source_unit_id": "gic-unit-usd",
+            "source_value": 21.5,
+            "target_unit_id": "gic-unit-usd",
+            "weight": 1.0
+          }
+        ],
+        "integrity": {
+          "excluded_count": 0,
+          "included_count": 1,
+          "valid": true
+        },
+        "outcome_portfolio_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
+        "period": {
+          "end": null,
+          "label": "2026 Q3",
+          "start": null
+        },
+        "rules": {
+          "missing_data_policy": "exclude_and_disclose",
+          "overlap_policy": "exclude_unknown_or_overlapping",
+          "period_policy": "exact",
+          "population_overlap": "Population-sensitive sums disclose or exclude overlapping and unknown scopes according to portfolio policy.",
+          "unit_conversion": "Only dimension-compatible units are converted through the governed unit registry."
+        },
+        "target_unit_id": "gic-unit-usd",
+        "value": 21.5,
+        "warnings": [],
+        "workspace_id": "gic-workspace-bdc75d8b68333af2"
+      }
+    }
+  ],
+  "integrity": {
+    "valid": true,
+    "impact_result_count": 1,
+    "observation_count": 2,
+    "beneficiary_definition_count": 2,
+    "beneficiary_observation_count": 2,
+    "financial_record_count": 2,
+    "external_factor_count": 1,
+    "contribution_note_count": 1,
+    "outcome_portfolio_count": 1,
+    "aggregation_run_count": 1,
+    "orphan_relationship_ids": [],
+    "forbidden_dimension_keys": []
+  },
+  "privacy_boundary": "The core repository stores aggregate beneficiary counts and dimensions, not individual beneficiary records."
+}

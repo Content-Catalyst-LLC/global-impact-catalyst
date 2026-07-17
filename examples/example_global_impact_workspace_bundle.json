@@ -1,8 +1,8 @@
 {
   "bundle_type": "global_impact_workspace_bundle",
-  "bundle_version": "1.4.0",
-  "database_schema_version": 5,
-  "exported_at": "2026-07-17T19:50:09.889450+00:00",
+  "bundle_version": "1.5.0",
+  "database_schema_version": 6,
+  "exported_at": "2026-07-17T20:23:45.007558+00:00",
   "workspace": {
     "entity_type": "workspace",
     "entity_id": "gic-workspace-bdc75d8b68333af2",
@@ -14,7 +14,7 @@
     "archived_at": null,
     "revision": 1,
     "created_at": "2026-07-17T18:00:00+00:00",
-    "updated_at": "2026-07-17T19:50:09.875433+00:00",
+    "updated_at": "2026-07-17T20:23:44.987363+00:00",
     "document": {
       "created_at": "2026-07-17T18:00:00+00:00",
       "entity_type": "workspace",
@@ -35,7 +35,7 @@
       "revision": 1,
       "content_hash": "7f46875fc7cf7b68c1195792f8841eec619ac320c519e46350388bdc43f17f13",
       "created_at": "2026-07-17T18:00:00+00:00",
-      "updated_at": "2026-07-17T19:50:09.874877+00:00",
+      "updated_at": "2026-07-17T20:23:44.986748+00:00",
       "contract": {
         "boundaries": [
           "This contract is not an ESG assurance opinion, SDG certification, regulatory filing, or audit finding.",
@@ -393,7 +393,7 @@
         "current_version": 1,
         "revision": 1,
         "created_at": "2026-07-17T18:00:00+00:00",
-        "updated_at": "2026-07-17T19:50:09.876057+00:00",
+        "updated_at": "2026-07-17T20:23:44.987977+00:00",
         "metadata": {
           "canonical_entity": {
             "created_at": "2026-07-17T18:00:00+00:00",
@@ -418,63 +418,15 @@
         "checksum_value": "59a74dd239f3e03db14e3f2af0dff882bbc093494964254318b9e389caf616f4",
         "mime_type": "application/vnd.global-impact-catalyst.source+json",
         "size_bytes": 305,
-        "captured_at": "2026-07-17T19:50:09.876057+00:00",
+        "captured_at": "2026-07-17T20:23:44.987977+00:00",
         "captured_by": "system",
         "metadata": {
           "record_id": "gic-record-3bb3e632355d26c9"
         }
       }
     ],
-    "evidence_items": [
-      {
-        "evidence_id": "gic-evidence-ab1deb00481e6cb51639",
-        "source_id": "gic-source-f2284ef9ae098b56",
-        "source_version_id": "gic-source-version-3ade6853b711cd7d424a",
-        "workspace_id": "gic-workspace-bdc75d8b68333af2",
-        "initiative_id": "gic-initiative-09a657f60923ed45",
-        "evidence_type": "quotation",
-        "title": "Observed bill reduction",
-        "locator": "p. 14",
-        "exact_quote": "Average monthly bills declined by eighteen dollars.",
-        "paraphrase": "",
-        "notes": "",
-        "page_start": null,
-        "page_end": null,
-        "character_start": null,
-        "character_end": null,
-        "captured_at": "2026-07-17T19:50:09.885229+00:00",
-        "captured_by": "example-builder",
-        "content_hash": "67beced27a14f284cc0963c1861e1d4296156e13e99707f95ef7a37dcdcb6f22",
-        "archived_at": null,
-        "revision": 1,
-        "metadata": {}
-      }
-    ],
-    "datasets": [
-      {
-        "dataset_id": "gic-dataset-49e0259a9233bf75493f",
-        "source_id": "gic-source-f2284ef9ae098b56",
-        "source_version_id": null,
-        "workspace_id": "gic-workspace-bdc75d8b68333af2",
-        "initiative_id": "gic-initiative-09a657f60923ed45",
-        "title": "Participant billing panel",
-        "version": "2026-Q2",
-        "description": "",
-        "landing_page": "",
-        "distribution_url": "",
-        "license": "restricted-internal",
-        "checksum_algorithm": "sha256",
-        "checksum_value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "schema_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "temporal_coverage": "",
-        "spatial_coverage": "",
-        "row_count": 420,
-        "column_count": 18,
-        "created_at": "2026-07-17T19:50:09.886037+00:00",
-        "updated_at": "2026-07-17T19:50:09.886037+00:00",
-        "metadata": {}
-      }
-    ],
+    "evidence_items": [],
+    "datasets": [],
     "provenance_edges": [
       {
         "edge_id": "gic-edge-195dc6d51c44e588e3cf",
@@ -621,23 +573,13 @@
         "metadata": {}
       }
     ],
-    "claim_evidence_links": [
-      {
-        "claim_id": "gic-claim-36fcd07621180653",
-        "evidence_id": "gic-evidence-ab1deb00481e6cb51639",
-        "relationship": "supports",
-        "strength": "direct",
-        "notes": "",
-        "linked_at": "2026-07-17T19:50:09.886775+00:00",
-        "linked_by": "example-builder"
-      }
-    ]
+    "claim_evidence_links": []
   },
   "indicator_registry": {
     "registry_type": "global_impact_indicator_registry",
     "registry_version": "1.4.0",
     "workspace_id": "gic-workspace-bdc75d8b68333af2",
-    "generated_at": "2026-07-17T19:50:09.891733+00:00",
+    "generated_at": "2026-07-17T20:23:45.009198+00:00",
     "units": [
       {
         "unit_id": "gic-unit-hectare",
@@ -652,8 +594,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -672,8 +614,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -692,8 +634,8 @@
         "precision_digits": 0,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -712,8 +654,8 @@
         "precision_digits": 2,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -732,8 +674,8 @@
         "precision_digits": 2,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -752,8 +694,8 @@
         "precision_digits": 4,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -772,8 +714,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -792,8 +734,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -812,8 +754,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -832,8 +774,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -852,8 +794,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -872,8 +814,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -892,8 +834,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -912,8 +854,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -932,8 +874,8 @@
         "precision_digits": 2,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -952,8 +894,8 @@
         "precision_digits": 2,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -972,8 +914,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -992,8 +934,8 @@
         "precision_digits": 3,
         "lifecycle_status": "active",
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.872782+00:00",
-        "updated_at": "2026-07-17T19:50:09.872782+00:00",
+        "created_at": "2026-07-17T20:23:44.977166+00:00",
+        "updated_at": "2026-07-17T20:23:44.977166+00:00",
         "metadata": {
           "registry_version": "1.4.0",
           "standard": true
@@ -1014,8 +956,8 @@
         "lifecycle_status": "active",
         "current_version": 1,
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.877787+00:00",
-        "updated_at": "2026-07-17T19:50:09.878174+00:00",
+        "created_at": "2026-07-17T20:23:44.989076+00:00",
+        "updated_at": "2026-07-17T20:23:44.989362+00:00",
         "disaggregation": [],
         "quality_profile": {
           "status": "not_assessed"
@@ -1034,7 +976,7 @@
             "effective_from": null,
             "effective_through": null,
             "definition_hash": "7adf7bfeee6c2462ce3934e6919af4bee315b3b2860fbbe922ce208584b37d8d",
-            "created_at": "2026-07-17T19:50:09.878125+00:00",
+            "created_at": "2026-07-17T20:23:44.989313+00:00",
             "created_by": "system",
             "definition": {
               "aggregation_method": "latest",
@@ -1081,8 +1023,8 @@
         "lifecycle_status": "active",
         "current_version": 1,
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.878475+00:00",
-        "updated_at": "2026-07-17T19:50:09.878754+00:00",
+        "created_at": "2026-07-17T20:23:44.989629+00:00",
+        "updated_at": "2026-07-17T20:23:44.989920+00:00",
         "parameters": {
           "canonical_baseline_id": "gic-baseline-bccde48f17ee3898"
         },
@@ -1096,7 +1038,7 @@
             "version_number": 1,
             "version_label": "1.1.0",
             "model_hash": "56ad1c446534c3d426aeea8d5bc804a01e190d39913ab344c51429c07d84b9a3",
-            "created_at": "2026-07-17T19:50:09.878715+00:00",
+            "created_at": "2026-07-17T20:23:44.989880+00:00",
             "created_by": "system",
             "model": {
               "baseline_model_id": "gic-baseline-model-9c6e0716c2085cf79608",
@@ -1149,8 +1091,8 @@
         "lifecycle_status": "active",
         "current_version": 1,
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.879148+00:00",
-        "updated_at": "2026-07-17T19:50:09.879486+00:00",
+        "created_at": "2026-07-17T20:23:44.990319+00:00",
+        "updated_at": "2026-07-17T20:23:44.990654+00:00",
         "milestones": [],
         "metadata": {
           "canonical_target_id": "gic-target-61bc37e9887a3252",
@@ -1163,7 +1105,7 @@
             "version_number": 1,
             "version_label": "1.1.0",
             "model_hash": "10a0c1c17dcd65f9feeac504afec5079876ba00781a0ccfc61358756dc7b02aa",
-            "created_at": "2026-07-17T19:50:09.879434+00:00",
+            "created_at": "2026-07-17T20:23:44.990601+00:00",
             "created_by": "system",
             "model": {
               "direction": "higher_is_better",
@@ -1209,8 +1151,8 @@
         "lifecycle_status": "active",
         "current_version": 1,
         "revision": 1,
-        "created_at": "2026-07-17T19:50:09.879757+00:00",
-        "updated_at": "2026-07-17T19:50:09.880052+00:00",
+        "created_at": "2026-07-17T20:23:44.990951+00:00",
+        "updated_at": "2026-07-17T20:23:44.991422+00:00",
         "input_requirements": [],
         "quality_profile": {
           "data_quality": "not_assessed",
@@ -1229,7 +1171,7 @@
             "version_number": 1,
             "version_label": "1.0",
             "method_hash": "da0faf44f1022bab9c297cbf657134caa8bf7bf4929858f5f2e780ceb89405c1",
-            "created_at": "2026-07-17T19:50:09.880012+00:00",
+            "created_at": "2026-07-17T20:23:44.991177+00:00",
             "created_by": "system",
             "method": {
               "description": "Current value is the observed average monthly bill reduction across participating households compared with baseline average bills. Results should be reviewed for seasonality and household-size differences.",
@@ -1273,7 +1215,7 @@
         "target_model_version_id": "gic-target_model_version-6ce7e0a7e4b5422fbfae",
         "method_definition_id": "gic-method-dfc0b951aac86076",
         "method_definition_version_id": "gic-method_definition_version-4341591fd3389a358d25",
-        "bound_at": "2026-07-17T19:50:09.880509+00:00",
+        "bound_at": "2026-07-17T20:23:44.992037+00:00",
         "bound_by": "system",
         "revision": 1,
         "metadata": {
@@ -1294,56 +1236,517 @@
       "orphan_binding_ids": []
     }
   },
+  "measurement_repository": {
+    "repository_type": "global_impact_measurement_repository",
+    "repository_version": "1.5.0",
+    "workspace_id": "gic-workspace-bdc75d8b68333af2",
+    "generated_at": "2026-07-17T20:23:45.009878+00:00",
+    "impact_results": [
+      {
+        "result_id": "gic-outcome-5dfda192c94fd5fb",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "result_type": "outcome",
+        "name": "Participating households experience lower monthly energy costs.",
+        "description": "Participating households experience lower monthly energy costs.",
+        "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+        "lifecycle_status": "needs_review",
+        "revision": 1,
+        "created_at": "2026-07-17T18:00:00+00:00",
+        "updated_at": "2026-07-17T20:23:44.992476+00:00",
+        "metadata": {
+          "canonical_entity_type": "outcome",
+          "record_id": "gic-record-3bb3e632355d26c9"
+        }
+      }
+    ],
+    "impact_result_relationships": [],
+    "observations": [
+      {
+        "observation_record_id": "gic-observation-cca59978f04bb0dd",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "indicator_id": "gic-indicator-2e7a8f93231487ce",
+        "indicator_definition_id": "gic-indicator-definition-9746d98980e468bc1b83",
+        "impact_result_id": "gic-outcome-5dfda192c94fd5fb",
+        "period_start": null,
+        "period_end": null,
+        "period_label": "2026 Q2",
+        "value": 18.0,
+        "unit_id": "gic-unit-usd",
+        "data_state": "complete",
+        "revision_of_observation_id": null,
+        "received_at": "2026-07-17T18:00:00+00:00",
+        "revised_at": null,
+        "source_id": "gic-source-f2284ef9ae098b56",
+        "method_definition_id": "gic-method-dfc0b951aac86076",
+        "notes": "",
+        "revision": 1,
+        "created_at": "2026-07-17T18:00:00+00:00",
+        "updated_at": "2026-07-17T20:23:44.992706+00:00",
+        "dimensions": {},
+        "denominator": {},
+        "metadata": {
+          "materialized_from_contract": true,
+          "record_id": "gic-record-3bb3e632355d26c9"
+        }
+      },
+      {
+        "observation_record_id": "gic-observation-record-8528c165ea1091e429dd",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "indicator_id": "gic-indicator-2e7a8f93231487ce",
+        "indicator_definition_id": null,
+        "impact_result_id": null,
+        "period_start": "2026-07-01",
+        "period_end": "2026-09-30",
+        "period_label": "2026 Q3",
+        "value": 21.5,
+        "unit_id": "gic-unit-usd",
+        "data_state": "complete",
+        "revision_of_observation_id": null,
+        "received_at": "2026-07-17T20:23:44.997595+00:00",
+        "revised_at": null,
+        "source_id": null,
+        "method_definition_id": null,
+        "notes": "Quarterly utility extract.",
+        "revision": 1,
+        "created_at": "2026-07-17T20:23:44.997595+00:00",
+        "updated_at": "2026-07-17T20:23:44.997595+00:00",
+        "dimensions": {
+          "geography": "Chicago",
+          "program_site": "North"
+        },
+        "denominator": {
+          "definition": "Participating households with complete billing records"
+        },
+        "metadata": {}
+      }
+    ],
+    "beneficiary_definitions": [
+      {
+        "beneficiary_definition_id": "gic-beneficiary-definition-26b083627636277ced0c",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "name": "Direct participating households",
+        "description": "",
+        "reach_type": "direct",
+        "counting_method": "unique",
+        "privacy_level": "aggregate_only",
+        "overlap_policy": "estimated_overlap",
+        "overlap_notes": "Cross-program overlap estimated from aggregate enrollment counts.",
+        "lifecycle_status": "draft",
+        "revision": 1,
+        "created_at": "2026-07-17T20:23:44.998479+00:00",
+        "updated_at": "2026-07-17T20:23:44.998479+00:00",
+        "metadata": {}
+      },
+      {
+        "beneficiary_definition_id": "gic-population-group-93f2cf0dceae00d2",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "name": "Participating households",
+        "description": "",
+        "reach_type": "direct",
+        "counting_method": "estimated_unique",
+        "privacy_level": "aggregate_only",
+        "overlap_policy": "unknown",
+        "overlap_notes": "Canonical compact input does not record overlap assumptions.",
+        "lifecycle_status": "needs_review",
+        "revision": 1,
+        "created_at": "2026-07-17T20:23:44.993268+00:00",
+        "updated_at": "2026-07-17T20:23:44.993268+00:00",
+        "metadata": {
+          "materialized_from_contract": true,
+          "record_id": "gic-record-3bb3e632355d26c9"
+        }
+      }
+    ],
+    "beneficiary_observations": [
+      {
+        "beneficiary_observation_id": "gic-beneficiary-observation-da81d3c84de7da4b324e",
+        "beneficiary_definition_id": "gic-population-group-93f2cf0dceae00d2",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "period_start": null,
+        "period_end": null,
+        "period_label": "2026 Q2",
+        "observed_count": 420.0,
+        "data_state": "complete",
+        "revision_of_observation_id": null,
+        "overlap_estimate": null,
+        "denominator_notes": "Aggregate count materialized from canonical contract.",
+        "source_id": null,
+        "received_at": "2026-07-17T18:00:00+00:00",
+        "revised_at": null,
+        "revision": 1,
+        "created_at": "2026-07-17T18:00:00+00:00",
+        "updated_at": "2026-07-17T20:23:44.993566+00:00",
+        "dimensions": {
+          "population_group": "Participating households"
+        },
+        "metadata": {
+          "materialized_from_contract": true,
+          "record_id": "gic-record-3bb3e632355d26c9"
+        }
+      },
+      {
+        "beneficiary_observation_id": "gic-beneficiary-observation-f09b1729e188c5003c21",
+        "beneficiary_definition_id": "gic-beneficiary-definition-26b083627636277ced0c",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "period_start": null,
+        "period_end": null,
+        "period_label": "2026 Q3",
+        "observed_count": 100.0,
+        "data_state": "complete",
+        "revision_of_observation_id": null,
+        "overlap_estimate": 5.0,
+        "denominator_notes": "",
+        "source_id": null,
+        "received_at": "2026-07-17T20:23:44.998947+00:00",
+        "revised_at": null,
+        "revision": 1,
+        "created_at": "2026-07-17T20:23:44.998947+00:00",
+        "updated_at": "2026-07-17T20:23:44.998947+00:00",
+        "dimensions": {
+          "delivery_channel": "in-person",
+          "geography": "Chicago"
+        },
+        "metadata": {}
+      }
+    ],
+    "financial_records": [
+      {
+        "financial_record_id": "gic-budget-record-1e5347eb6026c816",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "record_type": "budget",
+        "funding_source": "",
+        "cost_category": "uncategorized",
+        "period_start": null,
+        "period_end": null,
+        "period_label": "2026 Q2",
+        "amount": 125000.0,
+        "currency": "USD",
+        "reporting_currency": "USD",
+        "exchange_rate": 1.0,
+        "reporting_amount": 125000.0,
+        "data_state": "complete",
+        "source_id": null,
+        "notes": "",
+        "revision": 1,
+        "created_at": "2026-07-17T18:00:00+00:00",
+        "updated_at": "2026-07-17T20:23:44.993884+00:00",
+        "metadata": {
+          "materialized_from_contract": true,
+          "record_id": "gic-record-3bb3e632355d26c9"
+        }
+      },
+      {
+        "financial_record_id": "gic-financial-record-c5b34e13611904dd5b6e",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "record_type": "expenditure",
+        "funding_source": "City sustainability grant",
+        "cost_category": "retrofit installation",
+        "period_start": null,
+        "period_end": null,
+        "period_label": "2026 Q3",
+        "amount": 11100.0,
+        "currency": "USD",
+        "reporting_currency": "USD",
+        "exchange_rate": 1.0,
+        "reporting_amount": 11100.0,
+        "data_state": "complete",
+        "source_id": null,
+        "notes": "",
+        "revision": 1,
+        "created_at": "2026-07-17T20:23:44.999334+00:00",
+        "updated_at": "2026-07-17T20:23:44.999334+00:00",
+        "metadata": {}
+      }
+    ],
+    "external_factors": [
+      {
+        "external_factor_id": "gic-external-factor-bc2b3191ea495b3f7b80",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "name": "Mild seasonal temperatures",
+        "description": "",
+        "direction": "positive",
+        "influence_level": "medium",
+        "period_start": null,
+        "period_end": null,
+        "period_label": "2026 Q3",
+        "source_id": null,
+        "notes": "",
+        "revision": 1,
+        "created_at": "2026-07-17T20:23:44.999834+00:00",
+        "updated_at": "2026-07-17T20:23:44.999834+00:00",
+        "metadata": {}
+      }
+    ],
+    "contribution_notes": [
+      {
+        "contribution_note_id": "gic-contribution-note-f318b10f56550eef03e3",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "initiative_id": "gic-initiative-09a657f60923ed45",
+        "impact_result_id": "gic-outcome-5dfda192c94fd5fb",
+        "statement": "The retrofit program plausibly contributed to lower household energy costs.",
+        "contribution_type": "direct",
+        "limitations": "Weather and tariff changes also influenced observed bills.",
+        "revision": 1,
+        "created_at": "2026-07-17T20:23:45.000341+00:00",
+        "updated_at": "2026-07-17T20:23:45.000341+00:00",
+        "evidence_refs": [],
+        "external_factor_refs": [
+          "gic-external-factor-bc2b3191ea495b3f7b80"
+        ],
+        "metadata": {}
+      }
+    ],
+    "outcome_portfolios": [
+      {
+        "outcome_portfolio_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "name": "Household cost outcomes",
+        "description": "Compatible household cost observations across initiatives.",
+        "aggregation_method": "sum",
+        "target_unit_id": "gic-unit-usd",
+        "period_policy": "exact",
+        "overlap_policy": "exclude_unknown_or_overlapping",
+        "missing_data_policy": "exclude_and_disclose",
+        "archived_at": null,
+        "revision": 1,
+        "created_at": "2026-07-17T20:23:45.001678+00:00",
+        "updated_at": "2026-07-17T20:23:45.001678+00:00",
+        "metadata": {},
+        "members": [
+          {
+            "outcome_portfolio_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
+            "membership_id": "gic-outcome-membership-18d67f183b1b73184205",
+            "initiative_id": "gic-initiative-09a657f60923ed45",
+            "indicator_id": "gic-indicator-2e7a8f93231487ce",
+            "indicator_definition_id": null,
+            "impact_result_id": "gic-outcome-5dfda192c94fd5fb",
+            "population_scope": "Participating Chicago households",
+            "overlap_group": "chicago-households-2026",
+            "denominator_definition": "Unique participating households",
+            "weight": 1.0,
+            "position": 0,
+            "added_at": "2026-07-17T20:23:45.003329+00:00",
+            "metadata": {}
+          }
+        ]
+      }
+    ],
+    "portfolio_aggregation_runs": [
+      {
+        "aggregation_run_id": "gic-portfolio-run-065944a972e47c2488bf",
+        "outcome_portfolio_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
+        "workspace_id": "gic-workspace-bdc75d8b68333af2",
+        "period_start": null,
+        "period_end": null,
+        "period_label": "2026 Q3",
+        "aggregation_method": "sum",
+        "target_unit_id": "gic-unit-usd",
+        "result_value": 21.5,
+        "created_at": "2026-07-17T20:23:45.004632+00:00",
+        "created_by": "example-builder",
+        "result": {
+          "aggregation_method": "sum",
+          "aggregation_type": "global_impact_outcome_portfolio_aggregation",
+          "aggregation_version": "1.5.0",
+          "boundary": "Portfolio aggregation combines compatible recorded observations; it does not prove attribution or eliminate double-counting risk beyond disclosed rules.",
+          "excluded": [],
+          "generated_at": "2026-07-17T20:23:45.004632+00:00",
+          "included": [
+            {
+              "converted_value": 21.5,
+              "data_state": "complete",
+              "denominator_definition": "Unique participating households",
+              "indicator_id": "gic-indicator-2e7a8f93231487ce",
+              "initiative_id": "gic-initiative-09a657f60923ed45",
+              "membership_id": "gic-outcome-membership-18d67f183b1b73184205",
+              "observation_record_id": "gic-observation-record-8528c165ea1091e429dd",
+              "overlap_group": "chicago-households-2026",
+              "period_label": "2026 Q3",
+              "population_scope": "Participating Chicago households",
+              "source_unit_id": "gic-unit-usd",
+              "source_value": 21.5,
+              "target_unit_id": "gic-unit-usd",
+              "weight": 1.0
+            }
+          ],
+          "integrity": {
+            "excluded_count": 0,
+            "included_count": 1,
+            "valid": true
+          },
+          "outcome_portfolio_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
+          "period": {
+            "end": null,
+            "label": "2026 Q3",
+            "start": null
+          },
+          "rules": {
+            "missing_data_policy": "exclude_and_disclose",
+            "overlap_policy": "exclude_unknown_or_overlapping",
+            "period_policy": "exact",
+            "population_overlap": "Population-sensitive sums disclose or exclude overlapping and unknown scopes according to portfolio policy.",
+            "unit_conversion": "Only dimension-compatible units are converted through the governed unit registry."
+          },
+          "target_unit_id": "gic-unit-usd",
+          "value": 21.5,
+          "warnings": [],
+          "workspace_id": "gic-workspace-bdc75d8b68333af2"
+        }
+      }
+    ],
+    "integrity": {
+      "valid": true,
+      "impact_result_count": 1,
+      "observation_count": 2,
+      "beneficiary_definition_count": 2,
+      "beneficiary_observation_count": 2,
+      "financial_record_count": 2,
+      "external_factor_count": 1,
+      "contribution_note_count": 1,
+      "outcome_portfolio_count": 1,
+      "aggregation_run_count": 1,
+      "orphan_relationship_ids": [],
+      "forbidden_dimension_keys": []
+    },
+    "privacy_boundary": "The core repository stores aggregate beneficiary counts and dimensions, not individual beneficiary records."
+  },
   "audit": [
     {
-      "audit_id": 16,
-      "occurred_at": "2026-07-17T19:50:09.886830+00:00",
+      "audit_id": 27,
+      "occurred_at": "2026-07-17T20:23:45.004873+00:00",
       "actor": "example-builder",
-      "action": "link_claim_evidence",
-      "entity_type": "claim",
-      "entity_id": "gic-claim-36fcd07621180653",
+      "action": "aggregate_outcome_portfolio",
+      "entity_type": "outcome_portfolio",
+      "entity_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
       "workspace_id": "gic-workspace-bdc75d8b68333af2",
-      "initiative_id": "gic-initiative-09a657f60923ed45",
-      "revision": null,
+      "initiative_id": null,
+      "revision": 1,
       "details": {
-        "evidence_id": "gic-evidence-ab1deb00481e6cb51639",
-        "relationship": "supports",
-        "strength": "direct"
+        "aggregation_run_id": "gic-portfolio-run-065944a972e47c2488bf",
+        "excluded": 0,
+        "included": 1
       }
     },
     {
-      "audit_id": 15,
-      "occurred_at": "2026-07-17T19:50:09.886309+00:00",
+      "audit_id": 26,
+      "occurred_at": "2026-07-17T20:23:45.003461+00:00",
       "actor": "example-builder",
-      "action": "register_dataset",
-      "entity_type": "dataset",
-      "entity_id": "gic-dataset-49e0259a9233bf75493f",
-      "workspace_id": "gic-workspace-bdc75d8b68333af2",
-      "initiative_id": "gic-initiative-09a657f60923ed45",
-      "revision": null,
-      "details": {
-        "checksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "source_id": "gic-source-f2284ef9ae098b56"
-      }
-    },
-    {
-      "audit_id": 14,
-      "occurred_at": "2026-07-17T19:50:09.885462+00:00",
-      "actor": "example-builder",
-      "action": "capture_evidence",
-      "entity_type": "evidence",
-      "entity_id": "gic-evidence-ab1deb00481e6cb51639",
+      "action": "add_outcome_portfolio_member",
+      "entity_type": "outcome_portfolio",
+      "entity_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
       "workspace_id": "gic-workspace-bdc75d8b68333af2",
       "initiative_id": "gic-initiative-09a657f60923ed45",
       "revision": 1,
       "details": {
-        "source_id": "gic-source-f2284ef9ae098b56",
-        "source_version_id": "gic-source-version-3ade6853b711cd7d424a"
+        "membership_id": "gic-outcome-membership-18d67f183b1b73184205"
       }
     },
     {
-      "audit_id": 13,
-      "occurred_at": "2026-07-17T19:50:09.881143+00:00",
+      "audit_id": 25,
+      "occurred_at": "2026-07-17T20:23:45.002393+00:00",
+      "actor": "example-builder",
+      "action": "create_outcome_portfolio",
+      "entity_type": "outcome_portfolio",
+      "entity_id": "gic-outcome-portfolio-e25b02b5a78977bfe12f",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": null,
+      "revision": 1,
+      "details": {}
+    },
+    {
+      "audit_id": 24,
+      "occurred_at": "2026-07-17T20:23:45.000535+00:00",
+      "actor": "example-builder",
+      "action": "add_contribution_note",
+      "entity_type": "contribution_note",
+      "entity_id": "gic-contribution-note-f318b10f56550eef03e3",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {}
+    },
+    {
+      "audit_id": 23,
+      "occurred_at": "2026-07-17T20:23:45.000038+00:00",
+      "actor": "example-builder",
+      "action": "add_external_factor",
+      "entity_type": "external_factor",
+      "entity_id": "gic-external-factor-bc2b3191ea495b3f7b80",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {}
+    },
+    {
+      "audit_id": 22,
+      "occurred_at": "2026-07-17T20:23:44.999403+00:00",
+      "actor": "example-builder",
+      "action": "record_financial_record",
+      "entity_type": "financial_record",
+      "entity_id": "gic-financial-record-c5b34e13611904dd5b6e",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {
+        "period_label": "2026 Q3",
+        "record_type": "expenditure"
+      }
+    },
+    {
+      "audit_id": 21,
+      "occurred_at": "2026-07-17T20:23:44.999032+00:00",
+      "actor": "example-builder",
+      "action": "record_beneficiary_observation",
+      "entity_type": "beneficiary_observation",
+      "entity_id": "gic-beneficiary-observation-f09b1729e188c5003c21",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {
+        "data_state": "complete",
+        "period_label": "2026 Q3"
+      }
+    },
+    {
+      "audit_id": 20,
+      "occurred_at": "2026-07-17T20:23:44.998565+00:00",
+      "actor": "example-builder",
+      "action": "register_beneficiary_definition",
+      "entity_type": "beneficiary_definition",
+      "entity_id": "gic-beneficiary-definition-26b083627636277ced0c",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {}
+    },
+    {
+      "audit_id": 19,
+      "occurred_at": "2026-07-17T20:23:44.997741+00:00",
+      "actor": "example-builder",
+      "action": "record_observation",
+      "entity_type": "observation_record",
+      "entity_id": "gic-observation-record-8528c165ea1091e429dd",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {
+        "data_state": "complete",
+        "period_label": "2026 Q3"
+      }
+    },
+    {
+      "audit_id": 18,
+      "occurred_at": "2026-07-17T20:23:44.994178+00:00",
       "actor": "system",
       "action": "create",
       "entity_type": "contract",
@@ -1357,8 +1760,77 @@
       }
     },
     {
+      "audit_id": 17,
+      "occurred_at": "2026-07-17T20:23:44.994097+00:00",
+      "actor": "system",
+      "action": "record_financial_record",
+      "entity_type": "financial_record",
+      "entity_id": "gic-budget-record-1e5347eb6026c816",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {
+        "period_label": "2026 Q2",
+        "record_type": "budget"
+      }
+    },
+    {
+      "audit_id": 16,
+      "occurred_at": "2026-07-17T20:23:44.993810+00:00",
+      "actor": "system",
+      "action": "record_beneficiary_observation",
+      "entity_type": "beneficiary_observation",
+      "entity_id": "gic-beneficiary-observation-da81d3c84de7da4b324e",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {
+        "data_state": "complete",
+        "period_label": "2026 Q2"
+      }
+    },
+    {
+      "audit_id": 15,
+      "occurred_at": "2026-07-17T20:23:44.993459+00:00",
+      "actor": "system",
+      "action": "register_beneficiary_definition",
+      "entity_type": "beneficiary_definition",
+      "entity_id": "gic-population-group-93f2cf0dceae00d2",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {}
+    },
+    {
+      "audit_id": 14,
+      "occurred_at": "2026-07-17T20:23:44.993154+00:00",
+      "actor": "system",
+      "action": "record_observation",
+      "entity_type": "observation_record",
+      "entity_id": "gic-observation-cca59978f04bb0dd",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {
+        "data_state": "complete",
+        "period_label": "2026 Q2"
+      }
+    },
+    {
+      "audit_id": 13,
+      "occurred_at": "2026-07-17T20:23:44.992608+00:00",
+      "actor": "system",
+      "action": "create_impact_result",
+      "entity_type": "impact_result",
+      "entity_id": "gic-outcome-5dfda192c94fd5fb",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "revision": 1,
+      "details": {}
+    },
+    {
       "audit_id": 12,
-      "occurred_at": "2026-07-17T19:50:09.880958+00:00",
+      "occurred_at": "2026-07-17T20:23:44.992298+00:00",
       "actor": "system",
       "action": "bind_indicator_registry",
       "entity_type": "indicator",
@@ -1372,7 +1844,7 @@
     },
     {
       "audit_id": 11,
-      "occurred_at": "2026-07-17T19:50:09.880123+00:00",
+      "occurred_at": "2026-07-17T20:23:44.991566+00:00",
       "actor": "system",
       "action": "create_method_definition",
       "entity_type": "method_definition",
@@ -1387,7 +1859,7 @@
     },
     {
       "audit_id": 10,
-      "occurred_at": "2026-07-17T19:50:09.879559+00:00",
+      "occurred_at": "2026-07-17T20:23:44.990762+00:00",
       "actor": "system",
       "action": "create_target_model",
       "entity_type": "target_model",
@@ -1402,7 +1874,7 @@
     },
     {
       "audit_id": 9,
-      "occurred_at": "2026-07-17T19:50:09.878820+00:00",
+      "occurred_at": "2026-07-17T20:23:44.990028+00:00",
       "actor": "system",
       "action": "create_baseline_model",
       "entity_type": "baseline_model",
@@ -1417,7 +1889,7 @@
     },
     {
       "audit_id": 8,
-      "occurred_at": "2026-07-17T19:50:09.878250+00:00",
+      "occurred_at": "2026-07-17T20:23:44.989433+00:00",
       "actor": "system",
       "action": "create_indicator_definition",
       "entity_type": "indicator_definition",
@@ -1432,7 +1904,7 @@
     },
     {
       "audit_id": 7,
-      "occurred_at": "2026-07-17T19:50:09.876023+00:00",
+      "occurred_at": "2026-07-17T20:23:44.987946+00:00",
       "actor": "system",
       "action": "create",
       "entity_type": "source",
@@ -1444,7 +1916,7 @@
     },
     {
       "audit_id": 6,
-      "occurred_at": "2026-07-17T19:50:09.875959+00:00",
+      "occurred_at": "2026-07-17T20:23:44.987886+00:00",
       "actor": "system",
       "action": "create",
       "entity_type": "observation",
@@ -1456,7 +1928,7 @@
     },
     {
       "audit_id": 5,
-      "occurred_at": "2026-07-17T19:50:09.875893+00:00",
+      "occurred_at": "2026-07-17T20:23:44.987821+00:00",
       "actor": "system",
       "action": "create",
       "entity_type": "target",
@@ -1468,7 +1940,7 @@
     },
     {
       "audit_id": 4,
-      "occurred_at": "2026-07-17T19:50:09.875806+00:00",
+      "occurred_at": "2026-07-17T20:23:44.987755+00:00",
       "actor": "system",
       "action": "create",
       "entity_type": "indicator",
@@ -1480,7 +1952,7 @@
     },
     {
       "audit_id": 3,
-      "occurred_at": "2026-07-17T19:50:09.875738+00:00",
+      "occurred_at": "2026-07-17T20:23:44.987687+00:00",
       "actor": "system",
       "action": "create",
       "entity_type": "goal",
@@ -1492,7 +1964,7 @@
     },
     {
       "audit_id": 2,
-      "occurred_at": "2026-07-17T19:50:09.875666+00:00",
+      "occurred_at": "2026-07-17T20:23:44.987615+00:00",
       "actor": "system",
       "action": "create",
       "entity_type": "initiative",
@@ -1504,7 +1976,7 @@
     },
     {
       "audit_id": 1,
-      "occurred_at": "2026-07-17T19:50:09.875494+00:00",
+      "occurred_at": "2026-07-17T20:23:44.987430+00:00",
       "actor": "system",
       "action": "create",
       "entity_type": "workspace",

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.5.0/global_impact_beneficiary_summary.schema.json",
+  "title": "Global Impact Catalyst Beneficiary Summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary_type", "summary_version", "initiative_id", "period_label", "privacy_boundary", "direct_count", "indirect_count", "gross_count", "overlap_deduction", "adjusted_count", "included", "excluded", "assumptions"],
+  "properties": {
+    "summary_type": {"const": "global_impact_beneficiary_summary"},
+    "summary_version": {"const": "1.5.0"},
+    "initiative_id": {"type": "string", "minLength": 1},
+    "period_label": {"type": "string"},
+    "privacy_boundary": {"type": "string", "minLength": 1},
+    "direct_count": {"type": "number", "minimum": 0},
+    "indirect_count": {"type": "number", "minimum": 0},
+    "gross_count": {"type": "number", "minimum": 0},
+    "overlap_deduction": {"type": "number", "minimum": 0},
+    "adjusted_count": {"type": "number", "minimum": 0},
+    "included": {"type": "array", "items": {"type": "object"}},
+    "excluded": {"type": "array", "items": {"type": "object"}},
+    "assumptions": {"type": "array", "items": {"type": "string"}}
+  },
+  "x-global-impact-catalyst-version": "1.5.0"
+}

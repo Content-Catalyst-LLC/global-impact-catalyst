@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.5.0/global_impact_measurement_repository.schema.json",
+  "title": "Global Impact Catalyst Measurement Repository",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "repository_type", "repository_version", "workspace_id", "generated_at",
+    "impact_results", "impact_result_relationships", "observations",
+    "beneficiary_definitions", "beneficiary_observations", "financial_records",
+    "external_factors", "contribution_notes", "outcome_portfolios",
+    "portfolio_aggregation_runs", "integrity", "privacy_boundary"
+  ],
+  "properties": {
+    "repository_type": {"const": "global_impact_measurement_repository"},
+    "repository_version": {"const": "1.5.0"},
+    "workspace_id": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "impact_results": {"type": "array", "items": {"$ref": "#/$defs/impactResult"}},
+    "impact_result_relationships": {"type": "array", "items": {"$ref": "#/$defs/resultRelationship"}},
+    "observations": {"type": "array", "items": {"$ref": "#/$defs/observation"}},
+    "beneficiary_definitions": {"type": "array", "items": {"$ref": "#/$defs/beneficiaryDefinition"}},
+    "beneficiary_observations": {"type": "array", "items": {"$ref": "#/$defs/beneficiaryObservation"}},
+    "financial_records": {"type": "array", "items": {"$ref": "#/$defs/financialRecord"}},
+    "external_factors": {"type": "array", "items": {"type": "object", "required": ["external_factor_id", "workspace_id", "initiative_id", "name", "direction", "influence_level"], "additionalProperties": true}},
+    "contribution_notes": {"type": "array", "items": {"type": "object", "required": ["contribution_note_id", "workspace_id", "initiative_id", "statement", "contribution_type", "evidence_refs", "external_factor_refs"], "additionalProperties": true}},
+    "outcome_portfolios": {"type": "array", "items": {"$ref": "#/$defs/outcomePortfolio"}},
+    "portfolio_aggregation_runs": {"type": "array", "items": {"type": "object", "required": ["aggregation_run_id", "outcome_portfolio_id", "workspace_id", "aggregation_method", "result", "created_at", "created_by"], "additionalProperties": true}},
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "valid", "impact_result_count", "observation_count", "beneficiary_definition_count",
+        "beneficiary_observation_count", "financial_record_count", "external_factor_count",
+        "contribution_note_count", "outcome_portfolio_count", "aggregation_run_count",
+        "orphan_relationship_ids", "forbidden_dimension_keys"
+      ],
+      "properties": {
+        "valid": {"type": "boolean"},
+        "impact_result_count": {"type": "integer", "minimum": 0},
+        "observation_count": {"type": "integer", "minimum": 0},
+        "beneficiary_definition_count": {"type": "integer", "minimum": 0},
+        "beneficiary_observation_count": {"type": "integer", "minimum": 0},
+        "financial_record_count": {"type": "integer", "minimum": 0},
+        "external_factor_count": {"type": "integer", "minimum": 0},
+        "contribution_note_count": {"type": "integer", "minimum": 0},
+        "outcome_portfolio_count": {"type": "integer", "minimum": 0},
+        "aggregation_run_count": {"type": "integer", "minimum": 0},
+        "orphan_relationship_ids": {"type": "array", "items": {"type": "string"}},
+        "forbidden_dimension_keys": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "privacy_boundary": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "dataState": {"enum": ["complete", "missing", "late", "revised", "partial"]},
+    "metadata": {"type": "object"},
+    "impactResult": {
+      "type": "object", "additionalProperties": true,
+      "required": ["result_id", "workspace_id", "initiative_id", "result_type", "name", "revision", "metadata"],
+      "properties": {
+        "result_id": {"type": "string", "minLength": 1},
+        "workspace_id": {"type": "string", "minLength": 1},
+        "initiative_id": {"type": "string", "minLength": 1},
+        "result_type": {"enum": ["output", "outcome", "long_term_impact"]},
+        "name": {"type": "string", "minLength": 1},
+        "revision": {"type": "integer", "minimum": 1},
+        "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "resultRelationship": {
+      "type": "object", "additionalProperties": true,
+      "required": ["relationship_id", "workspace_id", "initiative_id", "from_result_id", "to_result_id", "relationship_type", "revision", "metadata"],
+      "properties": {
+        "relationship_type": {"enum": ["contributes_to", "enables", "depends_on", "influences", "is_precondition_for"]},
+        "contribution_weight": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "observation": {
+      "type": "object", "additionalProperties": true,
+      "required": [
+        "observation_record_id", "workspace_id", "initiative_id", "indicator_id",
+        "period_label", "value", "unit_id", "data_state", "dimensions", "denominator",
+        "revision", "metadata"
+      ],
+      "properties": {
+        "observation_record_id": {"type": "string", "minLength": 1},
+        "value": {"type": ["number", "null"]},
+        "data_state": {"$ref": "#/$defs/dataState"},
+        "dimensions": {"type": "object"},
+        "denominator": {"type": "object"},
+        "metadata": {"$ref": "#/$defs/metadata"}
+      },
+      "allOf": [
+        {"if": {"properties": {"data_state": {"const": "missing"}}}, "then": {"properties": {"value": {"type": "null"}}}}
+      ]
+    },
+    "beneficiaryDefinition": {
+      "type": "object", "additionalProperties": true,
+      "required": ["beneficiary_definition_id", "workspace_id", "initiative_id", "name", "reach_type", "counting_method", "privacy_level", "overlap_policy", "revision", "metadata"],
+      "properties": {
+        "reach_type": {"enum": ["direct", "indirect", "combined"]},
+        "counting_method": {"enum": ["unique", "estimated_unique", "encounters", "households", "organizations", "other"]},
+        "privacy_level": {"enum": ["aggregate_only", "deidentified", "restricted_aggregate"]},
+        "overlap_policy": {"enum": ["no_overlap", "estimated_overlap", "known_overlap", "unknown"]},
+        "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "beneficiaryObservation": {
+      "type": "object", "additionalProperties": true,
+      "required": ["beneficiary_observation_id", "beneficiary_definition_id", "workspace_id", "initiative_id", "period_label", "observed_count", "data_state", "dimensions", "revision", "metadata"],
+      "properties": {
+        "observed_count": {"type": ["number", "null"], "minimum": 0},
+        "data_state": {"$ref": "#/$defs/dataState"},
+        "dimensions": {"type": "object"},
+        "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "financialRecord": {
+      "type": "object", "additionalProperties": true,
+      "required": ["financial_record_id", "workspace_id", "initiative_id", "record_type", "period_label", "amount", "currency", "reporting_currency", "reporting_amount", "data_state", "revision", "metadata"],
+      "properties": {
+        "record_type": {"enum": ["budget", "expenditure", "commitment", "funding"]},
+        "amount": {"type": ["number", "null"], "minimum": 0},
+        "reporting_amount": {"type": ["number", "null"], "minimum": 0},
+        "data_state": {"$ref": "#/$defs/dataState"},
+        "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "outcomePortfolio": {
+      "type": "object", "additionalProperties": true,
+      "required": ["outcome_portfolio_id", "workspace_id", "name", "aggregation_method", "period_policy", "overlap_policy", "missing_data_policy", "revision", "members", "metadata"],
+      "properties": {
+        "aggregation_method": {"enum": ["sum", "mean", "weighted_mean", "minimum", "maximum"]},
+        "period_policy": {"enum": ["exact", "same_label", "overlap"]},
+        "overlap_policy": {"enum": ["exclude_unknown_or_overlapping", "allow_with_disclosure", "fail_on_overlap"]},
+        "missing_data_policy": {"enum": ["exclude_and_disclose", "include_partial", "fail_on_missing"]},
+        "members": {"type": "array", "items": {"type": "object", "required": ["membership_id", "initiative_id", "indicator_id", "weight", "metadata"], "additionalProperties": true}},
+        "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    }
+  },
+  "x-global-impact-catalyst-version": "1.5.0"
+}

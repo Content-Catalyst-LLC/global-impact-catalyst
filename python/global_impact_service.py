@@ -1,4 +1,4 @@
-"""Application service layer for Global Impact Catalyst v1.4.0."""
+"""Application service layer for Global Impact Catalyst v1.5.0."""
 from __future__ import annotations
 
 import copy
@@ -20,7 +20,7 @@ from python.global_impact_repository import (
     utc_now,
 )
 
-SERVICE_VERSION = "1.4.0"
+SERVICE_VERSION = "1.5.0"
 
 
 def compact_input_from_contract(contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -222,6 +222,42 @@ class ImpactApplicationService:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(registry, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         return registry
+
+
+    def register_impact_result(self, result: Dict[str, Any], *, workspace_id: str, initiative_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_impact_result(result, workspace_id=workspace_id, initiative_id=initiative_id, expected_revision=expected_revision, actor=actor)
+
+    def record_observation(self, observation: Dict[str, Any], *, workspace_id: str, initiative_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.record_observation(observation, workspace_id=workspace_id, initiative_id=initiative_id, expected_revision=expected_revision, actor=actor)
+
+    def observation_series(self, initiative_id: str, indicator_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
+        series = self.repository.observation_time_series(initiative_id, indicator_id)
+        if destination:
+            path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(series, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return series
+
+    def register_beneficiary_definition(self, definition: Dict[str, Any], *, workspace_id: str, initiative_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_beneficiary_definition(definition, workspace_id=workspace_id, initiative_id=initiative_id, expected_revision=expected_revision, actor=actor)
+
+    def record_beneficiary_observation(self, definition_id: str, observation: Dict[str, Any], *, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.record_beneficiary_observation(definition_id, observation, expected_revision=expected_revision, actor=actor)
+
+    def record_financial_record(self, record: Dict[str, Any], *, workspace_id: str, initiative_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.record_financial_record(record, workspace_id=workspace_id, initiative_id=initiative_id, expected_revision=expected_revision, actor=actor)
+
+    def create_outcome_portfolio(self, portfolio: Dict[str, Any], *, workspace_id: str, expected_revision: Optional[int] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_outcome_portfolio(portfolio, workspace_id=workspace_id, expected_revision=expected_revision, actor=actor)
+
+    def aggregate_outcome_portfolio(self, portfolio_id: str, *, period_start: Optional[str] = None, period_end: Optional[str] = None, period_label: str = "", actor: str = "system") -> Dict[str, Any]:
+        return self.repository.aggregate_outcome_portfolio(portfolio_id, period_start=period_start, period_end=period_end, period_label=period_label, actor=actor)
+
+    def measurement_repository(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
+        measurement = self.repository.export_measurement_repository(workspace_id)
+        if destination:
+            path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(measurement, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return measurement
 
     def export_workspace(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
         bundle = self.repository.export_workspace_bundle(workspace_id)

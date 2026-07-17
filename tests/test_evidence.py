@@ -81,7 +81,7 @@ def test_workspace_export_restore_preserves_full_evidence_repository(tmp_path):
         source_repo.link_claim_evidence(created['contract']['derived']['claims'][0]['id'],evidence['evidence_id'])
         source_repo.register_dataset(source['source_id'],{'title':'Traceable dataset','checksum_value':'c'*64})
         bundle=source_repo.export_workspace_bundle(workspace_id)
-        assert bundle['bundle_version']=='1.4.0'
+        assert bundle['bundle_version']=='1.5.0'
         assert bundle['evidence_repository']['source_versions']
     with SQLiteImpactRepository(tmp_path/'target.sqlite3') as target_repo:
         result=target_repo.restore_workspace_bundle(bundle)

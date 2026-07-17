@@ -1,33 +1,30 @@
-# Repository Architecture — v1.4.0
+# Repository Architecture — v1.5.0
 
 ```text
 compact input or legacy record
-        ├── Python normalizer / validator / contract builder
-        └── JavaScript normalizer / validator / contract builder
+        ├── Python canonical engine
+        └── JavaScript canonical engine
                          ↓
               exact golden fixtures
                          ↓
-       canonical v1.1.0 contract + validation schemas
+       canonical v1.1.0 contract + validation
                          ↓
                  application service
                          ↓
              SQLite / CLI / WordPress
-        ├── persistence and portfolios
-        ├── evidence and provenance
-        └── indicator registry and immutable versions
+        ├── initiatives, autosaves, audit, bundles
+        ├── sources, versions, evidence, provenance
+        ├── units, indicators, baselines, targets, methods
+        └── results, observations, beneficiaries, finances, portfolios
                          ↓
- evidence export / registry export / workspace bundle / backup
+ evidence / registry / measurement exports / workspace bundle / backup
 ```
 
-The Python and browser contract implementations share documented algorithms and complete expected outputs rather than importing one runtime into the other. Deterministic IDs and issue IDs make exact parity observable.
-
-- `python/global_impact_core.py`: normalization, identity, metrics, validation, contract assembly, migration, Markdown, CLI
-- `python/global_impact_repository.py`: migrations, persistence, evidence, bundles, backup, and repository lifecycle
-- `python/global_impact_registry.py`: units, conversions, safe formulas, indicator definitions, baseline and target models, methods, bindings, and registry restore
-- `schemas/`: compact authoring, canonical contract, evidence, registry, workspace, and validation schemas
-- `contracts/fixtures/`: exact runtime parity suite
-- `contracts/legacy/`: migration source fixture
-- `scripts/check_contracts.py`: repository and release invariants
-- `scripts/check_browser_parity.js`: exact JavaScript parity
-- `scripts/check_wordpress_instances.php`: rendered shortcode and route integrity
-- `scripts/smoke_test.py`: portable end-to-end release check
+- `python/global_impact_core.py`: normalization, identity, metrics, validation, migration, Markdown, CLI
+- `python/global_impact_repository.py`: migrations, persistent entities, workspace bundles, backup, and restore
+- `python/global_impact_registry.py`: units, safe formulas, indicator definitions, baseline and target models, methods, and bindings
+- `python/global_impact_measurement.py`: multi-period observations, aggregate beneficiary records, financial records, impact results, contribution context, and guarded portfolios
+- `schemas/`: canonical, evidence, registry, measurement, and workspace schemas
+- `contracts/fixtures/`: exact Python/browser parity suite
+- `scripts/check_contracts.py`: release invariants
+- `scripts/smoke_test.py`: portable end-to-end lifecycle validation

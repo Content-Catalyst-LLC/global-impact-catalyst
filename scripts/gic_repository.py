@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line workspace, evidence, and indicator-registry operations for v1.4.0."""
+"""Command-line workspace, evidence, indicator-registry, and program-measurement operations for v1.5.0."""
 from __future__ import annotations
 import argparse,json,sys
 from pathlib import Path
@@ -14,7 +14,7 @@ def read_json(path:str): return json.loads(Path(path).read_text(encoding='utf-8'
 def emit(value): print(json.dumps(value,indent=2,ensure_ascii=False,default=lambda o:o.__dict__))
 
 def main()->int:
-    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, and indicator-registry CLI')
+    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, indicator-registry, and program-measurement CLI')
     parser.add_argument('--database',default='outputs/global-impact-catalyst.sqlite3')
     sub=parser.add_subparsers(dest='command',required=True)
     sub.add_parser('init')
@@ -45,6 +45,21 @@ def main()->int:
     evaluate_target=sub.add_parser('evaluate-target'); evaluate_target.add_argument('--target-model-id',required=True); evaluate_target.add_argument('--baseline-value',type=float); evaluate_target.add_argument('--progress-fraction',type=float); evaluate_target.add_argument('--period-label')
     add_method=sub.add_parser('add-method'); add_method.add_argument('--input',required=True); add_method.add_argument('--workspace-id',required=True)
     registry=sub.add_parser('indicator-registry'); registry.add_argument('--workspace-id',required=True); registry.add_argument('--output')
+    add_result=sub.add_parser('add-impact-result'); add_result.add_argument('--input',required=True); add_result.add_argument('--workspace-id',required=True); add_result.add_argument('--initiative-id',required=True)
+    add_observation=sub.add_parser('add-observation'); add_observation.add_argument('--input',required=True); add_observation.add_argument('--workspace-id',required=True); add_observation.add_argument('--initiative-id',required=True)
+    series=sub.add_parser('observation-series'); series.add_argument('--initiative-id',required=True); series.add_argument('--indicator-id',required=True); series.add_argument('--output')
+    add_beneficiary=sub.add_parser('add-beneficiary-definition'); add_beneficiary.add_argument('--input',required=True); add_beneficiary.add_argument('--workspace-id',required=True); add_beneficiary.add_argument('--initiative-id',required=True)
+    beneficiary_observation=sub.add_parser('add-beneficiary-observation'); beneficiary_observation.add_argument('--definition-id',required=True); beneficiary_observation.add_argument('--input',required=True)
+    beneficiary_summary=sub.add_parser('beneficiary-summary'); beneficiary_summary.add_argument('--initiative-id',required=True); beneficiary_summary.add_argument('--period-label')
+    add_financial=sub.add_parser('add-financial-record'); add_financial.add_argument('--input',required=True); add_financial.add_argument('--workspace-id',required=True); add_financial.add_argument('--initiative-id',required=True)
+    financial_summary=sub.add_parser('financial-summary'); financial_summary.add_argument('--initiative-id',required=True); financial_summary.add_argument('--period-label'); financial_summary.add_argument('--reporting-currency')
+    cost_metric=sub.add_parser('cost-metric'); cost_metric.add_argument('--initiative-id',required=True); cost_metric.add_argument('--denominator-type',required=True,choices=['beneficiary','output','outcome']); cost_metric.add_argument('--denominator-id'); cost_metric.add_argument('--period-label'); cost_metric.add_argument('--reporting-currency')
+    add_factor=sub.add_parser('add-external-factor'); add_factor.add_argument('--input',required=True); add_factor.add_argument('--workspace-id',required=True); add_factor.add_argument('--initiative-id',required=True)
+    add_note=sub.add_parser('add-contribution-note'); add_note.add_argument('--input',required=True); add_note.add_argument('--workspace-id',required=True); add_note.add_argument('--initiative-id',required=True)
+    add_outcome_portfolio=sub.add_parser('add-outcome-portfolio'); add_outcome_portfolio.add_argument('--input',required=True); add_outcome_portfolio.add_argument('--workspace-id',required=True)
+    add_outcome_member=sub.add_parser('add-outcome-member'); add_outcome_member.add_argument('--portfolio-id',required=True); add_outcome_member.add_argument('--input',required=True)
+    aggregate_outcome=sub.add_parser('aggregate-outcome-portfolio'); aggregate_outcome.add_argument('--portfolio-id',required=True); aggregate_outcome.add_argument('--period-label',default=''); aggregate_outcome.add_argument('--period-start'); aggregate_outcome.add_argument('--period-end'); aggregate_outcome.add_argument('--output')
+    measurement=sub.add_parser('measurement-repository'); measurement.add_argument('--workspace-id',required=True); measurement.add_argument('--output')
     sub.add_parser('summary')
     args=parser.parse_args()
     with SQLiteImpactRepository(args.database) as repository:
@@ -78,6 +93,24 @@ def main()->int:
         elif args.command=='evaluate-target': emit(repository.evaluate_target(args.target_model_id,baseline_value=args.baseline_value,progress_fraction=args.progress_fraction,period_label=args.period_label))
         elif args.command=='add-method': emit(service.register_method_definition(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
         elif args.command=='indicator-registry': emit(service.indicator_registry(args.workspace_id,args.output))
+        elif args.command=='add-impact-result': emit(service.register_impact_result(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,actor='cli'))
+        elif args.command=='add-observation': emit(service.record_observation(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,actor='cli'))
+        elif args.command=='observation-series': emit(service.observation_series(args.initiative_id,args.indicator_id,args.output))
+        elif args.command=='add-beneficiary-definition': emit(service.register_beneficiary_definition(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,actor='cli'))
+        elif args.command=='add-beneficiary-observation': emit(service.record_beneficiary_observation(args.definition_id,read_json(args.input),actor='cli'))
+        elif args.command=='beneficiary-summary': emit(repository.beneficiary_summary(args.initiative_id,period_label=args.period_label))
+        elif args.command=='add-financial-record': emit(service.record_financial_record(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,actor='cli'))
+        elif args.command=='financial-summary': emit(repository.financial_summary(args.initiative_id,period_label=args.period_label,reporting_currency=args.reporting_currency))
+        elif args.command=='cost-metric': emit(repository.calculate_cost_metric(args.initiative_id,denominator_type=args.denominator_type,denominator_id=args.denominator_id,period_label=args.period_label,reporting_currency=args.reporting_currency))
+        elif args.command=='add-external-factor': emit(repository.add_external_factor(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,actor='cli'))
+        elif args.command=='add-contribution-note': emit(repository.add_contribution_note(read_json(args.input),workspace_id=args.workspace_id,initiative_id=args.initiative_id,actor='cli'))
+        elif args.command=='add-outcome-portfolio': emit(service.create_outcome_portfolio(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='add-outcome-member': emit(repository.add_outcome_portfolio_member(args.portfolio_id,read_json(args.input),actor='cli'))
+        elif args.command=='aggregate-outcome-portfolio':
+            result=repository.aggregate_outcome_portfolio(args.portfolio_id,period_start=args.period_start,period_end=args.period_end,period_label=args.period_label,actor='cli')
+            if args.output: Path(args.output).write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+            emit(result)
+        elif args.command=='measurement-repository': emit(service.measurement_repository(args.workspace_id,args.output))
         elif args.command=='summary': emit(repository.repository_summary())
     return 0
 if __name__=='__main__': raise SystemExit(main())
