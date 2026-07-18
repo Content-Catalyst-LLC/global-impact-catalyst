@@ -1,30 +1,30 @@
 # Global Impact Catalyst
 
-## v1.9.0 — Public API, Embeds, and Sustainable Catalyst Handoffs
+## v1.10.0 — Accessibility, Offline Use, Localization, and Production Hardening
 
-Global Impact Catalyst is open public-interest infrastructure for defining, validating, saving, sourcing, measuring, reviewing, analyzing, reporting, publishing, and safely exchanging governed impact records.
+Global Impact Catalyst is open public-interest infrastructure for defining, validating, saving, sourcing, measuring, reviewing, analyzing, reporting, publishing, exchanging, and operating governed impact records.
 
-v1.9.0 adds:
+v1.10.0 adds:
 
-- versioned public and workspace API envelopes;
-- scoped API clients and one-time key issuance;
-- SHA-256 key storage, revocation, rate limits, idempotency, and access auditing;
-- privacy-safe public publication profiles tied to approved publication snapshots;
-- JSON-LD interoperability mappings;
-- five governed embed types;
-- ten checksum-bound Sustainable Catalyst handoff destinations;
-- delivery receipts and integration events;
-- integration-repository export and lossless restore;
-- an authenticated WordPress Integration Hub and four public shortcodes.
+- seeded and workspace-specific locale definitions with fallback and RTL metadata;
+- localized, SHA-256-bound offline workspace packages;
+- conflict-safe offline synchronization using exact repository revisions;
+- governed accessibility audits and remediation findings;
+- workspace security-policy records;
+- backup plans, verified SQLite backups, and stored recovery-test evidence;
+- deployment environments and release-readiness matrices;
+- production-repository export and lossless restore; and
+- an authenticated WordPress Production Readiness interface.
 
-Only approved, current publication snapshots may enter unauthenticated public APIs or embeds. API availability and checksum integrity do not constitute assurance, certification, factual verification, regulatory compliance, audit findings, or causal proof.
+Accessibility records are not independent certification. Offline and production controls do not bypass canonical validation, review, publication, or optimistic-concurrency requirements.
 
 ## Compatibility identities
 
 ```text
-Package and WordPress plugin: 1.9.0
-Database schema:              10
-Workspace bundle:             1.9.0
+Package and WordPress plugin: 1.10.0
+Database schema:              11
+Workspace bundle:             1.10.0
+Production repository:        1.10.0
 Integration repository:       1.9.0
 Public API:                    v1
 Reporting repository:         1.8.0
@@ -52,9 +52,10 @@ SQLite application repository
         ├── assignments, comments, quality, decisions, revisions, and publications
         ├── trends, benchmarks, comparisons, scenarios, uncertainty, and sensitivity
         ├── reports, dashboards, snapshots, manifests, checksums, and export artifacts
-        └── API clients, public views, embeds, handoffs, and integration events
+        ├── API clients, public views, embeds, handoffs, and integration events
+        └── locales, offline packages, accessibility, security, backup, recovery, and readiness
                                       ↓
- workspace bundle / SQLite backup / reproducible ZIP / API / embed / platform handoff
+ workspace bundle / offline package / SQLite backup / reproducible ZIP / API / embed / platform handoff
 ```
 
 ## Python quick start
@@ -118,6 +119,8 @@ Shortcodes:
 [global_impact_catalyst_review_workflow]
 [global_impact_catalyst_analysis_studio]
 [global_impact_catalyst_reporting_studio]
+[global_impact_catalyst_integration_hub]
+[global_impact_catalyst_production_readiness]
 ```
 
 The canonical demo is public and stateless. Repository interfaces require an authenticated user with `edit_posts` capability and use nonce-protected REST routes.
@@ -132,9 +135,11 @@ The canonical demo is public and stateless. Repository interfaces require an aut
 - `schemas/global_impact_analysis_repository.schema.json` — analysis v1.7.0
 - `schemas/global_impact_reporting_repository.schema.json` — reporting v1.8.0
 - `schemas/global_impact_reproducible_export.schema.json` — reproducible export manifest v1.8.0
-- `schemas/global_impact_workspace_bundle.schema.json` — complete workspace bundle v1.9.0
+- `schemas/global_impact_production_repository.schema.json` — production repository v1.10.0
+- `schemas/global_impact_workspace_bundle.schema.json` — complete workspace bundle v1.10.0
 - `examples/example_global_impact_reporting_repository.json`
 - `examples/example_global_impact_reproducible_export_manifest.json`
+- `examples/example_global_impact_production_repository.json`
 - `examples/example_global_impact_workspace_bundle.json`
 
 ## Validation
@@ -160,6 +165,7 @@ migrations/                           Versioned SQLite migrations
 python/global_impact_core.py          Canonical v1.1.0 engine
 python/global_impact_repository.py    SQLite repository and workspace bundles
 python/global_impact_reporting.py     Reports, dashboards, snapshots, and exports
+python/global_impact_production.py    Offline, localization, accessibility, security, recovery, and readiness
 python/global_impact_service.py       Shared application service
 schemas/                              Contract and repository JSON Schemas
 scripts/gic_repository.py             Repository CLI

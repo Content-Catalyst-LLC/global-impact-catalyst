@@ -6,9 +6,9 @@ ROOT=Path(__file__).resolve().parents[2]
 
 def test_application_health_reports_persistence_contract():
     health=healthcheck()
-    assert health['version']=='1.9.0'
+    assert health['version']=='1.10.0'
     assert health['contract_version']=='1.1.0'
-    assert health['database_schema_version']==10
+    assert health['database_schema_version']==11
     assert health['persistence']=='sqlite'
 
 

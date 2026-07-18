@@ -89,8 +89,12 @@ $reporting = gic_reporting_studio_shortcode();
 foreach (array('data-gic-reporting-studio','data-gic-reporting-load','data-gic-reporting-report','data-gic-reporting-dashboard','data-gic-reporting-results') as $needle) {
     if (strpos($reporting, $needle) === false) { fwrite(STDERR, "Reporting Studio control missing: {$needle}\n"); exit(1); }
 }
+$production = gic_production_readiness_shortcode();
+foreach (array('data-gic-production-readiness','data-gic-production-load','data-gic-production-offline','data-gic-production-audit','data-gic-production-policy','data-gic-production-environment','data-gic-production-results') as $needle) {
+    if (strpos($production, $needle) === false) { fwrite(STDERR, "Production readiness control missing: {$needle}\n"); exit(1); }
+}
 $integration = gic_integration_hub_shortcode();
 foreach (array('data-gic-integration-hub','data-gic-integration-load','data-gic-integration-client','data-gic-integration-embed','data-gic-integration-handoff','data-gic-integration-results') as $needle) {
     if (strpos($integration, $needle) === false) { fwrite(STDERR, "Integration Hub control missing: {$needle}\n"); exit(1); }
 }
-echo "WordPress v1.9.0 workspace, evidence ledger, indicator registry, measurement portfolio, review workflow, analysis studio, reporting studio, integration hub, public embeds, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";
+echo "WordPress v1.10.0 workspace, evidence ledger, indicator registry, measurement portfolio, review workflow, analysis studio, reporting studio, integration hub, production readiness, public embeds, and multi-instance contract passed for " . count($ids) . " unique demo IDs.\n";

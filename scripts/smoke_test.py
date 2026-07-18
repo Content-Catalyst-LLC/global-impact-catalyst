@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.9.0."""
+"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.10.0."""
 from __future__ import annotations
 
 import json
@@ -41,7 +41,7 @@ def main() -> int:
             "global-impact-catalyst-evidence.js", "global-impact-catalyst-registry.js",
             "global-impact-catalyst-measurement.js", "global-impact-catalyst-review.js",
             "global-impact-catalyst-analysis.js", "global-impact-catalyst-reporting.js",
-            "global-impact-catalyst-integration.js",
+            "global-impact-catalyst-integration.js", "global-impact-catalyst-production.js",
         ):
             run("node", "--check", f"wordpress/global-impact-catalyst-demo/assets/{asset}")
     else:
@@ -57,7 +57,7 @@ def main() -> int:
     from python.global_impact_service import ImpactApplicationService
 
     payload = json.loads((ROOT / "data/sample_global_impact_input.json").read_text(encoding="utf-8"))
-    with tempfile.TemporaryDirectory(prefix="gic-v190-") as temp:
+    with tempfile.TemporaryDirectory(prefix="gic-v1100-") as temp:
         directory = Path(temp)
         database = directory / "impact.sqlite3"
         restored_database = directory / "restored.sqlite3"
@@ -75,7 +75,7 @@ def main() -> int:
             initiative_id = created["repository"]["initiative_id"]
             indicator_id = contract["facts"]["indicator"]["id"]
             summary = repository.repository_summary()
-            assert summary["database_schema_version"] == 10
+            assert summary["database_schema_version"] == 11
             assert summary["contracts"] == 1
             assert summary["sources"] == 1
             assert summary["units"] >= 18
@@ -284,9 +284,59 @@ def main() -> int:
             assert integration["privacy"]["api_key_material_exported"] is False
             validate(integration, "global_impact_integration_repository.schema.json")
 
+            repository.register_locale({
+                "locale_code": "ar", "name": "العربية", "direction": "rtl",
+                "fallback_locale": "en-US", "translations": {"status.ready": "جاهز"},
+            }, workspace_id=workspace_id, actor="release-smoke")
+            offline = service.create_offline_package(
+                workspace_id, locale_code="ar", generated_at="2026-07-17T23:45:00+00:00", actor="release-smoke"
+            )
+            assert offline["package_version"] == "1.10.0" and offline["integrity"]["valid"]
+            stale_change = service.queue_offline_change({
+                "entity_type": "initiative", "entity_id": initiative_id, "operation": "update",
+                "base_revision": 0, "payload": {"name": "Stale offline edit"},
+            }, workspace_id=workspace_id, device_id="release-tablet", actor="release-smoke")
+            conflict = service.apply_offline_change(stale_change["change_id"], actor="release-smoke")
+            assert conflict["status"] == "conflict" and conflict["conflict"]["type"] == "revision_conflict"
+            accessibility = service.record_accessibility_audit({
+                "surface": "all", "standard": "WCAG-2.2", "standard_level": "AA",
+                "findings": [], "tested_by": "release-smoke",
+            }, workspace_id=workspace_id, actor="release-smoke")
+            assert accessibility["status"] == "pass" and accessibility["score"] == 100
+            security = service.set_security_policy({
+                "minimum_key_rotation_days": 60, "session_timeout_minutes": 30,
+            }, workspace_id=workspace_id, actor="release-smoke")
+            assert security["transport_security_required"] and security["encryption_at_rest_required"]
+            backup_plan = service.create_backup_plan({
+                "name": "Release smoke backup", "schedule": "daily", "retention_count": 7,
+            }, workspace_id=workspace_id, actor="release-smoke")
+            production_backup = directory / "production-backup.sqlite3"
+            production_backup_run = repository.run_backup(
+                workspace_id, production_backup, plan_id=backup_plan["plan_id"], actor="release-smoke"
+            )
+            assert production_backup_run["status"] == "verified"
+            recovery = repository.verify_recovery(production_backup_run["backup_run_id"], actor="release-smoke")
+            assert recovery["status"] == "passed"
+            environment = service.register_deployment_environment({
+                "name": "Production", "environment_type": "production",
+                "base_url": "https://sustainablecatalyst.com",
+                "runtime": {"python": "3.13", "php": "8.2"},
+                "controls": {"https": True, "backups": True, "offline_sync": True},
+            }, workspace_id=workspace_id, actor="release-smoke")
+            readiness = repository.evaluate_release_readiness(
+                workspace_id, environment_id=environment["environment_id"], actor="release-smoke"
+            )
+            assert readiness["status"] == "ready" and readiness["score"] == 100
+            production = service.production_repository(workspace_id)
+            assert production["repository_version"] == "1.10.0" and production["integrity"]["valid"]
+            assert production["integrity"]["offline_package_count"] == 1
+            assert production["integrity"]["conflict_count"] == 1
+            assert production["integrity"]["passed_recovery_count"] == 1
+            validate(production, "global_impact_production_repository.schema.json")
+
             bundle = repository.export_workspace_bundle(workspace_id)
-            assert bundle["bundle_version"] == "1.9.0"
-            assert bundle["database_schema_version"] == 10
+            assert bundle["bundle_version"] == "1.10.0"
+            assert bundle["database_schema_version"] == 11
             validate(bundle, "global_impact_workspace_bundle.schema.json")
             repository.backup_database(backup)
 
@@ -311,8 +361,12 @@ def main() -> int:
             assert restored_integration["platform_handoffs"][0]["payload_hash"] == integration["platform_handoffs"][0]["payload_hash"]
             assert restored_integration["embeds"][0]["content_hash"] == integration["embeds"][0]["content_hash"]
             assert restored_integration["privacy"]["api_key_material_exported"] is False
+            restored_production = restored.export_production_repository(workspace_id)
+            assert restored_production["integrity"] == production["integrity"]
+            assert restored_production["offline_packages"][0]["package_hash"] == production["offline_packages"][0]["package_hash"]
+            assert restored_production["release_readiness_checks"][0]["artifact_hash"] == production["release_readiness_checks"][0]["artifact_hash"]
 
-    print("Global Impact Catalyst v1.9.0 portable release smoke tests passed.")
+    print("Global Impact Catalyst v1.10.0 portable release smoke tests passed.")
     return 0
 
 

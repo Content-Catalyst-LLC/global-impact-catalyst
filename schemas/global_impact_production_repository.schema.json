@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.10.0/global_impact_production_repository.schema.json",
+  "title": "Global Impact Catalyst Production Repository",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "repository_type",
+    "repository_version",
+    "workspace_id",
+    "generated_at",
+    "locales",
+    "offline_packages",
+    "offline_changes",
+    "accessibility_audits",
+    "security_policies",
+    "backup_plans",
+    "backup_runs",
+    "recovery_tests",
+    "deployment_environments",
+    "release_readiness_checks",
+    "boundary",
+    "integrity"
+  ],
+  "properties": {
+    "repository_type": {
+      "const": "global_impact_production_repository"
+    },
+    "repository_version": {
+      "const": "1.10.0"
+    },
+    "workspace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "locales": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "locale_code",
+          "name",
+          "direction",
+          "translations"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "offline_packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "package_id",
+          "workspace_id",
+          "package_hash",
+          "manifest",
+          "payload"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "offline_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "change_id",
+          "status",
+          "payload"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "accessibility_audits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "audit_id",
+          "standard",
+          "score",
+          "status",
+          "findings"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "security_policies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "policy_id",
+          "policy_version"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "backup_plans": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "backup_runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "recovery_tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "deployment_environments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "release_readiness_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "integrity": {
+      "type": "object",
+      "required": [
+        "valid",
+        "locale_count",
+        "offline_package_count",
+        "conflict_count",
+        "accessibility_audit_count",
+        "verified_backup_count",
+        "passed_recovery_count",
+        "readiness_count"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "x-global-impact-catalyst-version": "1.10.0"
+}

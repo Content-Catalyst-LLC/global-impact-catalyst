@@ -1,6 +1,6 @@
 # Workspace Export and Restore Bundles
 
-A v1.9.0 workspace bundle is a portable JSON package for backup, transfer, institutional handoff, and disaster recovery.
+A v1.10.0 workspace bundle is a portable JSON package for backup, transfer, institutional handoff, and disaster recovery.
 
 ## Bundle contents
 
@@ -14,7 +14,8 @@ A v1.9.0 workspace bundle is a portable JSON package for backup, transfer, insti
 - reporting repository v1.8.0;
 - report templates, documents, dashboards, snapshots, export bundles, manifests, checksums, and artifact content;
 - integration repository v1.9.0;
-- bundle version 1.9.0 and database schema version 10.
+- production repository v1.10.0, including locales, offline packages, accessibility, security, recovery, environments, and readiness;
+- bundle version 1.10.0 and database schema version 11.
 
 The bundle schema is `schemas/global_impact_workspace_bundle.schema.json`.
 
@@ -35,3 +36,8 @@ A workspace bundle is a complete application-level backup. A reproducible export
 ## v1.9.0 integration repository
 
 Workspace bundles now include `integration_repository`, containing API client metadata without key hashes or plaintext keys, governed embeds, handoffs, delivery receipts, and integration events. Restore is idempotent and validates record hashes.
+
+
+## v1.10.0 production repository
+
+Workspace bundles include `production_repository`. Restore preserves locale definitions, offline package manifests and payloads, conflict records, accessibility findings, security policies, backup and recovery evidence, deployment environments, and readiness decisions. Backup file paths are retained as historical metadata; restore does not assume those external files are present on a different machine.

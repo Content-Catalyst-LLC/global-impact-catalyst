@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.10.0 — Accessibility, Offline Use, Localization, and Production Hardening
+
+- Added SQLite migration 11 and the v1.10.0 production repository.
+- Added English, Spanish, French, custom locale, fallback, and RTL metadata support.
+- Added localized SHA-256-bound offline packages and revision-controlled offline change queues.
+- Added severity-aware WCAG 2.2, EN 301 549, and Section 508 audit records.
+- Added workspace security policies, backup plans, verified SQLite backups, and recovery-test evidence.
+- Added deployment-environment records and required release-readiness matrices.
+- Added production and workspace schemas, examples, CLI commands, documentation, tests, WordPress routes, and Production Readiness shortcode.
+- Preserved canonical contract v1.1.0 and all v1.3.0–v1.9.0 repository semantics.
+
 ## 1.9.0 — Public API, Embeds, and Sustainable Catalyst Handoffs
 
 - Added SQLite migration 10 and the v1.9.0 integration repository.

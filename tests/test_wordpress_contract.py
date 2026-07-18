@@ -19,8 +19,8 @@ INTEGRATION_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact
 INTEGRATION_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-integration.css').read_text()
 
 def test_plugin_version_shortcodes_and_instance_ids():
-    assert '* Version: 1.9.0' in PHP
-    assert "define('GIC_DEMO_VERSION', '1.9.0')" in PHP
+    assert '* Version: 1.10.0' in PHP
+    assert "define('GIC_DEMO_VERSION', '1.10.0')" in PHP
     assert "add_shortcode('global_impact_catalyst_demo'" in PHP
     assert "add_shortcode('global_impact_catalyst_workspace'" in PHP
     assert "add_shortcode('global_impact_catalyst_evidence_ledger'" in PHP
@@ -34,6 +34,7 @@ def test_plugin_version_shortcodes_and_instance_ids():
     assert "add_shortcode('global_impact_catalyst_indicator_view'" in PHP
     assert "add_shortcode('global_impact_catalyst_report_view'" in PHP
     assert "add_shortcode('global_impact_catalyst_compact_embed'" in PHP
+    assert "add_shortcode('global_impact_catalyst_production_readiness'" in PHP
     assert 'static $instance = 0' in PHP and '$id_prefix' in PHP
 
 def test_plugin_exposes_contract_and_claim_fields():
@@ -172,3 +173,23 @@ def test_integration_client_and_styles_support_scoped_operations():
     for operation in ['integration-repository?workspace_id=','api-clients','embeds','platform-handoffs','data-gic-integration-results']:
         assert operation in INTEGRATION_JS or operation in PHP
     assert '.gic-integration__grid' in INTEGRATION_CSS and '@media' in INTEGRATION_CSS
+
+PRODUCTION_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-production.js').read_text()
+PRODUCTION_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-production.css').read_text()
+
+def test_production_tables_routes_shortcode_and_assets_are_present():
+    for table in ['locales','offline_packages','offline_changes','accessibility_audits','security_policies','backup_plans','backup_runs','recovery_tests','deployment_environments','release_readiness']:
+        assert f"gic_repository_table('{table}')" in PHP
+    for behavior in ['gic_production_repository_rest','gic_production_locale_rest','gic_production_offline_package_rest','gic_production_offline_change_rest','gic_production_accessibility_rest','gic_production_security_rest','gic_production_environment_rest','gic_production_readiness_rest','gic_production_register_routes','gic_production_readiness_shortcode']:
+        assert f'function {behavior}' in PHP
+    for route in ['/production-repository','/locales','/offline-packages','/offline-changes','/accessibility-audits','/security-policy','/deployment-environments','/release-readiness']:
+        assert route in PHP
+    for control in ['data-gic-production-readiness','data-gic-production-load','data-gic-production-offline','data-gic-production-audit','data-gic-production-policy','data-gic-production-environment','data-gic-production-results']:
+        assert control in PHP
+    assert 'Production governance · v1.10.0' in PHP
+
+
+def test_production_client_and_styles_support_resilient_operations():
+    for operation in ['production-repository?workspace_id=','offline-packages','accessibility-audits','security-policy','deployment-environments','release-readiness','data-gic-production-results']:
+        assert operation in PRODUCTION_JS or operation in PHP
+    assert '.gic-production__grid' in PRODUCTION_CSS and '@media' in PRODUCTION_CSS and 'prefers-reduced-motion' in PRODUCTION_CSS

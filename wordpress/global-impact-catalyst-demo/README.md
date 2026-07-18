@@ -1,6 +1,6 @@
 # Global Impact Catalyst WordPress Plugin
 
-Version 1.9.0 provides thirteen shortcodes:
+Version 1.10.0 provides thirteen shortcodes:
 
 ```text
 [global_impact_catalyst_demo]
@@ -27,10 +27,10 @@ The canonical demo is stateless. Repository studios and the Integration Hub requ
 ## Release identities
 
 ```text
-Plugin and package:      1.9.0
+Plugin and package:      1.10.0
 Database schema:         10
-Workspace bundle:        1.9.0
-Integration repository:  1.9.0
+Workspace bundle:        1.10.0
+Integration repository:  1.10.0
 Public API:               v1
 Reporting repository:    1.8.0
 Analysis repository:     1.7.0
@@ -44,3 +44,8 @@ Canonical contract:      1.1.0
 Activation or version upgrade creates prefixed tables for all prior repositories plus API clients, hashed keys, access logs, embeds, platform handoffs, and integration events. REST routes use the `global-impact-catalyst/v1` namespace, WordPress REST nonces, capability checks, sanitization, publication gates, and integrity checks.
 
 API availability and checksum integrity do not constitute assurance, certification, audit, factual verification, regulatory compliance, or causal proof.
+
+
+## Production readiness shortcode
+
+`[global_impact_catalyst_production_readiness]` provides the authenticated v1.10.0 interface for localization, offline packages, accessibility evidence, security policy, deployment environments, and release readiness.

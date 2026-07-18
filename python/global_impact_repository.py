@@ -23,8 +23,9 @@ from python.global_impact_review import ReviewWorkflowMixin
 from python.global_impact_analysis import AnalysisScenarioMixin
 from python.global_impact_reporting import ReportingPublicationMixin
 from python.global_impact_integration import PublicAPIIntegrationMixin
+from python.global_impact_production import ProductionHardeningMixin
 
-DATABASE_SCHEMA_VERSION = 10
+DATABASE_SCHEMA_VERSION = 11
 SUPPORTED_CONTRACT_VERSIONS = {"1.0.0", "1.0.1", "1.1.0", "1.2.0"}
 ENTITY_TYPES = {"workspace", "initiative", "goal", "indicator", "observation", "target", "source"}
 EVIDENCE_TYPES = {"excerpt", "quotation", "dataset_excerpt", "observation_note", "document_note", "table", "figure"}
@@ -241,9 +242,14 @@ MIGRATIONS: Sequence[tuple[int, str, str]] = (
         "public_api_embeds_platform_handoffs",
         (Path(__file__).resolve().parents[1] / "migrations/010_public_api_embeds_platform_handoffs.sql").read_text(encoding="utf-8"),
     ),
+    (
+        11,
+        "accessibility_offline_localization_production_hardening",
+        (Path(__file__).resolve().parents[1] / "migrations/011_accessibility_offline_localization_production_hardening.sql").read_text(encoding="utf-8"),
+    ),
 )
 
-class SQLiteImpactRepository(PublicAPIIntegrationMixin, ReportingPublicationMixin, AnalysisScenarioMixin, ReviewWorkflowMixin, MeasurementPortfolioMixin, IndicatorRegistryMixin):
+class SQLiteImpactRepository(ProductionHardeningMixin, PublicAPIIntegrationMixin, ReportingPublicationMixin, AnalysisScenarioMixin, ReviewWorkflowMixin, MeasurementPortfolioMixin, IndicatorRegistryMixin):
     """SQLite reference repository with repeatable migrations and JSON projections."""
 
     def __init__(self, database: str | Path = ":memory:", *, auto_migrate: bool = True):
@@ -313,6 +319,8 @@ class SQLiteImpactRepository(PublicAPIIntegrationMixin, ReportingPublicationMixi
                     )
         if self.schema_version >= 5:
             self._seed_standard_units()
+        if self.schema_version >= 11:
+            self.seed_default_locales()
         return self.schema_version
 
     def applied_migrations(self) -> List[Dict[str, Any]]:
@@ -1050,7 +1058,7 @@ class SQLiteImpactRepository(PublicAPIIntegrationMixin, ReportingPublicationMixi
         portfolios = self.list_portfolios(workspace_id, include_archived=True)
         return {
             "bundle_type": "global_impact_workspace_bundle",
-            "bundle_version": "1.9.0",
+            "bundle_version": "1.10.0",
             "database_schema_version": self.schema_version,
             "exported_at": utc_now(),
             "workspace": workspace,
@@ -1063,6 +1071,7 @@ class SQLiteImpactRepository(PublicAPIIntegrationMixin, ReportingPublicationMixi
             "analysis_repository": self.export_analysis_repository(workspace_id),
             "reporting_repository": self.export_reporting_repository(workspace_id),
             "integration_repository": self.export_integration_repository(workspace_id),
+            "production_repository": self.export_production_repository(workspace_id),
             "audit": self.audit_records(workspace_id=workspace_id, limit=1000),
         }
 
@@ -1097,6 +1106,7 @@ class SQLiteImpactRepository(PublicAPIIntegrationMixin, ReportingPublicationMixi
         self._restore_analysis_repository(bundle.get("analysis_repository") or {}, actor=actor)
         self._restore_reporting_repository(bundle.get("reporting_repository") or {}, actor=actor)
         self._restore_integration_repository(bundle.get("integration_repository") or {}, actor=actor)
+        self._restore_production_repository(bundle.get("production_repository") or {}, actor=actor)
         restore_id = f"gic-restore-{digest[:20]}"
         summary = {"workspace_id": workspace_id, "contracts_imported": imported, "contracts_unchanged": unchanged}
         self.connection.execute(
@@ -1180,4 +1190,14 @@ class SQLiteImpactRepository(PublicAPIIntegrationMixin, ReportingPublicationMixi
             "platform_handoffs": count("platform_handoffs"),
             "integration_events": count("integration_events"),
             "export_artifacts": count("export_artifacts"),
+            "locales": count("locale_definitions"),
+            "offline_packages": count("offline_packages"),
+            "offline_changes": count("offline_change_queue"),
+            "accessibility_audits": count("accessibility_audits"),
+            "security_policies": count("security_policies"),
+            "backup_plans": count("backup_plans"),
+            "backup_runs": count("backup_runs"),
+            "recovery_tests": count("recovery_tests"),
+            "deployment_environments": count("deployment_environments"),
+            "release_readiness_checks": count("release_readiness_checks"),
         }

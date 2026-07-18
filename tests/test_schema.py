@@ -16,8 +16,11 @@ def test_canonical_schemas_remain_v110_and_repository_schemas_are_versioned():
     assert schema['x-global-impact-catalyst-version']=='1.4.0'
     assert '/1.4.0/' in schema['$id']
     schema=load('global_impact_workspace_bundle.schema.json')
-    assert schema['x-global-impact-catalyst-version']=='1.9.0'
-    assert '/1.9.0/' in schema['$id']
+    assert schema['x-global-impact-catalyst-version']=='1.10.0'
+    assert '/1.10.0/' in schema['$id']
+    schema=load('global_impact_production_repository.schema.json')
+    assert schema['x-global-impact-catalyst-version']=='1.10.0'
+    assert '/1.10.0/' in schema['$id']
     schema=load('global_impact_review_workflow.schema.json')
     assert schema['x-global-impact-catalyst-version']=='1.6.0'
     assert '/1.6.0/' in schema['$id']

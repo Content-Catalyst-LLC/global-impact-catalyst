@@ -54,3 +54,8 @@ The browser continues to use the exact v1.1.0 canonical calculation and validati
 ## Integration Hub and public embeds
 
 `[global_impact_catalyst_integration_hub]` is authenticated and manages API clients, embeds, handoffs, and integration repository status. Public shortcodes expose only approved snapshot-bound views: `[global_impact_catalyst_public_profile]`, `[global_impact_catalyst_indicator_view]`, `[global_impact_catalyst_report_view]`, and `[global_impact_catalyst_compact_embed]`.
+
+
+## v1.10.0 Production Readiness
+
+Use `[global_impact_catalyst_production_readiness]` for the authenticated production-governance surface. It exposes locale, offline package, offline change, accessibility audit, security-policy, environment, readiness, and production-repository REST operations. The shortcode requires `edit_posts` capability and a WordPress REST nonce.

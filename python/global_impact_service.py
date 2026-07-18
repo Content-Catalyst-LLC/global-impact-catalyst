@@ -1,4 +1,4 @@
-"""Application service layer for Global Impact Catalyst v1.9.0."""
+"""Application service layer for Global Impact Catalyst v1.10.0."""
 from __future__ import annotations
 
 import copy
@@ -20,7 +20,7 @@ from python.global_impact_repository import (
     utc_now,
 )
 
-SERVICE_VERSION = "1.9.0"
+SERVICE_VERSION = "1.10.0"
 
 
 def compact_input_from_contract(contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -389,6 +389,37 @@ class ImpactApplicationService:
             path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(integration, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         return integration
+
+    def register_locale(self, locale: Dict[str, Any], *, workspace_id: Optional[str] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_locale(locale, workspace_id=workspace_id, actor=actor)
+
+    def create_offline_package(self, workspace_id: str, **kwargs: Any) -> Dict[str, Any]:
+        return self.repository.create_offline_package(workspace_id, **kwargs)
+
+    def queue_offline_change(self, change: Dict[str, Any], *, workspace_id: str, device_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.queue_offline_change(change, workspace_id=workspace_id, device_id=device_id, actor=actor)
+
+    def apply_offline_change(self, change_id: str, *, actor: str = "sync") -> Dict[str, Any]:
+        return self.repository.apply_offline_change(change_id, actor=actor)
+
+    def record_accessibility_audit(self, audit: Dict[str, Any], *, workspace_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.record_accessibility_audit(audit, workspace_id=workspace_id, actor=actor)
+
+    def set_security_policy(self, policy: Dict[str, Any], *, workspace_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.set_security_policy(policy, workspace_id=workspace_id, actor=actor)
+
+    def create_backup_plan(self, plan: Dict[str, Any], *, workspace_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_backup_plan(plan, workspace_id=workspace_id, actor=actor)
+
+    def register_deployment_environment(self, environment: Dict[str, Any], *, workspace_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_deployment_environment(environment, workspace_id=workspace_id, actor=actor)
+
+    def production_repository(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
+        production = self.repository.export_production_repository(workspace_id)
+        if destination:
+            path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(production, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return production
 
     def export_workspace(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
         bundle = self.repository.export_workspace_bundle(workspace_id)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line workspace, evidence, indicator-registry, and program-measurement, review-workflow, and analysis, reporting, and reproducible-export operations for v1.9.0."""
+"""Command-line workspace, evidence, indicator-registry, and program-measurement, review-workflow, and analysis, reporting, and reproducible-export operations for v1.10.0."""
 from __future__ import annotations
 import argparse,json,sys
 from pathlib import Path
@@ -14,7 +14,7 @@ def read_json(path:str): return json.loads(Path(path).read_text(encoding='utf-8'
 def emit(value): print(json.dumps(value,indent=2,ensure_ascii=False,default=lambda o:o.__dict__))
 
 def main()->int:
-    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, registry, measurement, review, analysis, reporting, API, embeds, handoffs, and reproducible export CLI')
+    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, registry, measurement, review, analysis, reporting, API, embeds, handoffs, offline, localization, accessibility, recovery, readiness, and reproducible export CLI')
     parser.add_argument('--database',default='outputs/global-impact-catalyst.sqlite3')
     sub=parser.add_subparsers(dest='command',required=True)
     sub.add_parser('init')
@@ -104,6 +104,18 @@ def main()->int:
     handoff=sub.add_parser('platform-handoff'); handoff.add_argument('--destination',required=True); handoff.add_argument('--workspace-id',required=True); handoff.add_argument('--initiative-id'); handoff.add_argument('--idempotency-key')
     handoffs=sub.add_parser('platform-handoffs'); handoffs.add_argument('--workspace-id',required=True); handoffs.add_argument('--destination'); handoffs.add_argument('--initiative-id')
     integration_repository=sub.add_parser('integration-repository'); integration_repository.add_argument('--workspace-id',required=True); integration_repository.add_argument('--output')
+    production_repository=sub.add_parser('production-repository'); production_repository.add_argument('--workspace-id',required=True); production_repository.add_argument('--output')
+    add_locale=sub.add_parser('add-locale'); add_locale.add_argument('--workspace-id'); add_locale.add_argument('--input',required=True)
+    offline_package=sub.add_parser('offline-package'); offline_package.add_argument('--workspace-id',required=True); offline_package.add_argument('--locale-code',default='en-US'); offline_package.add_argument('--generated-at')
+    queue_offline=sub.add_parser('queue-offline-change'); queue_offline.add_argument('--workspace-id',required=True); queue_offline.add_argument('--device-id',required=True); queue_offline.add_argument('--input',required=True)
+    apply_offline=sub.add_parser('apply-offline-change'); apply_offline.add_argument('--change-id',required=True)
+    accessibility=sub.add_parser('accessibility-audit'); accessibility.add_argument('--workspace-id',required=True); accessibility.add_argument('--input',required=True)
+    security=sub.add_parser('security-policy'); security.add_argument('--workspace-id',required=True); security.add_argument('--input',required=True)
+    backup_plan=sub.add_parser('backup-plan'); backup_plan.add_argument('--workspace-id',required=True); backup_plan.add_argument('--input',required=True)
+    run_backup=sub.add_parser('run-backup'); run_backup.add_argument('--workspace-id',required=True); run_backup.add_argument('--output',required=True); run_backup.add_argument('--plan-id')
+    verify_recovery=sub.add_parser('verify-recovery'); verify_recovery.add_argument('--backup-run-id',required=True)
+    environment=sub.add_parser('add-environment'); environment.add_argument('--workspace-id',required=True); environment.add_argument('--input',required=True)
+    readiness=sub.add_parser('release-readiness'); readiness.add_argument('--workspace-id',required=True); readiness.add_argument('--environment-id')
     sub.add_parser('summary')
     args=parser.parse_args()
     with SQLiteImpactRepository(args.database) as repository:
@@ -201,6 +213,18 @@ def main()->int:
         elif args.command=='platform-handoff': emit(service.create_platform_handoff(args.destination,workspace_id=args.workspace_id,initiative_id=args.initiative_id,idempotency_key=args.idempotency_key,actor='cli'))
         elif args.command=='platform-handoffs': emit(repository.list_platform_handoffs(args.workspace_id,destination=args.destination,initiative_id=args.initiative_id))
         elif args.command=='integration-repository': emit(service.integration_repository(args.workspace_id,args.output))
+        elif args.command=='production-repository': emit(service.production_repository(args.workspace_id,args.output))
+        elif args.command=='add-locale': emit(service.register_locale(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='offline-package': emit(service.create_offline_package(args.workspace_id,locale_code=args.locale_code,generated_at=args.generated_at,actor='cli'))
+        elif args.command=='queue-offline-change': emit(service.queue_offline_change(read_json(args.input),workspace_id=args.workspace_id,device_id=args.device_id,actor='cli'))
+        elif args.command=='apply-offline-change': emit(service.apply_offline_change(args.change_id,actor='cli'))
+        elif args.command=='accessibility-audit': emit(service.record_accessibility_audit(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='security-policy': emit(service.set_security_policy(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='backup-plan': emit(service.create_backup_plan(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='run-backup': emit(repository.run_backup(args.workspace_id,args.output,plan_id=args.plan_id,actor='cli'))
+        elif args.command=='verify-recovery': emit(repository.verify_recovery(args.backup_run_id,actor='cli'))
+        elif args.command=='add-environment': emit(service.register_deployment_environment(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='release-readiness': emit(repository.evaluate_release_readiness(args.workspace_id,environment_id=args.environment_id,actor='cli'))
         elif args.command=='summary': emit(repository.repository_summary())
     return 0
 if __name__=='__main__': raise SystemExit(main())
