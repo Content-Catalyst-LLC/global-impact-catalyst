@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Portable end-to-end release smoke tests for Global Impact Catalyst v1.10.0."""
+"""Portable end-to-end release smoke tests for Global Impact Catalyst v2.0.0."""
 from __future__ import annotations
 
 import json
@@ -42,6 +42,7 @@ def main() -> int:
             "global-impact-catalyst-measurement.js", "global-impact-catalyst-review.js",
             "global-impact-catalyst-analysis.js", "global-impact-catalyst-reporting.js",
             "global-impact-catalyst-integration.js", "global-impact-catalyst-production.js",
+            "global-impact-catalyst-platform.js",
         ):
             run("node", "--check", f"wordpress/global-impact-catalyst-demo/assets/{asset}")
     else:
@@ -57,7 +58,7 @@ def main() -> int:
     from python.global_impact_service import ImpactApplicationService
 
     payload = json.loads((ROOT / "data/sample_global_impact_input.json").read_text(encoding="utf-8"))
-    with tempfile.TemporaryDirectory(prefix="gic-v1100-") as temp:
+    with tempfile.TemporaryDirectory(prefix="gic-v200-") as temp:
         directory = Path(temp)
         database = directory / "impact.sqlite3"
         restored_database = directory / "restored.sqlite3"
@@ -75,7 +76,7 @@ def main() -> int:
             initiative_id = created["repository"]["initiative_id"]
             indicator_id = contract["facts"]["indicator"]["id"]
             summary = repository.repository_summary()
-            assert summary["database_schema_version"] == 11
+            assert summary["database_schema_version"] == 12
             assert summary["contracts"] == 1
             assert summary["sources"] == 1
             assert summary["units"] >= 18
@@ -334,9 +335,64 @@ def main() -> int:
             assert production["integrity"]["passed_recovery_count"] == 1
             validate(production, "global_impact_production_repository.schema.json")
 
+            institution = service.register_institution({
+                "name": "Sustainable Catalyst", "slug": "sustainable-catalyst",
+                "mission": "Open public-interest impact intelligence",
+            }, actor="release-smoke")
+            membership = service.add_institution_member(institution["institution_id"], {
+                "principal_id": "release-owner", "display_name": "Release Owner",
+                "role": "owner", "permissions": ["platform.manage"],
+            }, actor="release-smoke")
+            assert membership["role"] == "owner"
+            workspace_link = service.link_institution_workspace(
+                institution["institution_id"], workspace_id, relationship="owned",
+                policy={"public_interest": True, "publication_review_required": True}, actor="release-smoke"
+            )
+            assert workspace_link["policy"]["public_interest"] is True
+            connection = service.register_platform_connection({
+                "destination": "decision_studio", "connection_type": "internal_module",
+                "contract_version": "2.0.0",
+                "capabilities": ["decision_packet", "evidence_handoff"],
+            }, institution_id=institution["institution_id"], actor="release-smoke")
+            verified_connection = service.verify_platform_connection(connection["connection_id"], actor="release-smoke")
+            assert verified_connection["status"] == "verified"
+            pathway = service.create_decision_pathway({
+                "title": "Evidence to public-interest decision", "initiative_id": initiative_id,
+                "nodes": [
+                    {"id": "evidence", "type": "evidence_repository"},
+                    {"id": "review", "type": "review_workflow"},
+                    {"id": "decision", "type": "decision_studio"},
+                ],
+                "edges": [
+                    {"from": "evidence", "to": "review", "relationship": "supports"},
+                    {"from": "review", "to": "decision", "relationship": "informs"},
+                ],
+            }, institution_id=institution["institution_id"], workspace_id=workspace_id, actor="release-smoke")
+            assert len(pathway["nodes"]) == 3
+            platform_workflow = service.create_platform_workflow({
+                "name": "Connected institutional impact review",
+                "workflow_type": "evidence_to_decision",
+                "steps": [
+                    {"type": "repository_integrity"},
+                    {"type": "create_snapshot"},
+                    {"type": "emit_event", "event_type": "impact.reviewed"},
+                ],
+            }, institution_id=institution["institution_id"], workspace_id=workspace_id, actor="release-smoke")
+            platform_run = service.run_platform_workflow(
+                platform_workflow["workflow_id"], inputs={"review_cycle": "2026-Q3"}, actor="release-smoke"
+            )
+            assert platform_run["status"] == "completed"
+            platform = service.platform_repository(workspace_id)
+            assert platform["repository_version"] == "2.0.0" and platform["integrity"]["valid"]
+            assert platform["integrity"]["connection_count"] == 1
+            assert platform["connections"][0]["status"] == "verified"
+            assert platform["integrity"]["workflow_run_count"] == 1
+            assert platform["integrity"]["snapshot_count"] == 1
+            validate(platform, "global_impact_platform_repository.schema.json")
+
             bundle = repository.export_workspace_bundle(workspace_id)
-            assert bundle["bundle_version"] == "1.10.0"
-            assert bundle["database_schema_version"] == 11
+            assert bundle["bundle_version"] == "2.0.0"
+            assert bundle["database_schema_version"] == 12
             validate(bundle, "global_impact_workspace_bundle.schema.json")
             repository.backup_database(backup)
 
@@ -365,8 +421,13 @@ def main() -> int:
             assert restored_production["integrity"] == production["integrity"]
             assert restored_production["offline_packages"][0]["package_hash"] == production["offline_packages"][0]["package_hash"]
             assert restored_production["release_readiness_checks"][0]["artifact_hash"] == production["release_readiness_checks"][0]["artifact_hash"]
+            restored_platform = restored.export_platform_repository(workspace_id)
+            assert restored_platform["integrity"] == platform["integrity"]
+            assert restored_platform["connections"][0]["status"] == "verified"
+            assert restored_platform["workflow_runs"][0]["output_hash"] == platform["workflow_runs"][0]["output_hash"]
+            assert restored_platform["snapshots"][0]["snapshot_hash"] == platform["snapshots"][0]["snapshot_hash"]
 
-    print("Global Impact Catalyst v1.10.0 portable release smoke tests passed.")
+    print("Global Impact Catalyst v2.0.0 portable release smoke tests passed.")
     return 0
 
 

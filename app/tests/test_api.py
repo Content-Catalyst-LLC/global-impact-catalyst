@@ -15,9 +15,9 @@ def test_validate_demo_payload_returns_structured_result():
 def test_healthcheck_version():
     health=healthcheck()
     assert health['status']=='ok'
-    assert health['version']=='1.10.0'
+    assert health['version']=='2.0.0'
     assert health['contract_version']=='1.1.0'
-    assert health['database_schema_version']==11
+    assert health['database_schema_version']==12
     assert health['reporting_repository_version']=='1.8.0'
     assert health['integration_repository_version']=='1.9.0'
     assert health['api_version']=='v1'

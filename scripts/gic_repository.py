@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line workspace, evidence, indicator-registry, and program-measurement, review-workflow, and analysis, reporting, and reproducible-export operations for v1.10.0."""
+"""Command-line workspace, evidence, indicator-registry, and program-measurement, review-workflow, and analysis, reporting, and reproducible-export operations for v2.0.0."""
 from __future__ import annotations
 import argparse,json,sys
 from pathlib import Path
@@ -14,7 +14,7 @@ def read_json(path:str): return json.loads(Path(path).read_text(encoding='utf-8'
 def emit(value): print(json.dumps(value,indent=2,ensure_ascii=False,default=lambda o:o.__dict__))
 
 def main()->int:
-    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, registry, measurement, review, analysis, reporting, API, embeds, handoffs, offline, localization, accessibility, recovery, readiness, and reproducible export CLI')
+    parser=argparse.ArgumentParser(description='Global Impact Catalyst repository, evidence, registry, measurement, review, analysis, reporting, API, embeds, handoffs, offline, localization, accessibility, recovery, readiness, institutions, pathways, workflows, platform snapshots, and reproducible export CLI')
     parser.add_argument('--database',default='outputs/global-impact-catalyst.sqlite3')
     sub=parser.add_subparsers(dest='command',required=True)
     sub.add_parser('init')
@@ -116,6 +116,17 @@ def main()->int:
     verify_recovery=sub.add_parser('verify-recovery'); verify_recovery.add_argument('--backup-run-id',required=True)
     environment=sub.add_parser('add-environment'); environment.add_argument('--workspace-id',required=True); environment.add_argument('--input',required=True)
     readiness=sub.add_parser('release-readiness'); readiness.add_argument('--workspace-id',required=True); readiness.add_argument('--environment-id')
+    platform_repository=sub.add_parser('platform-repository'); platform_repository.add_argument('--workspace-id',required=True); platform_repository.add_argument('--output')
+    add_institution=sub.add_parser('add-institution'); add_institution.add_argument('--input',required=True)
+    add_platform_member=sub.add_parser('add-platform-member'); add_platform_member.add_argument('--institution-id',required=True); add_platform_member.add_argument('--input',required=True)
+    link_platform_workspace=sub.add_parser('link-platform-workspace'); link_platform_workspace.add_argument('--institution-id',required=True); link_platform_workspace.add_argument('--workspace-id',required=True); link_platform_workspace.add_argument('--relationship',default='owned')
+    add_platform_connection=sub.add_parser('add-platform-connection'); add_platform_connection.add_argument('--institution-id',required=True); add_platform_connection.add_argument('--input',required=True)
+    verify_platform_connection=sub.add_parser('verify-platform-connection'); verify_platform_connection.add_argument('--connection-id',required=True)
+    add_decision_pathway=sub.add_parser('add-decision-pathway'); add_decision_pathway.add_argument('--institution-id',required=True); add_decision_pathway.add_argument('--workspace-id',required=True); add_decision_pathway.add_argument('--input',required=True)
+    add_platform_workflow=sub.add_parser('add-platform-workflow'); add_platform_workflow.add_argument('--institution-id',required=True); add_platform_workflow.add_argument('--workspace-id',required=True); add_platform_workflow.add_argument('--input',required=True)
+    run_platform_workflow=sub.add_parser('run-platform-workflow'); run_platform_workflow.add_argument('--workflow-id',required=True); run_platform_workflow.add_argument('--input')
+    platform_snapshot=sub.add_parser('platform-snapshot'); platform_snapshot.add_argument('--institution-id',required=True); platform_snapshot.add_argument('--workspace-id',required=True)
+    institution_overview=sub.add_parser('institution-overview'); institution_overview.add_argument('--institution-id',required=True)
     sub.add_parser('summary')
     args=parser.parse_args()
     with SQLiteImpactRepository(args.database) as repository:
@@ -225,6 +236,17 @@ def main()->int:
         elif args.command=='verify-recovery': emit(repository.verify_recovery(args.backup_run_id,actor='cli'))
         elif args.command=='add-environment': emit(service.register_deployment_environment(read_json(args.input),workspace_id=args.workspace_id,actor='cli'))
         elif args.command=='release-readiness': emit(repository.evaluate_release_readiness(args.workspace_id,environment_id=args.environment_id,actor='cli'))
+        elif args.command=='platform-repository': emit(service.platform_repository(args.workspace_id,args.output))
+        elif args.command=='add-institution': emit(service.register_institution(read_json(args.input),actor='cli'))
+        elif args.command=='add-platform-member': emit(service.add_institution_member(args.institution_id,read_json(args.input),actor='cli'))
+        elif args.command=='link-platform-workspace': emit(service.link_institution_workspace(args.institution_id,args.workspace_id,relationship=args.relationship,actor='cli'))
+        elif args.command=='add-platform-connection': emit(service.register_platform_connection(read_json(args.input),institution_id=args.institution_id,actor='cli'))
+        elif args.command=='verify-platform-connection': emit(service.verify_platform_connection(args.connection_id,actor='cli'))
+        elif args.command=='add-decision-pathway': emit(service.create_decision_pathway(read_json(args.input),institution_id=args.institution_id,workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='add-platform-workflow': emit(service.create_platform_workflow(read_json(args.input),institution_id=args.institution_id,workspace_id=args.workspace_id,actor='cli'))
+        elif args.command=='run-platform-workflow': emit(service.run_platform_workflow(args.workflow_id,inputs=read_json(args.input) if args.input else None,actor='cli'))
+        elif args.command=='platform-snapshot': emit(service.create_platform_snapshot(args.institution_id,args.workspace_id,actor='cli'))
+        elif args.command=='institution-overview': emit(service.institution_overview(args.institution_id))
         elif args.command=='summary': emit(repository.repository_summary())
     return 0
 if __name__=='__main__': raise SystemExit(main())

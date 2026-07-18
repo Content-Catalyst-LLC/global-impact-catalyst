@@ -29,7 +29,7 @@ def validate(name, document):
 
 def test_migration_11_seeds_locales_and_health_contract(tmp_path):
     with SQLiteImpactRepository(tmp_path / "production.sqlite3") as repo:
-        assert DATABASE_SCHEMA_VERSION == 11 and repo.schema_version == 11
+        assert DATABASE_SCHEMA_VERSION == 12 and repo.schema_version == 12
         assert [item["locale_code"] for item in repo.list_locales()] == ["en-US", "es", "fr"]
         assert repo.translate("status.ready", locale_code="es") == "Listo"
         assert repo.translate("unknown.key", locale_code="fr", default="Fallback") == "Fallback"
@@ -140,7 +140,7 @@ def test_production_schema_and_lossless_workspace_restore(tmp_path):
         bundle = source.export_workspace_bundle(workspace_id)
         validate("global_impact_production_repository.schema.json", production)
         validate("global_impact_workspace_bundle.schema.json", bundle)
-        assert bundle["bundle_version"] == "1.10.0" and bundle["database_schema_version"] == 11
+        assert bundle["bundle_version"] == "2.0.0" and bundle["database_schema_version"] == 12
 
     with SQLiteImpactRepository(tmp_path / "target.sqlite3") as target:
         restored = target.restore_workspace_bundle(bundle)

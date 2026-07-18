@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/1.10.0/global_impact_workspace_bundle.schema.json",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/2.0.0/global_impact_workspace_bundle.schema.json",
   "title": "Global Impact Catalyst Workspace Bundle",
   "type": "object",
   "additionalProperties": false,
@@ -20,6 +20,7 @@
     "reporting_repository",
     "integration_repository",
     "production_repository",
+    "platform_repository",
     "audit"
   ],
   "properties": {
@@ -27,11 +28,11 @@
       "const": "global_impact_workspace_bundle"
     },
     "bundle_version": {
-      "const": "1.10.0"
+      "const": "2.0.0"
     },
     "database_schema_version": {
       "type": "integer",
-      "minimum": 11
+      "minimum": 12
     },
     "exported_at": {
       "type": "string",
@@ -334,7 +335,77 @@
           "const": "1.10.0"
         }
       }
+    },
+    "platform_repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_type",
+        "repository_version",
+        "workspace_id",
+        "generated_at",
+        "institutions",
+        "memberships",
+        "workspace_links",
+        "connections",
+        "decision_pathways",
+        "workflows",
+        "workflow_runs",
+        "snapshots",
+        "events",
+        "boundary",
+        "integrity"
+      ],
+      "properties": {
+        "repository_type": {
+          "const": "global_impact_platform_repository"
+        },
+        "repository_version": {
+          "const": "2.0.0"
+        },
+        "workspace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "institutions": {
+          "type": "array"
+        },
+        "memberships": {
+          "type": "array"
+        },
+        "workspace_links": {
+          "type": "array"
+        },
+        "connections": {
+          "type": "array"
+        },
+        "decision_pathways": {
+          "type": "array"
+        },
+        "workflows": {
+          "type": "array"
+        },
+        "workflow_runs": {
+          "type": "array"
+        },
+        "snapshots": {
+          "type": "array"
+        },
+        "events": {
+          "type": "array"
+        },
+        "boundary": {
+          "type": "string"
+        },
+        "integrity": {
+          "type": "object"
+        }
+      }
     }
   },
-  "x-global-impact-catalyst-version": "1.10.0"
+  "x-global-impact-catalyst-version": "2.0.0"
 }

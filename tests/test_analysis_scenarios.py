@@ -26,7 +26,7 @@ def validate(path,document):
 def test_migration_and_trend(tmp_path):
     with SQLiteImpactRepository(tmp_path/'a.sqlite3') as repo:
         c=create(repo); w,i,ind=ids(c); add_periods(repo,w,i,ind)
-        assert DATABASE_SCHEMA_VERSION==11 and repo.schema_version==11
+        assert DATABASE_SCHEMA_VERSION==12 and repo.schema_version==12
         result=repo.analyze_trend(i,ind,include_partial=False,persist=True)
         assert [p['value'] for p in result['points']]==[18.0,21.0,24.0]
         assert result['statistics']['absolute_change']==6.0
@@ -95,7 +95,7 @@ def test_analysis_export_schema_and_restore(tmp_path):
         analysis=source.export_analysis_repository(w); bundle=source.export_workspace_bundle(w)
         validate(ROOT/'schemas/global_impact_analysis_repository.schema.json',analysis)
         validate(ROOT/'schemas/global_impact_workspace_bundle.schema.json',bundle)
-        assert bundle['bundle_version']=='1.10.0' and bundle['database_schema_version']==11
+        assert bundle['bundle_version']=='2.0.0' and bundle['database_schema_version']==12
         with SQLiteImpactRepository(tmp_path/'target.sqlite3') as target:
             first=target.restore_workspace_bundle(bundle); second=target.restore_workspace_bundle(bundle)
             assert first['status']=='restored' and second['status']=='unchanged'

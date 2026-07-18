@@ -17,10 +17,12 @@ REPORTING_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-c
 REPORTING_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-reporting.css').read_text()
 INTEGRATION_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-integration.js').read_text()
 INTEGRATION_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-integration.css').read_text()
+PLATFORM_JS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-platform.js').read_text()
+PLATFORM_CSS=(ROOT/'wordpress/global-impact-catalyst-demo/assets/global-impact-catalyst-platform.css').read_text()
 
 def test_plugin_version_shortcodes_and_instance_ids():
-    assert '* Version: 1.10.0' in PHP
-    assert "define('GIC_DEMO_VERSION', '1.10.0')" in PHP
+    assert '* Version: 2.0.0' in PHP
+    assert "define('GIC_DEMO_VERSION', '2.0.0')" in PHP
     assert "add_shortcode('global_impact_catalyst_demo'" in PHP
     assert "add_shortcode('global_impact_catalyst_workspace'" in PHP
     assert "add_shortcode('global_impact_catalyst_evidence_ledger'" in PHP
@@ -35,6 +37,7 @@ def test_plugin_version_shortcodes_and_instance_ids():
     assert "add_shortcode('global_impact_catalyst_report_view'" in PHP
     assert "add_shortcode('global_impact_catalyst_compact_embed'" in PHP
     assert "add_shortcode('global_impact_catalyst_production_readiness'" in PHP
+    assert "add_shortcode('global_impact_catalyst_platform_hub'" in PHP
     assert 'static $instance = 0' in PHP and '$id_prefix' in PHP
 
 def test_plugin_exposes_contract_and_claim_fields():
@@ -193,3 +196,21 @@ def test_production_client_and_styles_support_resilient_operations():
     for operation in ['production-repository?workspace_id=','offline-packages','accessibility-audits','security-policy','deployment-environments','release-readiness','data-gic-production-results']:
         assert operation in PRODUCTION_JS or operation in PHP
     assert '.gic-production__grid' in PRODUCTION_CSS and '@media' in PRODUCTION_CSS and 'prefers-reduced-motion' in PRODUCTION_CSS
+
+
+def test_connected_platform_tables_routes_shortcode_and_assets_are_present():
+    for table in ['institutions','institution_members','institution_workspaces','platform_connections','decision_pathways','platform_workflows','platform_workflow_runs','platform_snapshots','platform_events']:
+        assert f"gic_repository_table('{table}')" in PHP
+    for behavior in ['gic_platform_repository_rest','gic_platform_institution_rest','gic_platform_member_rest','gic_platform_connection_rest','gic_platform_pathway_rest','gic_platform_snapshot_rest','gic_platform_register_routes','gic_platform_hub_shortcode']:
+        assert f'function {behavior}' in PHP
+    for route in ['/platform-repository','/platform-institutions','/platform-members','/platform-connections','/decision-pathways','/platform-snapshots']:
+        assert route in PHP
+    for control in ['data-gic-platform-hub','data-gic-platform-load','data-gic-platform-institution','data-gic-platform-member','data-gic-platform-connection','data-gic-platform-pathway','data-gic-platform-snapshot','data-gic-platform-results']:
+        assert control in PHP
+    assert 'Connected public-interest platform · v2.0.0' in PHP
+
+
+def test_connected_platform_client_and_styles_support_institutional_operations():
+    for operation in ['platform-repository?workspace_id=','platform-institutions','platform-members','platform-connections','decision-pathways','platform-snapshots','data-gic-platform-results']:
+        assert operation in PLATFORM_JS or operation in PHP
+    assert '.gic-platform__grid' in PLATFORM_CSS and '@media' in PLATFORM_CSS and 'prefers-reduced-motion' in PLATFORM_CSS

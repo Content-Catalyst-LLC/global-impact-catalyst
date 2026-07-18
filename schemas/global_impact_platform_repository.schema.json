@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.org/schemas/global-impact-catalyst/2.0.0/global_impact_platform_repository.schema.json",
+  "title": "Global Impact Catalyst Connected Platform Repository",
+  "x-global-impact-catalyst-version": "2.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["repository_type", "repository_version", "workspace_id", "generated_at", "institutions", "memberships", "workspace_links", "connections", "decision_pathways", "workflows", "workflow_runs", "snapshots", "events", "boundary", "integrity"],
+  "properties": {
+    "repository_type": {"const": "global_impact_platform_repository"},
+    "repository_version": {"const": "2.0.0"},
+    "workspace_id": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "institutions": {"type": "array", "items": {"type": "object", "required": ["institution_id", "name", "slug", "status"]}},
+    "memberships": {"type": "array", "items": {"type": "object", "required": ["membership_id", "institution_id", "principal_id", "role", "permissions"]}},
+    "workspace_links": {"type": "array", "items": {"type": "object", "required": ["link_id", "institution_id", "workspace_id", "relationship", "policy"]}},
+    "connections": {"type": "array", "items": {"type": "object", "required": ["connection_id", "institution_id", "destination", "status", "capabilities"]}},
+    "decision_pathways": {"type": "array", "items": {"type": "object", "required": ["pathway_id", "institution_id", "workspace_id", "nodes", "edges"]}},
+    "workflows": {"type": "array", "items": {"type": "object", "required": ["workflow_id", "institution_id", "workspace_id", "steps"]}},
+    "workflow_runs": {"type": "array", "items": {"type": "object", "required": ["run_id", "workflow_id", "status", "step_results"]}},
+    "snapshots": {"type": "array", "items": {"type": "object", "required": ["snapshot_id", "institution_id", "workspace_id", "source_hashes", "summary", "snapshot_hash"]}},
+    "events": {"type": "array", "items": {"type": "object", "required": ["event_id", "event_type", "subject_type", "subject_id", "payload_hash", "payload"]}},
+    "boundary": {"type": "string", "minLength": 1},
+    "integrity": {"type": "object", "required": ["valid", "institution_count", "membership_count", "workspace_link_count", "connection_count", "pathway_count", "workflow_count", "workflow_run_count", "snapshot_count", "event_count"]}
+  }
+}

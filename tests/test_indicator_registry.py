@@ -24,7 +24,7 @@ def create(repo):
 
 def test_migration_seeds_governed_standard_units(tmp_path):
     with SQLiteImpactRepository(tmp_path / "units.sqlite3") as repo:
-        assert repo.schema_version == 11
+        assert repo.schema_version == 12
         assert len(repo.list_units()) >= 18
         assert repo.get_unit("USD")["unit_id"] == "gic-unit-usd"
         assert repo.get_unit("tCO2e")["dimension"] == "emissions"
@@ -132,7 +132,7 @@ def test_registry_export_and_workspace_restore_are_lossless_and_idempotent(tmp_p
         initiative_id = created["repository"]["initiative_id"]
         registry = source.export_indicator_registry(workspace_id)
         bundle = source.export_workspace_bundle(workspace_id)
-        assert bundle["bundle_version"] == "1.10.0"
+        assert bundle["bundle_version"] == "2.0.0"
         assert bundle["indicator_registry"]["integrity"]["valid"] is True
     original = copy.deepcopy(bundle)
     with SQLiteImpactRepository(tmp_path / "target.sqlite3") as target:

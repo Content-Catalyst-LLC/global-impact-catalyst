@@ -1,4 +1,4 @@
-"""Persistent repository for Global Impact Catalyst v1.9.0.
+"""Persistent repository for Global Impact Catalyst v2.0.0.
 
 The repository stores canonical contracts as immutable calculation snapshots and
 maintains indexed entity projections for workspace operations. SQLite is the
@@ -24,8 +24,9 @@ from python.global_impact_analysis import AnalysisScenarioMixin
 from python.global_impact_reporting import ReportingPublicationMixin
 from python.global_impact_integration import PublicAPIIntegrationMixin
 from python.global_impact_production import ProductionHardeningMixin
+from python.global_impact_platform import ConnectedImpactPlatformMixin
 
-DATABASE_SCHEMA_VERSION = 11
+DATABASE_SCHEMA_VERSION = 12
 SUPPORTED_CONTRACT_VERSIONS = {"1.0.0", "1.0.1", "1.1.0", "1.2.0"}
 ENTITY_TYPES = {"workspace", "initiative", "goal", "indicator", "observation", "target", "source"}
 EVIDENCE_TYPES = {"excerpt", "quotation", "dataset_excerpt", "observation_note", "document_note", "table", "figure"}
@@ -247,9 +248,14 @@ MIGRATIONS: Sequence[tuple[int, str, str]] = (
         "accessibility_offline_localization_production_hardening",
         (Path(__file__).resolve().parents[1] / "migrations/011_accessibility_offline_localization_production_hardening.sql").read_text(encoding="utf-8"),
     ),
+    (
+        12,
+        "connected_public_interest_impact_intelligence_platform",
+        (Path(__file__).resolve().parents[1] / "migrations/012_connected_public_interest_impact_intelligence_platform.sql").read_text(encoding="utf-8"),
+    ),
 )
 
-class SQLiteImpactRepository(ProductionHardeningMixin, PublicAPIIntegrationMixin, ReportingPublicationMixin, AnalysisScenarioMixin, ReviewWorkflowMixin, MeasurementPortfolioMixin, IndicatorRegistryMixin):
+class SQLiteImpactRepository(ConnectedImpactPlatformMixin, ProductionHardeningMixin, PublicAPIIntegrationMixin, ReportingPublicationMixin, AnalysisScenarioMixin, ReviewWorkflowMixin, MeasurementPortfolioMixin, IndicatorRegistryMixin):
     """SQLite reference repository with repeatable migrations and JSON projections."""
 
     def __init__(self, database: str | Path = ":memory:", *, auto_migrate: bool = True):
@@ -1058,7 +1064,7 @@ class SQLiteImpactRepository(ProductionHardeningMixin, PublicAPIIntegrationMixin
         portfolios = self.list_portfolios(workspace_id, include_archived=True)
         return {
             "bundle_type": "global_impact_workspace_bundle",
-            "bundle_version": "1.10.0",
+            "bundle_version": "2.0.0",
             "database_schema_version": self.schema_version,
             "exported_at": utc_now(),
             "workspace": workspace,
@@ -1072,6 +1078,7 @@ class SQLiteImpactRepository(ProductionHardeningMixin, PublicAPIIntegrationMixin
             "reporting_repository": self.export_reporting_repository(workspace_id),
             "integration_repository": self.export_integration_repository(workspace_id),
             "production_repository": self.export_production_repository(workspace_id),
+            "platform_repository": self.export_platform_repository(workspace_id),
             "audit": self.audit_records(workspace_id=workspace_id, limit=1000),
         }
 
@@ -1107,6 +1114,7 @@ class SQLiteImpactRepository(ProductionHardeningMixin, PublicAPIIntegrationMixin
         self._restore_reporting_repository(bundle.get("reporting_repository") or {}, actor=actor)
         self._restore_integration_repository(bundle.get("integration_repository") or {}, actor=actor)
         self._restore_production_repository(bundle.get("production_repository") or {}, actor=actor)
+        self._restore_platform_repository(bundle.get("platform_repository") or {}, actor=actor)
         restore_id = f"gic-restore-{digest[:20]}"
         summary = {"workspace_id": workspace_id, "contracts_imported": imported, "contracts_unchanged": unchanged}
         self.connection.execute(
@@ -1200,4 +1208,13 @@ class SQLiteImpactRepository(ProductionHardeningMixin, PublicAPIIntegrationMixin
             "recovery_tests": count("recovery_tests"),
             "deployment_environments": count("deployment_environments"),
             "release_readiness_checks": count("release_readiness_checks"),
+            "institutions": count("institutions"),
+            "institution_members": count("institution_members"),
+            "institution_workspaces": count("institution_workspaces"),
+            "platform_connections": count("platform_connections"),
+            "decision_pathways": count("decision_pathways"),
+            "platform_workflows": count("platform_workflows"),
+            "platform_workflow_runs": count("platform_workflow_runs"),
+            "platform_snapshots": count("platform_snapshots"),
+            "platform_events": count("platform_events"),
         }

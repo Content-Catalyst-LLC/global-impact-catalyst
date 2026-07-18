@@ -1,0 +1,225 @@
+{
+  "repository_type": "global_impact_platform_repository",
+  "repository_version": "2.0.0",
+  "workspace_id": "gic-workspace-bdc75d8b68333af2",
+  "generated_at": "2026-07-18T18:04:11.060317+00:00",
+  "institutions": [
+    {
+      "institution_id": "gic-institution-9570e4235f256c1d5bfe",
+      "name": "Sustainable Catalyst",
+      "slug": "sustainable-catalyst",
+      "mission": "Public-interest impact intelligence",
+      "governance_model": "public_interest",
+      "status": "active",
+      "created_at": "2026-07-18T18:04:11.054797+00:00",
+      "updated_at": "2026-07-18T18:04:11.054797+00:00",
+      "metadata": {}
+    }
+  ],
+  "memberships": [
+    {
+      "membership_id": "gic-membership-604e268f98ad0a69a9b4",
+      "institution_id": "gic-institution-9570e4235f256c1d5bfe",
+      "principal_id": "tariq",
+      "display_name": "Tariq Ahmad",
+      "email_hash": null,
+      "role": "owner",
+      "status": "active",
+      "joined_at": "2026-07-18T18:04:11.054972+00:00",
+      "updated_at": "2026-07-18T18:04:11.054972+00:00",
+      "permissions": [
+        "platform.manage"
+      ],
+      "metadata": {}
+    }
+  ],
+  "workspace_links": [
+    {
+      "link_id": "gic-workspace-link-f24156c544c61386b983",
+      "institution_id": "gic-institution-9570e4235f256c1d5bfe",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "relationship": "managed",
+      "status": "active",
+      "created_at": "2026-07-18T18:04:11.055155+00:00",
+      "updated_at": "2026-07-18T18:04:11.055461+00:00",
+      "policy": {}
+    }
+  ],
+  "connections": [
+    {
+      "connection_id": "gic-connection-6b84774fa5d8332103d4",
+      "institution_id": "gic-institution-9570e4235f256c1d5bfe",
+      "destination": "decision_studio",
+      "connection_type": "internal_module",
+      "status": "verified",
+      "contract_version": "2.0.0",
+      "created_at": "2026-07-18T18:04:11.055258+00:00",
+      "updated_at": "2026-07-18T18:04:11.055381+00:00",
+      "last_verified_at": "2026-07-18T18:04:11.055381+00:00",
+      "capabilities": [
+        "decision_packet",
+        "evidence_handoff"
+      ],
+      "config": {},
+      "verification": {
+        "capabilities_declared": true,
+        "contract_version_present": true
+      },
+      "metadata": {}
+    }
+  ],
+  "decision_pathways": [
+    {
+      "pathway_id": "gic-pathway-180ff4349c948ad2cd0f",
+      "institution_id": "gic-institution-9570e4235f256c1d5bfe",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "initiative_id": "gic-initiative-09a657f60923ed45",
+      "title": "Evidence to decision",
+      "status": "draft",
+      "created_at": "2026-07-18T18:04:11.055506+00:00",
+      "updated_at": "2026-07-18T18:04:11.055506+00:00",
+      "nodes": [
+        {
+          "id": "evidence",
+          "type": "evidence_repository"
+        },
+        {
+          "id": "decision",
+          "type": "decision_studio"
+        }
+      ],
+      "edges": [
+        {
+          "from": "evidence",
+          "relationship": "informs",
+          "to": "decision"
+        }
+      ],
+      "metadata": {}
+    }
+  ],
+  "workflows": [],
+  "workflow_runs": [],
+  "snapshots": [
+    {
+      "snapshot_id": "gic-platform-snapshot-2bee3383488a5561ef52",
+      "institution_id": "gic-institution-9570e4235f256c1d5bfe",
+      "workspace_id": "gic-workspace-bdc75d8b68333af2",
+      "status": "ready",
+      "generated_at": "2026-07-18T18:04:11.059782+00:00",
+      "snapshot_hash": "efa3ce900c5ef3971d79b6fcb6dd584b788b655e4430115cbda31bd65152d71c",
+      "source_hashes": {
+        "analysis": "93eba9af53e3eb5ffe3ba803d793ca02e7265306a23538aeb0030bceb8c5a443",
+        "evidence": "800698c3b3169346a07b28511920d8c13139afc7ad494e82cda6dedc5d516375",
+        "integration": "7ada27084ee4fd5aa8c57c3467c3c6c0583e6d2929343490c61b4b01dc701813",
+        "measurement": "95257abfd76291f859435c48a31531c8cc7f431e3d405cb4662c381c71077cfa",
+        "production": "a13c9e21984fdbe3313e3246aabbcc7a48654d921d3bd8c68e574d3695b1199a",
+        "registry": "2d665c6ab77b8829b09312fd06ef7def80a49d9b13ac38ff3b5b16269155d02a",
+        "reporting": "e091308804840ebf5252274659632a2603d5352c3c7b500a30590f6f635e88c5",
+        "review": "cbf30bf394980deca2d3ec50fb20e7a864d849194431fa19fd86cd930459ce9e"
+      },
+      "summary": {
+        "analysis_runs": 0,
+        "evidence_items": 0,
+        "publications": 0,
+        "readiness_checks": 0,
+        "repository": {
+          "accessibility_audits": 0,
+          "analysis_benchmarks": 0,
+          "analysis_comparison_members": 0,
+          "analysis_comparison_sets": 0,
+          "analysis_runs": 0,
+          "analysis_scenarios": 0,
+          "analysis_sensitivity_runs": 0,
+          "analysis_uncertainty_models": 0,
+          "api_clients": 0,
+          "approval_decisions": 0,
+          "audit_records": 31,
+          "autosaves": 0,
+          "backup_plans": 0,
+          "backup_runs": 0,
+          "baseline_models": 1,
+          "beneficiary_definitions": 1,
+          "beneficiary_observations": 1,
+          "claim_evidence_links": 0,
+          "contracts": 1,
+          "contribution_notes": 0,
+          "correction_records": 0,
+          "dashboard_cards": 0,
+          "dashboard_definitions": 0,
+          "database_schema_version": 12,
+          "datasets": 0,
+          "decision_pathways": 1,
+          "deployment_environments": 0,
+          "embeds": 0,
+          "evidence_items": 0,
+          "export_artifacts": 0,
+          "export_bundles": 0,
+          "external_factors": 0,
+          "financial_records": 1,
+          "impact_result_relationships": 0,
+          "impact_results": 1,
+          "imports": 0,
+          "indicator_definition_versions": 1,
+          "indicator_definitions": 1,
+          "indicator_registry_bindings": 1,
+          "initiatives": 1,
+          "institution_members": 1,
+          "institution_workspaces": 1,
+          "institutions": 1,
+          "integration_events": 0,
+          "locales": 3,
+          "method_definitions": 1,
+          "observation_series": 1,
+          "offline_changes": 0,
+          "offline_packages": 0,
+          "outcome_portfolios": 0,
+          "platform_connections": 1,
+          "platform_events": 0,
+          "platform_handoffs": 0,
+          "platform_snapshots": 0,
+          "platform_workflow_runs": 0,
+          "platform_workflows": 0,
+          "portfolio_aggregation_runs": 0,
+          "portfolios": 0,
+          "provenance_edges": 9,
+          "publication_events": 0,
+          "publication_records": 0,
+          "publication_snapshots": 0,
+          "quality_assessments": 0,
+          "recovery_tests": 0,
+          "release_readiness_checks": 0,
+          "report_documents": 0,
+          "report_templates": 0,
+          "review_assignments": 0,
+          "review_comments": 0,
+          "security_policies": 0,
+          "source_versions": 1,
+          "sources": 1,
+          "target_models": 1,
+          "units": 18,
+          "workflow_revisions": 1,
+          "workflow_roles": 5,
+          "workspaces": 1
+        }
+      },
+      "metadata": {
+        "boundary": "The connected platform coordinates governed evidence and workflows. It does not certify impact, prove causation, replace institutional review, or grant access beyond recorded permissions."
+      }
+    }
+  ],
+  "events": [],
+  "boundary": "The connected platform coordinates governed evidence and workflows. It does not certify impact, prove causation, replace institutional review, or grant access beyond recorded permissions.",
+  "integrity": {
+    "valid": true,
+    "institution_count": 1,
+    "membership_count": 1,
+    "workspace_link_count": 1,
+    "connection_count": 1,
+    "pathway_count": 1,
+    "workflow_count": 0,
+    "workflow_run_count": 0,
+    "snapshot_count": 1,
+    "event_count": 0
+  }
+}

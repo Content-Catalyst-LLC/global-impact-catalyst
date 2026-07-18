@@ -1,4 +1,4 @@
-"""Application service layer for Global Impact Catalyst v1.10.0."""
+"""Application service layer for Global Impact Catalyst v2.0.0."""
 from __future__ import annotations
 
 import copy
@@ -20,7 +20,7 @@ from python.global_impact_repository import (
     utc_now,
 )
 
-SERVICE_VERSION = "1.10.0"
+SERVICE_VERSION = "2.0.0"
 
 
 def compact_input_from_contract(contract: Dict[str, Any]) -> Dict[str, Any]:
@@ -432,6 +432,44 @@ class ImpactApplicationService:
     def restore_workspace(self, bundle: Dict[str, Any], *, actor: str = "system") -> Dict[str, Any]:
         return self.repository.restore_workspace_bundle(bundle, actor=actor)
 
+
+    # Connected platform v2.0.0 ---------------------------------------
+    def register_institution(self, institution: Dict[str, Any], *, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_institution(institution, actor=actor)
+
+    def add_institution_member(self, institution_id: str, member: Dict[str, Any], *, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.add_institution_member(institution_id, member, actor=actor)
+
+    def link_institution_workspace(self, institution_id: str, workspace_id: str, *, relationship: str = "owned", policy: Optional[Dict[str, Any]] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.link_institution_workspace(institution_id, workspace_id, relationship=relationship, policy=policy, actor=actor)
+
+    def register_platform_connection(self, connection: Dict[str, Any], *, institution_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.register_platform_connection(connection, institution_id=institution_id, actor=actor)
+
+    def verify_platform_connection(self, connection_id: str, verification: Optional[Dict[str, Any]] = None, *, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.verify_platform_connection(connection_id, verification, actor=actor)
+
+    def create_decision_pathway(self, pathway: Dict[str, Any], *, institution_id: str, workspace_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_decision_pathway(pathway, institution_id=institution_id, workspace_id=workspace_id, actor=actor)
+
+    def create_platform_workflow(self, workflow: Dict[str, Any], *, institution_id: str, workspace_id: str, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_platform_workflow(workflow, institution_id=institution_id, workspace_id=workspace_id, actor=actor)
+
+    def run_platform_workflow(self, workflow_id: str, *, inputs: Optional[Dict[str, Any]] = None, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.run_platform_workflow(workflow_id, inputs=inputs, actor=actor)
+
+    def create_platform_snapshot(self, institution_id: str, workspace_id: str, *, actor: str = "system") -> Dict[str, Any]:
+        return self.repository.create_platform_snapshot(institution_id, workspace_id, actor=actor)
+
+    def platform_repository(self, workspace_id: str, destination: Optional[str | Path] = None) -> Dict[str, Any]:
+        platform = self.repository.export_platform_repository(workspace_id)
+        if destination:
+            path = Path(destination); path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(platform, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return platform
+
+    def institution_overview(self, institution_id: str) -> Dict[str, Any]:
+        return self.repository.institution_overview(institution_id)
 
     def _reuse_workspace_identity(self, contract: Dict[str, Any]) -> None:
         """Attach new authoring records to an existing exact-name workspace when present."""

@@ -51,7 +51,7 @@ def approve_publish_snapshot(repo, workspace_id, initiative_id, record_id):
 def test_migration_10_api_client_scope_and_rate_controls(tmp_path):
     with SQLiteImpactRepository(tmp_path / "api.sqlite3") as repo:
         _, workspace_id, _, _ = create(repo)
-        assert DATABASE_SCHEMA_VERSION == 11 and repo.schema_version == 11
+        assert DATABASE_SCHEMA_VERSION == 12 and repo.schema_version == 12
         client = repo.register_api_client({
             "name": "Decision Studio", "client_type": "service",
             "scopes": ["workspace:read", "handoffs:write"], "rate_limit_per_minute": 2,
@@ -160,7 +160,7 @@ def test_integration_schema_and_lossless_workspace_restore(tmp_path):
         integration = source.export_integration_repository(workspace_id)
         bundle = source.export_workspace_bundle(workspace_id)
         assert integration["integrity"]["valid"] and integration["privacy"]["api_key_material_exported"] is False
-        assert bundle["bundle_version"] == "1.10.0" and bundle["database_schema_version"] == 11
+        assert bundle["bundle_version"] == "2.0.0" and bundle["database_schema_version"] == 12
         serialized_clients = json.dumps(integration["api_clients"])
         assert issued_key_material_absent(serialized_clients)
         Draft202012Validator(json.loads((ROOT / "schemas/global_impact_integration_repository.schema.json").read_text()), format_checker=FormatChecker()).validate(integration)

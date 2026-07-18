@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.0 — Connected Public-Interest Impact Intelligence Platform
+
+- Added SQLite migration 12 and the v2.0.0 connected platform repository.
+- Added institutional records, memberships, role and permission governance, and workspace federation policies.
+- Added versioned platform connections with explicit verification status and declared capabilities.
+- Added evidence-to-decision pathway graphs and deterministic platform workflow execution.
+- Added immutable cross-repository snapshots bound to evidence, registry, measurement, review, analysis, reporting, integration, and production hashes.
+- Added correlated platform events, institution overviews, and platform integrity reports.
+- Added platform repository schema, example, CLI commands, documentation, tests, WordPress routes, assets, and Platform Hub shortcode.
+- Advanced the workspace bundle to v2.0.0 and database schema to 12 while preserving canonical contract v1.1.0 and all v1.3.0–v1.10.0 repository semantics.
+
 ## 1.10.0 — Accessibility, Offline Use, Localization, and Production Hardening
 
 - Added SQLite migration 11 and the v1.10.0 production repository.
