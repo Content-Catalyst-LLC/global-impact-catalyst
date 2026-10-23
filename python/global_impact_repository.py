@@ -258,6 +258,9 @@ MIGRATIONS: Sequence[tuple[int, str, str]] = (
 class SQLiteImpactRepository(ConnectedImpactPlatformMixin, ProductionHardeningMixin, PublicAPIIntegrationMixin, ReportingPublicationMixin, AnalysisScenarioMixin, ReviewWorkflowMixin, MeasurementPortfolioMixin, IndicatorRegistryMixin):
     """SQLite reference repository with repeatable migrations and JSON projections."""
 
+    # The caller chooses the database path and must enforce access to it;
+    # constructing this repository also creates parent directories and, by
+    # default, applies schema migrations to the selected database.
     def __init__(self, database: str | Path = ":memory:", *, auto_migrate: bool = True):
         self.database = str(database)
         if self.database != ":memory:":
@@ -284,6 +287,8 @@ class SQLiteImpactRepository(ConnectedImpactPlatformMixin, ProductionHardeningMi
         self.close()
 
     @contextmanager
+    # BEGIN IMMEDIATE acquires the write reservation before yielding; any
+    # exception rolls back the entire block, avoiding partial projections.
     def transaction(self) -> Iterator[sqlite3.Connection]:
         try:
             self.connection.execute("BEGIN IMMEDIATE")

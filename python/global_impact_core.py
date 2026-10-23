@@ -301,6 +301,8 @@ def _fnv1a(text: str) -> int:
     return value
 
 
+# FNV-derived IDs are repeatable within this contract, but are compact
+# identifiers rather than cryptographic evidence or collision-proof hashes.
 def stable_token(text: str) -> str:
     return f"{_fnv1a(text):08x}{_fnv1a('gic|' + text):08x}"
 
@@ -359,6 +361,9 @@ def _quality_components(inp: GlobalImpactInput) -> Dict[str, int]:
     }
 
 
+# Compute descriptive changes and target progress from supplied values.
+# These calculations do not establish causal contribution or independently
+# verify the underlying observations; a zero denominator yields null percent.
 def derive_metrics(inp: GlobalImpactInput) -> Dict[str, Any]:
     absolute = inp.current_value - inp.baseline_value
     percent = _safe_percent(absolute, inp.baseline_value)

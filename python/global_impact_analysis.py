@@ -97,6 +97,9 @@ def _period_matches(left: Dict[str, Any], right: Dict[str, Any], policy: str) ->
     return _period_overlap(left, right)
 
 
+# Ordinary least-squares slope over equally spaced index positions; the
+# caller must establish that successive observations represent comparable
+# periods and units before interpreting this as a time trend.
 def _slope(values: Sequence[float]) -> float:
     if len(values) < 2:
         return 0.0
